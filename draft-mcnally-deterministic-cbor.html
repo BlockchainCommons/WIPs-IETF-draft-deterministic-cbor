@@ -1173,7 +1173,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="auto internal xref">3.6</a>.  <a href="#name-use-of-null-as-a-map-value" class="internal xref">Use of Null as a Map Value</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.7">
-                <p id="section-toc.1-1.3.2.7.1"><a href="#section-3.7" class="auto internal xref">3.7</a>.  <a href="#name-api-handling-of-numeric-val" class="internal xref">API Handling of numeric values</a></p>
+                <p id="section-toc.1-1.3.2.7.1"><a href="#section-3.7" class="auto internal xref">3.7</a>.  <a href="#name-api-handling-of-maps" class="internal xref">API Handling of Maps</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.8">
+                <p id="section-toc.1-1.3.2.8.1"><a href="#section-3.8" class="auto internal xref">3.8</a>.  <a href="#name-api-handling-of-numeric-val" class="internal xref">API Handling of numeric values</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.9">
+                <p id="section-toc.1-1.3.2.9.1"><a href="#section-3.9" class="auto internal xref">3.9</a>.  <a href="#name-validation-errors" class="internal xref">Validation Errors</a></p>
 </li>
             </ul>
 </li>
@@ -1248,7 +1254,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-1-9">This document is segmented into three categories. They include norms and practices that:<a href="#section-1-9" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-1-10.1">
-          <span class="bcp14">MUST</span> be implemented at the codec level (Serialization level),<a href="#section-1-10.1" class="pilcrow">¶</a>
+          <span class="bcp14">MUST</span> be implemented in the codec (Serialization level),<a href="#section-1-10.1" class="pilcrow">¶</a>
 </li>
         <li class="normal" id="section-1-10.2">
           <span class="bcp14">MUST</span> be implemented by developers of specifications dependent on dCBOR (Application level).<a href="#section-1-10.2" class="pilcrow">¶</a>
@@ -1375,23 +1381,71 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-3.6-3">Of course, <code>null</code> still has valid uses, e.g., as a placeholder in position-indexed structures like arrays. While of questionable semantics, <code>null</code> may also be used as a map key.<a href="#section-3.6-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="api-handling-of-numeric-values">
+<div id="api-handling-of-maps">
 <section id="section-3.7">
-        <h3 id="name-api-handling-of-numeric-val">
-<a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-api-handling-of-numeric-val" class="section-name selfRef">API Handling of numeric values</a>
+        <h3 id="name-api-handling-of-maps">
+<a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-api-handling-of-maps" class="section-name selfRef">API Handling of Maps</a>
         </h3>
-<p id="section-3.7-1">The above requirements of this section deal with how dCBOR encoders <span class="bcp14">MUST</span> serialize numeric values, and how dCBOR decoders <span class="bcp14">MUST</span> validate them. It does not specify requirements for the API, but the authors do make the following recommendations:<a href="#section-3.7-1" class="pilcrow">¶</a></p>
+<p id="section-3.7-1">dCBOR APIs <span class="bcp14">SHOULD</span> provide a dCBOR <code>Map</code> structure or similar that models the dCBOR canonical key encoding and order.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.7-2.1">The encoder API <span class="bcp14">SHOULD</span> accept any supported numeric type for insertion into the CBOR stream. The CBOR encoder <span class="bcp14">SHALL</span> decide the dCBOR-conformant form for its encoding.<a href="#section-3.7-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-3.7-2.1">Supports insertion of unencoded key-value pairs.<a href="#section-3.7-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.7-2.2">
-            <p id="section-3.7-2.2.1">The API <span class="bcp14">SHOULD</span> allow any supported numeric type to be extracted, and return errors when the actual type encountered is not representable in the requested type. For example,<a href="#section-3.7-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-3.7-2.2">Supports iteration through entries in dCBOR canonical key order.<a href="#section-3.7-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.7-2.3">Supports testing for inclusion of duplicate keys, e.g., <code>10</code> and <code>10.0</code>.<a href="#section-3.7-2.3" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-3.7-3">The dCBOR decoder <span class="bcp14">MUST</span> return an error if it encounters duplicate map keys.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="api-handling-of-numeric-values">
+<section id="section-3.8">
+        <h3 id="name-api-handling-of-numeric-val">
+<a href="#section-3.8" class="section-number selfRef">3.8. </a><a href="#name-api-handling-of-numeric-val" class="section-name selfRef">API Handling of numeric values</a>
+        </h3>
+<p id="section-3.8-1">The above requirements of this section deal with how dCBOR encoders <span class="bcp14">MUST</span> serialize numeric values, and how dCBOR decoders <span class="bcp14">MUST</span> validate them. It does not specify requirements for the API, but the authors do make the following recommendations:<a href="#section-3.8-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-3.7-2.2.2.1">If the encoded value is "1.5" then requesting extraction of the value as floating point will succeed but requesting extraction as an integer will fail.<a href="#section-3.7-2.2.2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-3.8-2.1">The encoder API <span class="bcp14">SHOULD</span> accept any supported numeric type for insertion into the CBOR stream. The CBOR encoder <span class="bcp14">SHALL</span> decide the dCBOR-conformant form for its encoding.<a href="#section-3.8-2.1" class="pilcrow">¶</a>
 </li>
-              <li class="normal" id="section-3.7-2.2.2.2">Similarly, if the value has a large exponent and therefore can be represent as either a floating point value or a BigNum, then attempting to extract it as a machine integer will fail.<a href="#section-3.7-2.2.2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.8-2.2">
+            <p id="section-3.8-2.2.1">The API <span class="bcp14">SHOULD</span> allow any supported numeric type to be extracted, and return errors when the actual type encountered is not representable in the requested type. For example,<a href="#section-3.8-2.2.1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.8-2.2.2.1">If the encoded value is "1.5" then requesting extraction of the value as floating point will succeed but requesting extraction as an integer will fail.<a href="#section-3.8-2.2.2.1" class="pilcrow">¶</a>
+</li>
+              <li class="normal" id="section-3.8-2.2.2.2">Similarly, if the value has a large exponent and therefore can be represent as either a floating point value or a BigNum, then attempting to extract it as a machine integer will fail.<a href="#section-3.8-2.2.2.2" class="pilcrow">¶</a>
 </li>
             </ul>
+</li>
+        </ul>
+</section>
+</div>
+<div id="validation-errors">
+<section id="section-3.9">
+        <h3 id="name-validation-errors">
+<a href="#section-3.9" class="section-number selfRef">3.9. </a><a href="#name-validation-errors" class="section-name selfRef">Validation Errors</a>
+        </h3>
+<p id="section-3.9-1">A dCBOR decoder <span class="bcp14">MUST</span> return errors when it encounters any of these conditions in the input stream. The error symbol names below are informative.<a href="#section-3.9-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-3.9-2.1">
+            <code>underrun</code>: early end of stream<a href="#section-3.9-2.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.9-2.2">
+            <code>badHeaderValue</code>: unsupported CBOR major/minor item header<a href="#section-3.9-2.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.9-2.3">
+            <code>nonCanonicalNumeric</code>: An integer, floating-point value, or BigNum was encoded in non-canonical form<a href="#section-3.9-2.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.9-2.4">
+            <code>invalidString</code>: An invalid UTF-8 string was encountered<a href="#section-3.9-2.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.9-2.5">
+            <code>unusedData</code>: Unused data encountered past the expected end of the input stream<a href="#section-3.9-2.5" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.9-2.6">
+            <code>misorderedMapKey</code>: A map has keys not in canonical order<a href="#section-3.9-2.6" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.9-2.7">
+            <code>duplicateMapKey</code>: A map has a duplicate key<a href="#section-3.9-2.7" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>

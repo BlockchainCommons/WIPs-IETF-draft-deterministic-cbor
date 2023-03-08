@@ -76,7 +76,9 @@ Table of Contents
      3.4.  Reduction of NaNs.
      3.5.  Reduction of BigNums to Integers
      3.6.  Use of Null as a Map Value
-     3.7.  API Handling of numeric values
+     3.7.  API Handling of Maps
+     3.8.  API Handling of numeric values
+     3.9.  Validation Errors
    4.  Application Level
      4.1.  Optional/Default Values
      4.2.  Tagging Items
@@ -162,7 +164,7 @@ Table of Contents
    This document is segmented into three categories.  They include norms
    and practices that:
 
-   *  MUST be implemented at the codec level (Serialization level),
+   *  MUST be implemented in the codec (Serialization level),
 
    *  MUST be implemented by developers of specifications dependent on
       dCBOR (Application level).
@@ -274,7 +276,22 @@ Table of Contents
    position-indexed structures like arrays.  While of questionable
    semantics, null may also be used as a map key.
 
-3.7.  API Handling of numeric values
+3.7.  API Handling of Maps
+
+   dCBOR APIs SHOULD provide a dCBOR Map structure or similar that
+   models the dCBOR canonical key encoding and order.
+
+   *  Supports insertion of unencoded key-value pairs.
+
+   *  Supports iteration through entries in dCBOR canonical key order.
+
+   *  Supports testing for inclusion of duplicate keys, e.g., 10 and
+      10.0.
+
+   The dCBOR decoder MUST return an error if it encounters duplicate map
+   keys.
+
+3.8.  API Handling of numeric values
 
    The above requirements of this section deal with how dCBOR encoders
    MUST serialize numeric values, and how dCBOR decoders MUST validate
@@ -296,6 +313,28 @@ Table of Contents
       -  Similarly, if the value has a large exponent and therefore can
          be represent as either a floating point value or a BigNum, then
          attempting to extract it as a machine integer will fail.
+
+3.9.  Validation Errors
+
+   A dCBOR decoder MUST return errors when it encounters any of these
+   conditions in the input stream.  The error symbol names below are
+   informative.
+
+   *  underrun: early end of stream
+
+   *  badHeaderValue: unsupported CBOR major/minor item header
+
+   *  nonCanonicalNumeric: An integer, floating-point value, or BigNum
+      was encoded in non-canonical form
+
+   *  invalidString: An invalid UTF-8 string was encountered
+
+   *  unusedData: Unused data encountered past the expected end of the
+      input stream
+
+   *  misorderedMapKey: A map has keys not in canonical order
+
+   *  duplicateMapKey: A map has a duplicate key
 
 4.  Application Level
 
