@@ -2,7 +2,7 @@
 
 This is the working area for the individual Internet-Draft, "draft-mcnally-deterministic-cbor".
 
-* [Editor's Copy](https://wolfmcnally.github.io/WIPs-IETF-draft-deterministic-cbor/draft-mcnally-deterministic-cbor.html)
+* [Editor's Copy](https://blockchaincommons.github.io/WIPs-IETF-draft-deterministic-cbor/draft-mcnally-deterministic-cbor.html)
 * [Datatracker Page](https://datatracker.ietf.org/doc/draft-mcnally-deterministic-cbor)
 * [Individual Draft](https://datatracker.ietf.org/doc/html/draft-mcnally-deterministic-cbor)
 * [Compare Editor's Copy to Individual Draft](https://BlockchainCommons.github.io/WIPs-IETF-draft-dcbor/#go.draft-mcnally-deterministic-cbor.diff)
