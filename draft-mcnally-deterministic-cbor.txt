@@ -335,8 +335,12 @@ Table of Contents
 
    This section is informative.
 
-   The current reference implementation Velit inceptos interdum torquent
-   nostra.
+   The current reference implementations that conform to these
+   specifications are:
+
+   *  Swift implementation [SwiftDCBOR]
+
+   *  Rust implementation [RustDCBOR]
 
 7.  Security Considerations
 
@@ -415,9 +419,17 @@ Table of Contents
 
    [NAN]      "NaN", n.d., <https://en.wikipedia.org/wiki/NaN>.
 
+   [RustDCBOR]
+              "Deterministic CBOR ("dCBOR") for Rust.", n.d.,
+              <https://github.com/BlockchainCommons/bc-dcbor-rust>.
+
    [SUBNORMAL]
               "Subnormal number", n.d.,
               <https://en.wikipedia.org/wiki/Subnormal_number>.
+
+   [SwiftDCBOR]
+              "Deterministic CBOR ("dCBOR") for Swift.", n.d.,
+              <https://github.com/BlockchainCommons/BCSwiftDCBOR>.
 
 Acknowledgments
 
