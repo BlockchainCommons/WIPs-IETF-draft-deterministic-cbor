@@ -167,7 +167,7 @@ dCBOR APIs SHOULD provide a dCBOR `Map` structure or similar that models the dCB
 
 The dCBOR decoder MUST return an error if it encounters duplicate map keys.
 
-## API Handling of numeric values
+## API Handling of Numeric Values
 
 The above requirements of this section deal with how dCBOR encoders MUST serialize numeric values, and how dCBOR decoders MUST validate them. It does not specify requirements for the API, but the authors do make the following recommendations:
 
