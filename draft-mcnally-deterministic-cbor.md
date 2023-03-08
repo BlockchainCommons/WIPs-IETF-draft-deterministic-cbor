@@ -142,11 +142,11 @@ Similarly, encoders that support floating point MUST reduce all `+INF` values to
 
 ## Reduction of BigNums to Integers
 
-* While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use regular integer encodings for values < 2^64.
+While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use regular integer encodings for values < 2^64.
 
 ## Use of Null as a Map Value
 
-dCBOR codecs MUST reject `null` as a value in map entries. If the encoder API allows placing `null`-valued entries into in-memory maps, it MUST NOT emit a key value pair for such entires at serialization time. If the decoder API reads a `null`-valued entry, it must return an error.
+dCBOR codecs MUST reject `null` as a value in map entries. If the encoder API allows placing `null`-valued entries into in-memory maps, it MUST NOT emit a key value pair for such entries at serialization time. If the decoder API reads a `null`-valued entry, it MUST return an error.
 
 The rationale is eliminating the choice over whether to encode a key-value pair where the value is `null` or omit it entirely.
 
@@ -187,14 +187,14 @@ A dCBOR decoder MUST return errors when it encounters any of these conditions in
 
 ## Optional/Default Values
 
-* Protocols that depend on dCBOR MUST specify the circumstances under which particular optional fields MUST or MUST NOT be present. Protocols that specify fields using key-value paired structures like CBOR maps, where some fields have default values must choose and document one of the following strategies:
+* Protocols that depend on dCBOR MUST specify the circumstances under which particular optional fields MUST or MUST NOT be present. Protocols that specify fields using key-value paired structures like CBOR maps, where some fields have default values MUST choose and document one of the following strategies:
     * they MUST specify that the absence of the field means choosing the default. This allows the default to be changed later, or
     * they MUST encode the field regardless of whether the current default is chosen. This locks in the current value of the default.
 
 ## Tagging Items
 
 * Protocols that depend on dCBOR MUST specify the circumstances under which a data item MUST or MUST NOT be tagged.
-* The codec API SHOULD specify conveniences such as protocol conformances that allow the association of a associated tag with a particular data type. The encoder MUST use such an associated tag when serializing, and the decoder MUST expect the associated tag when extracting a structure of the that type.
+* The codec API SHOULD afford conveniences such as protocol conformances that allow the association of a tag with a particular data type. The encoder MUST use such an associated tag when serializing, and the decoder MUST expect the associated tag when extracting a structure of that type.
 
 # Future Work
 
