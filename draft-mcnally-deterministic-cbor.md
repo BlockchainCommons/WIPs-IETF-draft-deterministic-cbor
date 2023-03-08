@@ -174,7 +174,7 @@ The above requirements of this section deal with how dCBOR encoders MUST seriali
 * The encoder API SHOULD accept any supported numeric type for insertion into the CBOR stream. The CBOR encoder SHALL decide the dCBOR-conformant form for its encoding.
 * The API SHOULD allow any supported numeric type to be extracted, and return errors when the actual type encountered is not representable in the requested type. For example,
     * If the encoded value is "1.5" then requesting extraction of the value as floating point will succeed but requesting extraction as an integer will fail.
-    * Similarly, if the value has a large exponent and therefore can be represent as either a floating point value or a BigNum, then attempting to extract it as a machine integer will fail.
+    * Similarly, if the value has a large exponent and therefore can be represented as either a floating point value or a BigNum, then attempting to extract it as a machine integer will fail.
 
 ## Validation Errors
 
