@@ -165,7 +165,7 @@ dCBOR APIs SHOULD provide a dCBOR `Map` structure or similar that models the dCB
 * Supports iteration through entries in dCBOR canonical key order.
 * Supports testing for inclusion of duplicate keys, e.g., `10` and `10.0`.
 
-The dCBOR decoder MUST return an error if it encounters duplicate map keys.
+The dCBOR decoder MUST return an error if it encounters misordered or duplicate map keys.
 
 ## API Handling of Numeric Values
 
