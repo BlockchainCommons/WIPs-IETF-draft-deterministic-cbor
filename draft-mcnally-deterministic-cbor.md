@@ -47,6 +47,12 @@ informative:
     CBOR-FORMAT-COMPARISON:
         title: "Comparison of Other Binary Formats to CBOR's Design Objectives"
         target: https://www.rfc-editor.org/rfc/rfc8949#name-comparison-of-other-binary-
+    SwiftDCBOR:
+        title: "Deterministic CBOR (\"dCBOR\") for Swift."
+        target: https://github.com/BlockchainCommons/BCSwiftDCBOR
+    RustDCBOR:
+        title: "Deterministic CBOR (\"dCBOR\") for Rust."
+        target: https://github.com/BlockchainCommons/bc-dcbor-rust
 
 --- abstract
 
@@ -183,7 +189,10 @@ The following issues are currently left for future work:
 
 This section is informative.
 
-The current reference implementation Velit inceptos interdum torquent nostra.
+The current reference implementations that conform to these specifications are:
+
+* Swift implementation {{SwiftDCBOR}}
+* Rust implementation {{RustDCBOR}}
 
 # Security Considerations
 
