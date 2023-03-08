@@ -157,6 +157,16 @@ The rationale is eliminating the choice over whether to encode a key-value pair 
 
 Of course, `null` still has valid uses, e.g., as a placeholder in position-indexed structures like arrays. While of questionable semantics, `null` may also be used as a map key.
 
+## API Handling of Maps
+
+dCBOR APIs SHOULD provide a dCBOR `Map` structure or similar that models the dCBOR canonical key encoding and order.
+
+* Supports insertion of unencoded key-value pairs.
+* Supports iteration through entries in dCBOR canonical key order.
+* Supports testing for inclusion of duplicate keys, e.g., `10` and `10.0`.
+
+The dCBOR decoder MUST return an error if it encounters duplicate map keys.
+
 ## API Handling of numeric values
 
 The above requirements of this section deal with how dCBOR encoders MUST serialize numeric values, and how dCBOR decoders MUST validate them. It does not specify requirements for the API, but the authors do make the following recommendations:
@@ -165,6 +175,19 @@ The above requirements of this section deal with how dCBOR encoders MUST seriali
 * The API SHOULD allow any supported numeric type to be extracted, and return errors when the actual type encountered is not representable in the requested type. For example,
     * If the encoded value is "1.5" then requesting extraction of the value as floating point will succeed but requesting extraction as an integer will fail.
     * Similarly, if the value has a large exponent and therefore can be represent as either a floating point value or a BigNum, then attempting to extract it as a machine integer will fail.
+
+## Validation Errors
+
+A dCBOR decoder MUST return errors when it encounters any of these conditions in the input stream. The error symbol names below are informative.
+
+* `underrun`: early end of stream
+* `badHeaderValue`: unsupported CBOR major/minor item header
+* `nonCanonicalInt`: An integer was encoded in non-canonical form
+* `nonCanonicalFloat`: A floating-point value was encoded in non-canonical form
+* `invalidString`: An invalid UTF-8 string was encountered
+* `unusedData`: Unused data encountered past the expected end of the input stream
+* `misorderedMapKey`: A map has keys not in canonical order
+* `duplicateMapKey`: A map has a duplicate key
 
 # Application Level
 
