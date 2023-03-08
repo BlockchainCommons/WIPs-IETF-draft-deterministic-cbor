@@ -58,7 +58,7 @@ CBOR has many advantages over other data serialization formats. One of its stren
 The goal of determinism in data encoding is that multiple agents serializing the same data will automatically achieve consensus on the byte-level form of that serialized data. Many data serialization formats give developers wide latitude on the serialized form, for example:
 
 * The use of whitespace in JSON, which may be omitted or used to taste.
-* They key-value pairs of map/dictionary structures are usually considered unordered. Therefore their order of serialization is taken to be semantically insignificant and so varies depending on the implementation.
+* The key-value pairs of map/dictionary structures are usually considered unordered. Therefore their order of serialization is taken to be semantically insignificant and so varies depending on the implementation.
 * Standards for the binary encoding of floating point numeric values often include bit patterns that are functionally equivalent, such as `0.0` and `-0.0` or `Nan` and `signalling NaN`.
 * Whether to include a field in a key-value structure with `null` as the value, or omit the field from the serialization entirely.
 * The number of bytes used to encode an integer or floating point value; e.g., in well-formed CBOR there are four valid ways to encode the integer `1` and three valid ways to encode the floating point value `1.0` giving a total of seven valid ways to encode the semantic concept `1.0`. In JSON the problem is even worse, given that `1`, `1.`, `1.0`, `1.00`, `1.000`, etc. are equivalent representations of the same value.
