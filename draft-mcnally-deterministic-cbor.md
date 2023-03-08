@@ -28,7 +28,6 @@ author:
 
 normative:
     RFC8949: CBOR
-    RFC8610: CDDL
     RFC6838: MIME
     IEEE754:
         title: "IEEE, \"IEEE Standard for Floating-Point Arithmetic\", IEEE Std 754-2019, DOI 10.1109/IEEESTD.2019.8766229"
@@ -41,12 +40,6 @@ informative:
     NAN:
         title: "NaN"
         target: https://en.wikipedia.org/wiki/NaN
-    CBOR-IMPLS:
-        title: "CBOR Implementations"
-        target: http://cbor.io/impls.html
-    CBOR-FORMAT-COMPARISON:
-        title: "Comparison of Other Binary Formats to CBOR's Design Objectives"
-        target: https://www.rfc-editor.org/rfc/rfc8949#name-comparison-of-other-binary-
     SwiftDCBOR:
         title: "Deterministic CBOR (\"dCBOR\") for Swift."
         target: https://github.com/BlockchainCommons/BCSwiftDCBOR
@@ -56,7 +49,7 @@ informative:
 
 --- abstract
 
-CBOR has many advantages over other data serialization formats {{-CBOR}}. One of its strengths is specifications and guidelines for serializing data deterministically (ibid, §4.2), such that multiple agents serializing the same data automatically achieve consensus on the exact byte-level form of that serialized data. Nonetheless, determinism is an opt-in feature of the specification, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. This document specifies a set of norms and practices for CBOR codec implementors intended to support deterministic CBOR at the codec API level. This document refers to any CBOR encoded using these practices as "deterministic CBOR" or simply "dCBOR".
+CBOR has many advantages over other data serialization formats. One of its strengths is specifications and guidelines for serializing data deterministically, such that multiple agents serializing the same data automatically achieve consensus on the exact byte-level form of that serialized data. Nonetheless, determinism is an opt-in feature of the specification, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. This document specifies a set of norms and practices for CBOR codec implementors intended to support deterministic CBOR ("dCBOR") at the codec API level.
 
 --- middle
 
@@ -194,13 +187,13 @@ A dCBOR decoder MUST return errors when it encounters any of these conditions in
 
 ## Optional/Default Values
 
-* Protocols that depend on dCBOR MUST specify the circumstances under which particular optional fields MUST or MUST not be present. Protocols that specify fields using key-value paired structures like CBOR maps, where some fields have default values must choose and document one of the following strategies:
+* Protocols that depend on dCBOR MUST specify the circumstances under which particular optional fields MUST or MUST NOT be present. Protocols that specify fields using key-value paired structures like CBOR maps, where some fields have default values must choose and document one of the following strategies:
     * they MUST specify that the absence of the field means choosing the default. This allows the default to be changed later, or
     * they MUST encode the field regardless of whether the current default is chosen. This locks in the current value of the default.
 
 ## Tagging Items
 
-* Protocols that depend on dCBOR MUST specify the circumstances under which a data item MUST or MUST not be tagged.
+* Protocols that depend on dCBOR MUST specify the circumstances under which a data item MUST or MUST NOT be tagged.
 * The codec API SHOULD specify conveniences such as protocol conformances that allow the association of a associated tag with a particular data type. The encoder MUST use such an associated tag when serializing, and the decoder MUST expect the associated tag when extracting a structure of the that type.
 
 # Future Work
