@@ -139,11 +139,13 @@ This practice still produces well-formed CBOR according to the standard, and all
 }
 ~~~
 
-## Reduction of NaNs.
+## Reduction of NaNs and Infinities.
 
 {{IEEE754}} defines the `NaN` (Not a Number) value {{NAN}}. This is usually divided into two categories: *quiet NaNs* and *signalling NaNs*. However, the specification also specifies that the floating point sign bit "doesn't matter" and includes a range of "payload" bits. These bit fields could be used to break CBOR determinism.
 
-dCBOR encoders that support floating point MUST reduce all NaN values to the half-width quiet NaN value having the canonical bit pattern `0x7e00`.
+dCBOR encoders that support floating point MUST reduce all `NaN` values to the half-width quiet `NaN` value having the canonical bit pattern `0x7e00`.
+
+Similarly, encoders that support floating point MUST reduce all `+INF` values to the half-width `+INF` having the canonical bit pattern `0x7c00` and likewise with `-INF` to `0xfc00`.
 
 ## Reduction of BigNums to Integers
 
