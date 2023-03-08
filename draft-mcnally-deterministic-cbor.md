@@ -84,7 +84,7 @@ The authors of this document believe that for applications where dCBOR correctne
 
 This document is segmented into three categories. They include norms and practices that:
 
-* MUST be implemented at the codec level (Serialization level),
+* MUST be implemented in the codec (Serialization level),
 * MUST be implemented by developers of specifications dependent on dCBOR (Application level).
 * are acknowledged to fall under the purview of this document, but which are not yet specified (Future work).
 
