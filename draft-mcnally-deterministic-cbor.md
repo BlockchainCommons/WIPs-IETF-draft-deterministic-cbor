@@ -96,6 +96,12 @@ codec
 dCBOR
 : "deterministic CBOR" encoded in conformance with the CBOR specifications §4.2 {{-CBOR}}.
 
+insert/extract
+: To convert platform-native or application-centric data structures to/from an in-memory symbolic representation of CBOR.
+
+serialize/deserialize
+: To convert an in-memory symbolic representation of CBOR to/from a byte stream.
+
 # Serialization Level
 
 This section defines requirements and practices falling in the purview of the dCBOR codec.
