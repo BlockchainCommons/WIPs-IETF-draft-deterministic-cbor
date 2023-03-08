@@ -182,8 +182,7 @@ A dCBOR decoder MUST return errors when it encounters any of these conditions in
 
 * `underrun`: early end of stream
 * `badHeaderValue`: unsupported CBOR major/minor item header
-* `nonCanonicalInt`: An integer was encoded in non-canonical form
-* `nonCanonicalFloat`: A floating-point value was encoded in non-canonical form
+* `nonCanonicalNumeric`: An integer, floating-point value, or BigNum was encoded in non-canonical form
 * `invalidString`: An invalid UTF-8 string was encountered
 * `unusedData`: Unused data encountered past the expected end of the input stream
 * `misorderedMapKey`: A map has keys not in canonical order
