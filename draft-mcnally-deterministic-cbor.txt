@@ -77,7 +77,7 @@ Table of Contents
      3.5.  Reduction of BigNums to Integers
      3.6.  Use of Null as a Map Value
      3.7.  API Handling of Maps
-     3.8.  API Handling of numeric values
+     3.8.  API Handling of Numeric Values
      3.9.  Validation Errors
    4.  Application Level
      4.1.  Optional/Default Values
@@ -288,10 +288,10 @@ Table of Contents
    *  Supports testing for inclusion of duplicate keys, e.g., 10 and
       10.0.
 
-   The dCBOR decoder MUST return an error if it encounters duplicate map
-   keys.
+   The dCBOR decoder MUST return an error if it encounters misordered or
+   duplicate map keys.
 
-3.8.  API Handling of numeric values
+3.8.  API Handling of Numeric Values
 
    The above requirements of this section deal with how dCBOR encoders
    MUST serialize numeric values, and how dCBOR decoders MUST validate
@@ -311,8 +311,8 @@ Table of Contents
          as an integer will fail.
 
       -  Similarly, if the value has a large exponent and therefore can
-         be represent as either a floating point value or a BigNum, then
-         attempting to extract it as a machine integer will fail.
+         be represented as either a floating point value or a BigNum,
+         then attempting to extract it as a machine integer will fail.
 
 3.9.  Validation Errors
 

@@ -1176,7 +1176,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.3.2.7.1"><a href="#section-3.7" class="auto internal xref">3.7</a>.  <a href="#name-api-handling-of-maps" class="internal xref">API Handling of Maps</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.8">
-                <p id="section-toc.1-1.3.2.8.1"><a href="#section-3.8" class="auto internal xref">3.8</a>.  <a href="#name-api-handling-of-numeric-val" class="internal xref">API Handling of numeric values</a></p>
+                <p id="section-toc.1-1.3.2.8.1"><a href="#section-3.8" class="auto internal xref">3.8</a>.  <a href="#name-api-handling-of-numeric-val" class="internal xref">API Handling of Numeric Values</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.9">
                 <p id="section-toc.1-1.3.2.9.1"><a href="#section-3.9" class="auto internal xref">3.9</a>.  <a href="#name-validation-errors" class="internal xref">Validation Errors</a></p>
@@ -1395,13 +1395,13 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
           <li class="normal" id="section-3.7-2.3">Supports testing for inclusion of duplicate keys, e.g., <code>10</code> and <code>10.0</code>.<a href="#section-3.7-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-3.7-3">The dCBOR decoder <span class="bcp14">MUST</span> return an error if it encounters duplicate map keys.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
+<p id="section-3.7-3">The dCBOR decoder <span class="bcp14">MUST</span> return an error if it encounters misordered or duplicate map keys.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="api-handling-of-numeric-values">
 <section id="section-3.8">
         <h3 id="name-api-handling-of-numeric-val">
-<a href="#section-3.8" class="section-number selfRef">3.8. </a><a href="#name-api-handling-of-numeric-val" class="section-name selfRef">API Handling of numeric values</a>
+<a href="#section-3.8" class="section-number selfRef">3.8. </a><a href="#name-api-handling-of-numeric-val" class="section-name selfRef">API Handling of Numeric Values</a>
         </h3>
 <p id="section-3.8-1">The above requirements of this section deal with how dCBOR encoders <span class="bcp14">MUST</span> serialize numeric values, and how dCBOR decoders <span class="bcp14">MUST</span> validate them. It does not specify requirements for the API, but the authors do make the following recommendations:<a href="#section-3.8-1" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -1412,7 +1412,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <ul class="normal">
 <li class="normal" id="section-3.8-2.2.2.1">If the encoded value is "1.5" then requesting extraction of the value as floating point will succeed but requesting extraction as an integer will fail.<a href="#section-3.8-2.2.2.1" class="pilcrow">¶</a>
 </li>
-              <li class="normal" id="section-3.8-2.2.2.2">Similarly, if the value has a large exponent and therefore can be represent as either a floating point value or a BigNum, then attempting to extract it as a machine integer will fail.<a href="#section-3.8-2.2.2.2" class="pilcrow">¶</a>
+              <li class="normal" id="section-3.8-2.2.2.2">Similarly, if the value has a large exponent and therefore can be represented as either a floating point value or a BigNum, then attempting to extract it as a machine integer will fail.<a href="#section-3.8-2.2.2.2" class="pilcrow">¶</a>
 </li>
             </ul>
 </li>
