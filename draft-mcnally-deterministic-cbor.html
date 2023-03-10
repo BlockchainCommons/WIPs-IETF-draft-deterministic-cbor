@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">McNally &amp; Allen</td>
-<td class="center">Expires 9 September 2023</td>
+<td class="center">Expires 11 September 2023</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-mcnally-deterministic-cbor-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-03-08" class="published">8 March 2023</time>
+<time datetime="2023-03-10" class="published">10 March 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Experimental</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2023-09-09">9 September 2023</time></dd>
+<dd class="expires"><time datetime="2023-09-11">11 September 2023</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1116,7 +1116,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 9 September 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 11 September 2023.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1366,7 +1366,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-reduction-of-nans-and-infin">
 <a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-reduction-of-nans-and-infin" class="section-name selfRef">Reduction of NaNs and Infinities.</a>
         </h3>
-<p id="section-3.4-1"><span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> defines the <code>NaN</code> (Not a Number) value <span>[<a href="#NAN" class="cite xref">NAN</a>]</span>. This is usually divided into two categories: <em>quiet NaNs</em> and <em>signalling NaNs</em>. However, the specification also specifies that the floating point sign bit "doesn't matter" and includes a range of "payload" bits. These bit fields could be used to break CBOR determinism.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-1"><span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> defines the <code>NaN</code> (Not a Number) value <span>[<a href="#NAN" class="cite xref">NAN</a>]</span>. This is usually divided into two types: <em>quiet NaNs</em> and <em>signalling NaNs</em>, and the sign bit is used to distinguish between these two types. However, the specification also includes a range of "payload" bits. These bit fields have no definite purpose and could be used to break CBOR determinism.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
 <p id="section-3.4-2">dCBOR encoders that support floating point <span class="bcp14">MUST</span> reduce all <code>NaN</code> values to the half-width quiet <code>NaN</code> value having the canonical bit pattern <code>0x7e00</code>.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 <p id="section-3.4-3">Similarly, encoders that support floating point <span class="bcp14">MUST</span> reduce all <code>+INF</code> values to the half-width <code>+INF</code> having the canonical bit pattern <code>0x7c00</code> and likewise with <code>-INF</code> to <code>0xfc00</code>.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
 </section>
@@ -1376,7 +1376,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-reduction-of-bignums-to-int">
 <a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-reduction-of-bignums-to-int" class="section-name selfRef">Reduction of BigNums to Integers</a>
         </h3>
-<p id="section-3.5-1">While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them <span class="bcp14">MUST</span> use regular integer encodings for values &lt; 2^64.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-1">While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them <span class="bcp14">MUST</span> use regular integer encodings where integers can represent the value.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="use-of-null-as-a-map-value">
@@ -1400,7 +1400,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </li>
           <li class="normal" id="section-3.7-2.2">Supports iteration through entries in dCBOR canonical key order.<a href="#section-3.7-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-3.7-2.3">Supports testing for inclusion of duplicate keys, e.g., <code>10</code> and <code>10.0</code>.<a href="#section-3.7-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-3.7-2.3">Supports treating keys as duplicate that have identical dCBOR encodings, e.g., <code>10</code> and <code>10.0</code>.<a href="#section-3.7-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
 <p id="section-3.7-3">The dCBOR decoder <span class="bcp14">MUST</span> return an error if it encounters misordered or duplicate map keys.<a href="#section-3.7-3" class="pilcrow">¶</a></p>

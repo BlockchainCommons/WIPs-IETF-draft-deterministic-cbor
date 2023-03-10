@@ -5,7 +5,7 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 9 September 2023                                   8 March 2023
+Expires: 11 September 2023                                 10 March 2023
 
 
            dCBOR: Deterministic CBOR Implementation Practices
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 9 September 2023.
+   This Internet-Draft will expire on 11 September 2023.
 
 Copyright Notice
 
@@ -251,10 +251,11 @@ Table of Contents
 3.4.  Reduction of NaNs and Infinities.
 
    [IEEE754] defines the NaN (Not a Number) value [NAN].  This is
-   usually divided into two categories: _quiet NaNs_ and _signalling
-   NaNs_. However, the specification also specifies that the floating
-   point sign bit "doesn't matter" and includes a range of "payload"
-   bits.  These bit fields could be used to break CBOR determinism.
+   usually divided into two types: _quiet NaNs_ and _signalling NaNs_,
+   and the sign bit is used to distinguish between these two types.
+   However, the specification also includes a range of "payload" bits.
+   These bit fields have no definite purpose and could be used to break
+   CBOR determinism.
 
    dCBOR encoders that support floating point MUST reduce all NaN values
    to the half-width quiet NaN value having the canonical bit pattern
@@ -268,7 +269,7 @@ Table of Contents
 
    While there is no requirement that dCBOR codecs implement support for
    BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use
-   regular integer encodings for values < 2^64.
+   regular integer encodings where integers can represent the value.
 
 3.6.  Use of Null as a Map Value
 
@@ -294,8 +295,8 @@ Table of Contents
 
    *  Supports iteration through entries in dCBOR canonical key order.
 
-   *  Supports testing for inclusion of duplicate keys, e.g., 10 and
-      10.0.
+   *  Supports treating keys as duplicate that have identical dCBOR
+      encodings, e.g., 10 and 10.0.
 
    The dCBOR decoder MUST return an error if it encounters misordered or
    duplicate map keys.
