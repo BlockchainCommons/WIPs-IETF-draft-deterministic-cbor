@@ -140,7 +140,7 @@ This practice still produces well-formed CBOR according to the standard, and all
 
 ## Reduction of NaNs and Infinities.
 
-{{IEEE754}} defines the `NaN` (Not a Number) value {{NAN}}. This is usually divided into two categories: *quiet NaNs* and *signalling NaNs*. However, the specification also specifies that the floating point sign bit "doesn't matter" and includes a range of "payload" bits. These bit fields could be used to break CBOR determinism.
+{{IEEE754}} defines the `NaN` (Not a Number) value {{NAN}}. This is usually divided into two types: *quiet NaNs* and *signalling NaNs*, and the sign bit is used to distinguish between these two types. However, the specification also includes a range of "payload" bits. These bit fields have no definite purpose and could be used to break CBOR determinism.
 
 dCBOR encoders that support floating point MUST reduce all `NaN` values to the half-width quiet `NaN` value having the canonical bit pattern `0x7e00`.
 
@@ -148,7 +148,7 @@ Similarly, encoders that support floating point MUST reduce all `+INF` values to
 
 ## Reduction of BigNums to Integers
 
-While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use regular integer encodings for values < 2^64.
+While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use regular integer encodings where integers can represent the value.
 
 ## Use of Null as a Map Value
 
@@ -164,7 +164,7 @@ dCBOR APIs SHOULD provide a dCBOR `Map` structure or similar that models the dCB
 
 * Supports insertion of unencoded key-value pairs.
 * Supports iteration through entries in dCBOR canonical key order.
-* Supports testing for inclusion of duplicate keys, e.g., `10` and `10.0`.
+* Supports treating keys as duplicate that have identical dCBOR encodings, e.g., `10` and `10.0`.
 
 The dCBOR decoder MUST return an error if it encounters misordered or duplicate map keys.
 
