@@ -1,5 +1,5 @@
 ---
-title: "dCBOR: Deterministic CBOR Implementation Practices"
+title: "Gordian dCBOR: Deterministic CBOR Implementation Practices"
 abbrev: "dCBOR"
 docname: draft-mcnally-deterministic-cbor-latest
 category: exp
