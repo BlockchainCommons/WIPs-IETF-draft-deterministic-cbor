@@ -60,7 +60,7 @@ The goal of determinism in data encoding is that multiple agents serializing the
 * The use of whitespace in JSON, which may be omitted or used to taste.
 * The key-value pairs of map/dictionary structures are usually considered unordered. Therefore their order of serialization is taken to be semantically insignificant and so varies depending on the implementation.
 * Standards for the binary encoding of floating point numeric values often include bit patterns that are functionally equivalent, such as `0.0` and `-0.0` or `NaN` and `signalling NaN`.
-* Whether to include a field in a key-value structure with `null` as the value, or omit the field from the serialization entirely.
+* Whether to include an entry in a key-value structure with `null` as the value, or omit the entry from the serialization entirely.
 * The number of bytes used to encode an integer or floating point value; e.g., in well-formed CBOR there are four valid ways to encode the integer `1` and three valid ways to encode the floating point value `1.0` giving a total of seven valid ways to encode the semantic concept `1.0`. In JSON the problem is even worse, given that `1`, `1.`, `1.0`, `1.00`, `1.000`, etc. are equivalent representations of the same value.
 
 Each of these choices made differently by separate agents yield different binary serializations that cannot be compared based on their hash values, and which therefore must be separately parsed and validated semantically field-by-field to decide whether they are identical. Such fast comparison for identicality using hashes is important in certain classes of application, where the hash is published or incorporated into other documents, hence "freezing" the form of the document. Where the hash is known or fixed, it is impossible to substitute a different document for the original that differs by even a single bit.
@@ -188,6 +188,7 @@ A dCBOR decoder MUST return errors when it encounters any of these conditions in
 * `unusedData`: Unused data encountered past the expected end of the input stream
 * `misorderedMapKey`: A map has keys not in canonical order
 * `duplicateMapKey`: A map has a duplicate key
+* `nullMapValue`: A map has a null-valued entry
 
 # Application Level
 
