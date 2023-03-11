@@ -108,7 +108,7 @@ Table of Contents
 
    *  Standards for the binary encoding of floating point numeric values
       often include bit patterns that are functionally equivalent, such
-      as 0.0 and -0.0 or Nan and signalling NaN.
+      as 0.0 and -0.0 or NaN and signalling NaN.
 
    *  Whether to include a field in a key-value structure with null as
       the value, or omit the field from the serialization entirely.
