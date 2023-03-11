@@ -110,8 +110,8 @@ Table of Contents
       often include bit patterns that are functionally equivalent, such
       as 0.0 and -0.0 or NaN and signalling NaN.
 
-   *  Whether to include a field in a key-value structure with null as
-      the value, or omit the field from the serialization entirely.
+   *  Whether to include an entry in a key-value structure with null as
+      the value, or omit the entry from the serialization entirely.
 
    *  The number of bytes used to encode an integer or floating point
       value; e.g., in well-formed CBOR there are four valid ways to
@@ -345,6 +345,8 @@ Table of Contents
    *  misorderedMapKey: A map has keys not in canonical order
 
    *  duplicateMapKey: A map has a duplicate key
+
+   *  nullMapValue: A map has a null-valued entry
 
 4.  Application Level
 

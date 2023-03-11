@@ -1240,7 +1240,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </li>
         <li class="normal" id="section-1-2.3">Standards for the binary encoding of floating point numeric values often include bit patterns that are functionally equivalent, such as <code>0.0</code> and <code>-0.0</code> or <code>NaN</code> and <code>signalling NaN</code>.<a href="#section-1-2.3" class="pilcrow">¶</a>
 </li>
-        <li class="normal" id="section-1-2.4">Whether to include a field in a key-value structure with <code>null</code> as the value, or omit the field from the serialization entirely.<a href="#section-1-2.4" class="pilcrow">¶</a>
+        <li class="normal" id="section-1-2.4">Whether to include an entry in a key-value structure with <code>null</code> as the value, or omit the entry from the serialization entirely.<a href="#section-1-2.4" class="pilcrow">¶</a>
 </li>
         <li class="normal" id="section-1-2.5">The number of bytes used to encode an integer or floating point value; e.g., in well-formed CBOR there are four valid ways to encode the integer <code>1</code> and three valid ways to encode the floating point value <code>1.0</code> giving a total of seven valid ways to encode the semantic concept <code>1.0</code>. In JSON the problem is even worse, given that <code>1</code>, <code>1.</code>, <code>1.0</code>, <code>1.00</code>, <code>1.000</code>, etc. are equivalent representations of the same value.<a href="#section-1-2.5" class="pilcrow">¶</a>
 </li>
@@ -1454,6 +1454,9 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </li>
           <li class="normal" id="section-3.9-2.7">
             <code>duplicateMapKey</code>: A map has a duplicate key<a href="#section-3.9-2.7" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-3.9-2.8">
+            <code>nullMapValue</code>: A map has a null-valued entry<a href="#section-3.9-2.8" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
