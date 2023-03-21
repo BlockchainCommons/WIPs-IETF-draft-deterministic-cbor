@@ -150,14 +150,6 @@ Similarly, encoders that support floating point MUST reduce all `+INF` values to
 
 While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use regular integer encodings where integers can represent the value.
 
-## Use of Null as a Map Value
-
-dCBOR codecs MUST reject `null` as a value in map entries. If the encoder API allows placing `null`-valued entries into in-memory maps, it MUST NOT emit a key value pair for such entries at serialization time. If the decoder API reads a `null`-valued entry, it MUST return an error.
-
-The rationale is eliminating the choice over whether to encode a key-value pair where the value is `null` or omit it entirely.
-
-Of course, `null` still has valid uses, e.g., as a placeholder in position-indexed structures like arrays. While of questionable semantics, `null` may also be used as a map key.
-
 ## API Handling of Maps
 
 dCBOR APIs SHOULD provide a dCBOR `Map` structure or similar that models the dCBOR canonical key encoding and order.
@@ -188,20 +180,31 @@ A dCBOR decoder MUST return errors when it encounters any of these conditions in
 * `unusedData`: Unused data encountered past the expected end of the input stream
 * `misorderedMapKey`: A map has keys not in canonical order
 * `duplicateMapKey`: A map has a duplicate key
-* `nullMapValue`: A map has a null-valued entry
 
 # Application Level
 
 ## Optional/Default Values
 
-* Protocols that depend on dCBOR MUST specify the circumstances under which particular optional fields MUST or MUST NOT be present. Protocols that specify fields using key-value paired structures like CBOR maps, where some fields have default values MUST choose and document one of the following strategies:
-    * they MUST specify that the absence of the field means choosing the default. This allows the default to be changed later, or
-    * they MUST encode the field regardless of whether the current default is chosen. This locks in the current value of the default.
+Protocols that depend on dCBOR MUST specify the optionality and semantics of field values. In key-value paired structures like CBOR maps, protocols MUST specify whether the field:
+
+* REQUIRED and the value MUST NOT be `null`.
+* OPTIONAL but if present the value MUST NOT be `null`.
+* REQUIRED and the value MAY be `null`.
+* OPTIONAL and the value MAY be `null`.
+
+In the last case, the protocol specifier MUST state the semantic difference between the field being not present at all, and being present but having a `null` value. For example, in a map representing user preferences:
+
+* The absence of the field means the user needs to be asked for their preference,
+* The presence of the field with a `null` value means the user has been asked, but specified that they accept the current default.
+* If the field is present and the value is non-`null`, the user would have affirmatively specified a preference.
+
+The rationale for this specificity is to remove semantic ambiguity and eliminate the choice over whether to encode a key-value pair where the value is `null` or omit it entirely.
 
 ## Tagging Items
 
-* Protocols that depend on dCBOR MUST specify the circumstances under which a data item MUST or MUST NOT be tagged.
-* The codec API SHOULD afford conveniences such as protocol conformances that allow the association of a tag with a particular data type. The encoder MUST use such an associated tag when serializing, and the decoder MUST expect the associated tag when extracting a structure of that type.
+Protocols that depend on dCBOR MUST specify the circumstances under which a data item MUST or MUST NOT be tagged.
+
+The codec API SHOULD afford conveniences such as protocol conformances that allow the association of a tag with a particular data type. The encoder MUST use such an associated tag when serializing, and the decoder MUST expect the associated tag when extracting a structure of that type.
 
 # Future Work
 
