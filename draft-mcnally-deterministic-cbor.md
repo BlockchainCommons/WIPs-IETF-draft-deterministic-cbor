@@ -149,6 +149,16 @@ Similarly, encoders that support floating point MUST reduce all `+INF` values to
 
 While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use regular integer encodings where integers can represent the value.
 
+## CBOR_NEGATIVE_INT_MAX disallowed
+
+The largest negative integer that can be represented in 64 bits two's complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
+
+However, the largest negative integer that can be represented in CBOR (CBOR_NEGATIVE_INT_MAX) is -2^64 (0x10000000000000000), which requires 65 bits. The CBOR encoding for CBOR_NEGATIVE_INT_MAX is 0x3BFFFFFFFFFFFFFFFF.
+
+Because of this incompatibility between the CBOR and standard representations, dCBOR disallows CBOR_NEGATIVE_INT_MAX: conformant encoders MUST never encode this sequence and conformant decoders MUST reject CBOR_NEGATIVE_INT_MAX as not well-formed.
+
+Implementations that support BIGNUM are able to encode and decode this value as BIGNUM.
+
 ## API Handling of Maps
 
 dCBOR APIs SHOULD provide a dCBOR `Map` structure or similar that models the dCBOR canonical key encoding and order.
