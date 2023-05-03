@@ -5,7 +5,7 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 19 October 2023                                   17 April 2023
+Expires: 4 November 2023                                      3 May 2023
 
 
        Gordian dCBOR: Deterministic CBOR Implementation Practices
@@ -47,7 +47,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 October 2023.
+   This Internet-Draft will expire on 4 November 2023.
 
 Copyright Notice
 
@@ -68,25 +68,26 @@ Table of Contents
    1.  Introduction
    2.  Terminology
    3.  Serialization Level
-     3.1.  General Practices for dCBOR Codecs
-     3.2.  Base Requirements
-     3.3.  Reduction of Floating Point Values to Integers
-     3.4.  Reduction of NaNs and Infinities.
-     3.5.  Reduction of BigNums to Integers
-     3.6.  CBOR_NEGATIVE_INT_MAX disallowed
-     3.7.  API Handling of Maps
-     3.8.  API Handling of Numeric Values
-     3.9.  Validation Errors
+     3.1.  Base Requirements
+     3.2.  Reduction of Floating Point Values to Integers
+     3.3.  Reduction of NaNs and Infinities.
+     3.4.  Reduction of BigNums to Integers
+     3.5.  CBOR_NEGATIVE_INT_MAX disallowed
    4.  Application Level
      4.1.  Optional/Default Values
      4.2.  Tagging Items
    5.  Future Work
-   6.  Reference Implementations
-   7.  Security Considerations
-   8.  IANA Considerations
-   9.  References
-     9.1.  Normative References
-     9.2.  Informative References
+   6.  API-Level Recommendations
+     6.1.  General Practices for dCBOR Codecs
+     6.2.  API Handling of Maps
+     6.3.  API Handling of Numeric Values
+     6.4.  Validation Errors
+   7.  Reference Implementations
+   8.  Security Considerations
+   9.  IANA Considerations
+   10. References
+     10.1.  Normative References
+     10.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -142,21 +143,7 @@ Table of Contents
    and that all dCBOR is well-formed CBOR that can be read by existing
    CBOR codecs.
 
-   Nonetheless, many existing implementations give little or no guidance
-   at the API level as to whether the CBOR being read conforms to the
-   dCBOR specification, for example by emitting errors or warnings at
-   deserialization time.  Conversely, many existing implementations do
-   not carry any burden of ensuring that CBOR is serialized in
-   conformance with the dCBOR specification, again putting that burden
-   on developers.
-
-   The authors of this document believe that for applications where
-   dCBOR correctness is important, the codec itself should carry as much
-   of this burden as possible.  This is important both to minimize
-   cognitive load during development, and help ensure interoperability
-   between implementations.
-
-   This document is segmented into three categories.  They include norms
+   This document is segmented into four sections.  They include norms
    and practices that:
 
    *  MUST be implemented in the codec (Serialization level),
@@ -166,6 +153,8 @@ Table of Contents
 
    *  are acknowledged to fall under the purview of this document, but
       which are not yet specified (Future work).
+
+   *  are RECOMMENDED for dCBOR codec implementors (Recommendations).
 
 2.  Terminology
 
@@ -183,7 +172,7 @@ Table of Contents
       (serializes) and decodes (deserializes) a data format.
 
    dCBOR  "deterministic CBOR" encoded in conformance with the CBOR
-      specifications §4.2 [RFC8949].
+      specification in this document.
 
    insert/extract  To convert platform-native or application-centric
       data structures to/from an in-memory symbolic representation of
@@ -197,17 +186,7 @@ Table of Contents
    This section defines requirements and practices falling in the
    purview of the dCBOR codec.
 
-3.1.  General Practices for dCBOR Codecs
-
-   dCBOR codecs SHOULD:
-
-   *  Make it easy to emit compliant dCBOR.
-
-   *  Make it hard to emit non-compliant dCBOR.
-
-   *  Make it an error to read non-compliant dCBOR.
-
-3.2.  Base Requirements
+3.1.  Base Requirements
 
    dCBOR encoders MUST only emit CBOR conforming to the requirements of
    [RFC8949] §4.2.1.  To summarize:
@@ -225,7 +204,7 @@ Table of Contents
    dCBOR codecs MUST validate and return errors for any CBOR that is not
    conformant.
 
-3.3.  Reduction of Floating Point Values to Integers
+3.2.  Reduction of Floating Point Values to Integers
 
    While there is no requirement that dCBOR codecs implement support for
    floating point numbers, dCBOR codecs that do support them MUST reduce
@@ -245,7 +224,7 @@ Table of Contents
       10.0: "floating ten"
    }
 
-3.4.  Reduction of NaNs and Infinities.
+3.3.  Reduction of NaNs and Infinities.
 
    [IEEE754] defines the NaN (Not a Number) value [NAN].  This is
    usually divided into two types: _quiet NaNs_ and _signalling NaNs_,
@@ -262,13 +241,13 @@ Table of Contents
    values to the half-width +INF having the canonical bit pattern 0x7c00
    and likewise with -INF to 0xfc00.
 
-3.5.  Reduction of BigNums to Integers
+3.4.  Reduction of BigNums to Integers
 
    While there is no requirement that dCBOR codecs implement support for
    BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use
    regular integer encodings where integers can represent the value.
 
-3.6.  CBOR_NEGATIVE_INT_MAX disallowed
+3.5.  CBOR_NEGATIVE_INT_MAX disallowed
 
    The largest negative integer that can be represented in 64 bits two's
    complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
@@ -285,66 +264,6 @@ Table of Contents
 
    Implementations that support BIGNUM are able to encode and decode
    this value as BIGNUM.
-
-3.7.  API Handling of Maps
-
-   dCBOR APIs SHOULD provide a dCBOR Map structure or similar that
-   models the dCBOR canonical key encoding and order.
-
-   *  Supports insertion of unencoded key-value pairs.
-
-   *  Supports iteration through entries in dCBOR canonical key order.
-
-   *  Supports treating keys as duplicate that have identical dCBOR
-      encodings, e.g., 10 and 10.0.
-
-   The dCBOR decoder MUST return an error if it encounters misordered or
-   duplicate map keys.
-
-3.8.  API Handling of Numeric Values
-
-   The above requirements of this section deal with how dCBOR encoders
-   MUST serialize numeric values, and how dCBOR decoders MUST validate
-   them.  It does not specify requirements for the API, but the authors
-   do make the following recommendations:
-
-   *  The encoder API SHOULD accept any supported numeric type for
-      insertion into the CBOR stream.  The CBOR encoder SHALL decide the
-      dCBOR-conformant form for its encoding.
-
-   *  The API SHOULD allow any supported numeric type to be extracted,
-      and return errors when the actual type encountered is not
-      representable in the requested type.  For example,
-
-      -  If the encoded value is "1.5" then requesting extraction of the
-         value as floating point will succeed but requesting extraction
-         as an integer will fail.
-
-      -  Similarly, if the value has a large exponent and therefore can
-         be represented as either a floating point value or a BigNum,
-         then attempting to extract it as a machine integer will fail.
-
-3.9.  Validation Errors
-
-   A dCBOR decoder MUST return errors when it encounters any of these
-   conditions in the input stream.  The error symbol names below are
-   informative.
-
-   *  underrun: early end of stream
-
-   *  badHeaderValue: unsupported CBOR major/minor item header
-
-   *  nonCanonicalNumeric: An integer, floating-point value, or BigNum
-      was encoded in non-canonical form
-
-   *  invalidString: An invalid UTF-8 string was encountered
-
-   *  unusedData: Unused data encountered past the expected end of the
-      input stream
-
-   *  misorderedMapKey: A map has keys not in canonical order
-
-   *  duplicateMapKey: A map has a duplicate key
 
 4.  Application Level
 
@@ -397,7 +316,91 @@ Table of Contents
 
    *  How to deal with subnormal floating point values [SUBNORMAL].
 
-6.  Reference Implementations
+6.  API-Level Recommendations
+
+   This section is informative.
+
+   Many existing CBOR implementations give little or no guidance at the
+   API level as to whether the CBOR being read conforms to the CBOR
+   specification for deterministic encoding [RFC8949] §4.2, for example
+   by emitting errors or warnings at deserialization time.  Conversely,
+   many existing implementations do not carry any burden of ensuring
+   that CBOR is serialized in conformance with the CBOR determinstic
+   encoding specification, again putting that burden on developers.
+
+   The authors of this document believe that for applications where
+   dCBOR correctness as specified in this document is important, the
+   codec itself should carry as much of this burden as possible.  This
+   is important both to minimize cognitive load during development, and
+   help ensure interoperability between implementations.
+
+6.1.  General Practices for dCBOR Codecs
+
+   It is RECOMMENDED that dCBOR codecs:
+
+   *  Make it easy to emit compliant dCBOR.
+
+   *  Make it hard to emit non-compliant dCBOR.
+
+   *  Make it an error to read non-compliant dCBOR.
+
+6.2.  API Handling of Maps
+
+   It is RECOMMENDED that dCBOR APIs provide a dCBOR Map structure or
+   similar that models the dCBOR canonical key encoding and order:
+
+   *  Supports insertion of unencoded key-value pairs.
+
+   *  Supports iteration through entries in dCBOR canonical key order.
+
+   *  Supports treating keys as duplicate that have identical dCBOR
+      encodings, e.g., 10 and 10.0.
+
+   The dCBOR decoder SHOULD return an error if it encounters misordered
+   or duplicate map keys.
+
+6.3.  API Handling of Numeric Values
+
+   The authors do make the following recommendations:
+
+   *  The encoder API SHOULD accept any supported numeric type for
+      insertion into the CBOR stream and decide the dCBOR-conformant
+      form for its encoding.
+
+   *  The API SHOULD allow any supported numeric type to be extracted,
+      and return errors when the actual type encountered is not
+      representable in the requested type.  For example,
+
+      -  If the encoded value is "1.5" then requesting extraction of the
+         value as floating point will succeed but requesting extraction
+         as an integer will fail.
+
+      -  Similarly, if the value has a large exponent and therefore can
+         be represented as either a floating point value or a BigNum,
+         then attempting to extract it as a machine integer will fail.
+
+6.4.  Validation Errors
+
+   It is RECOMMENDED that a dCBOR decoder return errors when it
+   encounters any of these conditions in the input stream:
+
+   *  underrun: early end of stream
+
+   *  badHeaderValue: unsupported CBOR major/minor item header
+
+   *  nonCanonicalNumeric: An integer, floating-point value, or BigNum
+      was encoded in non-canonical form
+
+   *  invalidString: An invalid UTF-8 string was encountered
+
+   *  unusedData: Unused data encountered past the expected end of the
+      input stream
+
+   *  misorderedMapKey: A map has keys not in canonical order
+
+   *  duplicateMapKey: A map has a duplicate key
+
+7.  Reference Implementations
 
    This section is informative.
 
@@ -408,7 +411,7 @@ Table of Contents
 
    *  Rust implementation [RustDCBOR]
 
-7.  Security Considerations
+8.  Security Considerations
 
    This document inherits the security considerations of CBOR [RFC8949].
 
@@ -429,7 +432,7 @@ Table of Contents
    possibilities present an identifiable attack surface is an open
    question that developers should consider.
 
-8.  IANA Considerations
+9.  IANA Considerations
 
    This document makes no requests of IANA.
 
@@ -440,9 +443,9 @@ Table of Contents
    rules are observed.  Protocols that adopt dCBOR will simply have more
    stringent requirments for the CBOR they emit and ingest.
 
-9.  References
+10.  References
 
-9.1.  Normative References
+10.1.  Normative References
 
    [IEEE754]  "IEEE, "IEEE Standard for Floating-Point Arithmetic", IEEE
               Std 754-2019, DOI 10.1109/IEEESTD.2019.8766229", n.d.,
@@ -467,7 +470,7 @@ Table of Contents
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
 
-9.2.  Informative References
+10.2.  Informative References
 
    [NAN]      "NaN", n.d., <https://en.wikipedia.org/wiki/NaN>.
 
