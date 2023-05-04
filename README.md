@@ -7,6 +7,17 @@ This is the working area for the individual Internet-Draft, "draft-mcnally-deter
 * [Individual Draft](https://datatracker.ietf.org/doc/html/draft-mcnally-deterministic-cbor)
 * [Compare Editor's Copy to Individual Draft](https://BlockchainCommons.github.io/WIPs-IETF-draft-dcbor/#go.draft-mcnally-deterministic-cbor.diff)
 
+## Change History
+
+### May 4, 2023 - 01
+
+* Moved API recommendations to their own section.
+* Added requirement that CBOR_NEGATIVE_INT_MAX be disallowed.
+* Removed requirement that map entries be non-null.
+
+### Mar 8, 2023 - 00
+
+* Initial version
 
 ## Contributing
 
