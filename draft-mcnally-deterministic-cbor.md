@@ -115,7 +115,29 @@ dCBOR codecs MUST validate and return errors for any CBOR that is not conformant
 
 ## Reduction of Floating Point Values to Integers
 
-While there is no requirement that dCBOR codecs implement support for floating point numbers, dCBOR codecs that do support them MUST reduce floating point values with no fractional part to the smallest integer value that can accurately represent it. If a numeric value has a fractional part or an exponent that takes it out of the range of representable integers, then it SHALL be encoded as a floating point value.
+While there is no requirement that dCBOR codecs implement support for floating point numbers, dCBOR codecs that do support them MUST reduce floating point values with no fractional part to the integer value that can accurately represent it in the fewest bits. If a numeric value has a fractional part or an exponent that takes it out of the range of representable integers, then it SHALL be encoded as a floating point value. If it cannot be represented as a floating point value, then it SHALL be encoded as a BIGNUM by encoders that support them.
+
+For the unsigned integers, from most to least preferred:
+
+~~~
+UInt8:  [0 ... 2^8 - 1]      [0 ... 255]
+UInt16: [2^8 ... 2^16 - 1]   [256 ... 65535]
+UInt32: [2^16 ... 2^32 - 1]  [65536 ... 4294967295]
+UInt64: [2^32 ... 2^64 - 1]  [4294967296 ... 18446744073709551615]
+Float: [2^64 ...]            [18446744073709551616 ...]
+BIGNUM: [2^64 ...]           [18446744073709551616 ...]
+~~~
+
+For the signed integers, from most to least preferred:
+
+~~~
+Int8:   [-2^7 … 2^7 - 1]        [-128, 127]
+Int16:  [-2^15 … 2^15 - 1]      [-32768, 32767]
+Int32:  [-2^31 … 2^31 - 1]      [-2147483648, 2147483647]
+Int64:  [-2^63 … 2^63 - 1]      [-9223372036854775808, 9223372036854775807]
+Float:  [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775808 …]
+BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775808 …]
+~~~
 
 This practice still produces well-formed CBOR according to the standard, and all existing implementations will be able to read it. It does exclude a map such as the following from being validated as dCBOR, as it would have a duplicate key:
 
@@ -138,15 +160,15 @@ Similarly, encoders that support floating point MUST reduce all `+INF` values to
 
 While there is no requirement that dCBOR codecs implement support for BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use regular integer encodings where integers can represent the value.
 
-## CBOR_NEGATIVE_INT_MAX disallowed
+## 65-bit negative integers disallowed
 
-The largest negative integer that can be represented in 64 bits two's complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
+The largest negative integer that can be represented in 64-bit two's complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
 
-However, the largest negative integer that can be represented in CBOR (CBOR_NEGATIVE_INT_MAX) is -2^64 (0x10000000000000000), which requires 65 bits. The CBOR encoding for CBOR_NEGATIVE_INT_MAX is 0x3BFFFFFFFFFFFFFFFF.
+However, CBOR can encode negative integers as low as CBOR_NEGATIVE_INT_MAX, which is -2^64 (two's complement: 0x10000000000000000, CBOR: 0x3BFFFFFFFFFFFFFFFF). Negative integers in the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1] would require 65 bits, and are thus not representable in machine-sized integers.
 
-Because of this incompatibility between the CBOR and standard representations, dCBOR disallows CBOR_NEGATIVE_INT_MAX: conformant encoders MUST never encode this sequence and conformant decoders MUST reject CBOR_NEGATIVE_INT_MAX as not well-formed.
+Because of this incompatibility between the CBOR and standard representations, dCBOR disallows encoding negative integer values in the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1]: conformant encoders MUST never encode these values and conformant decoders MUST reject these values as invalid.
 
-Implementations that support BIGNUM are able to encode and decode this value as BIGNUM.
+Implementations that support BIGNUM are able to encode and decode these values as BIGNUM.
 
 # Application Level
 
