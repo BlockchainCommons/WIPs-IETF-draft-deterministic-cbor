@@ -5,7 +5,7 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 4 November 2023                                      3 May 2023
+Expires: 18 January 2024                                    17 July 2023
 
 
        Gordian dCBOR: Deterministic CBOR Implementation Practices
@@ -30,7 +30,8 @@ Discussion Venues
    This note is to be removed before publishing as an RFC.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/BlockchainCommons/WIPs-IETF-draft-dcbor.
+   https://github.com/BlockchainCommons/WIPs-IETF-draft-deterministic-
+   cbor.
 
 Status of This Memo
 
@@ -47,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 November 2023.
+   This Internet-Draft will expire on 18 January 2024.
 
 Copyright Notice
 
@@ -70,9 +71,10 @@ Table of Contents
    3.  Serialization Level
      3.1.  Base Requirements
      3.2.  Reduction of Floating Point Values to Integers
-     3.3.  Reduction of NaNs and Infinities.
-     3.4.  Reduction of BigNums to Integers
-     3.5.  CBOR_NEGATIVE_INT_MAX disallowed
+     3.3.  Reduction of Negative Zero.
+     3.4.  Reduction of NaNs and Infinities.
+     3.5.  Reduction of BigNums to Integers
+     3.6.  65-bit negative integers disallowed
    4.  Application Level
      4.1.  Optional/Default Values
      4.2.  Tagging Items
@@ -208,11 +210,31 @@ Table of Contents
 
    While there is no requirement that dCBOR codecs implement support for
    floating point numbers, dCBOR codecs that do support them MUST reduce
-   floating point values with no fractional part to the smallest integer
-   value that can accurately represent it.  If a numeric value has a
-   fractional part or an exponent that takes it out of the range of
-   representable integers, then it SHALL be encoded as a floating point
-   value.
+   floating point values with no fractional part to the integer value
+   that can accurately represent it in the fewest bits.  If a numeric
+   value has a fractional part or an exponent that takes it out of the
+   range of representable integers, then it SHALL be encoded as a
+   floating point value.  If it cannot be represented as a floating
+   point value, then it SHALL be encoded as a BIGNUM by encoders that
+   support them.
+
+   For the unsigned integers, from most to least preferred:
+
+   UInt8:  [0 ... 2^8 - 1]      [0 ... 255]
+   UInt16: [2^8 ... 2^16 - 1]   [256 ... 65535]
+   UInt32: [2^16 ... 2^32 - 1]  [65536 ... 4294967295]
+   UInt64: [2^32 ... 2^64 - 1]  [4294967296 ... 18446744073709551615]
+   Float: [2^64 ...]            [18446744073709551616 ...]
+   BIGNUM: [2^64 ...]           [18446744073709551616 ...]
+
+   For the signed integers, from most to least preferred:
+
+Int8:   [-2^7 … 2^7 - 1]        [-128, 127]
+Int16:  [-2^15 … 2^15 - 1]      [-32768, 32767]
+Int32:  [-2^31 … 2^31 - 1]      [-2147483648, 2147483647]
+Int64:  [-2^63 … 2^63 - 1]      [-9223372036854775808, 9223372036854775807]
+Float:  [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775808 …]
+BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775808 …]
 
    This practice still produces well-formed CBOR according to the
    standard, and all existing implementations will be able to read it.
@@ -224,7 +246,13 @@ Table of Contents
       10.0: "floating ten"
    }
 
-3.3.  Reduction of NaNs and Infinities.
+3.3.  Reduction of Negative Zero.
+
+   [IEEE754] defines a negative zero value -0.0. dCBOR encoders that
+   support floating point MUST reduce all negative zero values to the
+   integer value 0. dCBOR decoders MUST reject any negative zero values.
+
+3.4.  Reduction of NaNs and Infinities.
 
    [IEEE754] defines the NaN (Not a Number) value [NAN].  This is
    usually divided into two types: _quiet NaNs_ and _signalling NaNs_,
@@ -241,29 +269,32 @@ Table of Contents
    values to the half-width +INF having the canonical bit pattern 0x7c00
    and likewise with -INF to 0xfc00.
 
-3.4.  Reduction of BigNums to Integers
+3.5.  Reduction of BigNums to Integers
 
    While there is no requirement that dCBOR codecs implement support for
    BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use
    regular integer encodings where integers can represent the value.
 
-3.5.  CBOR_NEGATIVE_INT_MAX disallowed
+3.6.  65-bit negative integers disallowed
 
-   The largest negative integer that can be represented in 64 bits two's
+   The largest negative integer that can be represented in 64-bit two's
    complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
 
-   However, the largest negative integer that can be represented in CBOR
-   (CBOR_NEGATIVE_INT_MAX) is -2^64 (0x10000000000000000), which
-   requires 65 bits.  The CBOR encoding for CBOR_NEGATIVE_INT_MAX is
-   0x3BFFFFFFFFFFFFFFFF.
+   However, CBOR can encode negative integers as low as
+   CBOR_NEGATIVE_INT_MAX, which is -2^64 (two's complement:
+   0x10000000000000000, CBOR: 0x3BFFFFFFFFFFFFFFFF).  Negative integers
+   in the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX -
+   1] would require 65 bits, and are thus not representable in machine-
+   sized integers.
 
    Because of this incompatibility between the CBOR and standard
-   representations, dCBOR disallows CBOR_NEGATIVE_INT_MAX: conformant
-   encoders MUST never encode this sequence and conformant decoders MUST
-   reject CBOR_NEGATIVE_INT_MAX as not well-formed.
+   representations, dCBOR disallows encoding negative integer values in
+   the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1]:
+   conformant encoders MUST never encode these values and conformant
+   decoders MUST reject these values as invalid.
 
    Implementations that support BIGNUM are able to encode and decode
-   this value as BIGNUM.
+   these values as BIGNUM.
 
 4.  Application Level
 
