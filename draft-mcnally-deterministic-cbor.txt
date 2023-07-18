@@ -5,7 +5,7 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 18 January 2024                                    17 July 2023
+Expires: 19 January 2024                                    18 July 2023
 
 
        Gordian dCBOR: Deterministic CBOR Implementation Practices
@@ -48,7 +48,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 18 January 2024.
+   This Internet-Draft will expire on 19 January 2024.
 
 Copyright Notice
 
@@ -70,11 +70,11 @@ Table of Contents
    2.  Terminology
    3.  Serialization Level
      3.1.  Base Requirements
-     3.2.  Reduction of Floating Point Values to Integers
+     3.2.  Reduction of Floating Point Values
        3.2.1.  Reduction of Negative Zero.
-     3.3.  Reduction of NaNs and Infinities.
-     3.4.  Reduction of BigNums to Integers
-     3.5.  65-bit negative integers disallowed
+       3.2.2.  Reduction of NaNs and Infinities.
+       3.2.3.  Reduction of Floating Point Values to Integers
+     3.3.  65-bit negative integers disallowed
    4.  Application Level
      4.1.  Optional/Default Values
      4.2.  Tagging Items
@@ -195,56 +195,33 @@ Table of Contents
 
    *  Variable-length integers MUST be as short as possible.
 
-   *  Floating-point values MUST use the shortest form that preseves the
-      value.
+   *  Floating-point values MUST use the shortest form that preserves
+      the value.
 
    *  Indefinite-length arrays and maps MUST NOT be used.
 
-   *  Map keys MUST be sorted in bytewise lexicographic order of their
+   *  Map keys MUST be sorted in byte-wise lexicographic order of their
       deterministic encodings.
 
    dCBOR codecs MUST validate and return errors for any CBOR that is not
    conformant.
 
-3.2.  Reduction of Floating Point Values to Integers
+3.2.  Reduction of Floating Point Values
 
    While there is no requirement that dCBOR codecs implement support for
-   floating point numbers, dCBOR codecs that do support them MUST reduce
-   floating point values with no fractional part to the integer value
-   that can accurately represent it in the fewest bits.  If a numeric
-   value has a fractional part or an exponent that takes it out of the
-   range of representable integers, then it SHALL be encoded as a
-   floating point value.  If it cannot be represented as a floating
-   point value, then it SHALL be encoded as a BIGNUM by encoders that
-   support them.
+   floating point numbers (CBOR major type 7), dCBOR codecs that do
+   support them MUST reduce floating point values with a non-zero
+   fractional part, or values that fall outside the range of integer
+   encodings specified below, to the floating point encoding that can
+   accurately represent it in the fewest bits.  For dCBOR codecs that
+   support floating point [IEEE754] binary16 MUST be supported, and is
+   the most-preferred encoding for floating point values.
 
-   For the unsigned integers, from most to least preferred:
+   For floating point values, from most to least preferred:
 
-   UInt8:  [0 ... 2^8 - 1]      [0 ... 255]
-   UInt16: [2^8 ... 2^16 - 1]   [256 ... 65535]
-   UInt32: [2^16 ... 2^32 - 1]  [65536 ... 4294967295]
-   UInt64: [2^32 ... 2^64 - 1]  [4294967296 ... 18446744073709551615]
-   Float: [2^64 ...]            [18446744073709551616 ...]
-   BIGNUM: [2^64 ...]           [18446744073709551616 ...]
-
-   For the signed integers, from most to least preferred:
-
-Int8:   [-2^7 … 2^7 - 1]        [-128, 127]
-Int16:  [-2^15 … 2^15 - 1]      [-32768, 32767]
-Int32:  [-2^31 … 2^31 - 1]      [-2147483648, 2147483647]
-Int64:  [-2^63 … 2^63 - 1]      [-9223372036854775808, 9223372036854775807]
-Float:  [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775808 …]
-BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775808 …]
-
-   This practice still produces well-formed CBOR according to the
-   standard, and all existing implementations will be able to read it.
-   It does exclude a map such as the following from being validated as
-   dCBOR, as it would have a duplicate key:
-
-   {
-      10: "ten",
-      10.0: "floating ten"
-   }
+   binary16 (half-width)
+   binary32 (float)
+   binary64 (double)
 
 3.2.1.  Reduction of Negative Zero.
 
@@ -252,7 +229,7 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
    support floating point MUST reduce all negative zero values to the
    integer value 0. dCBOR decoders MUST reject any negative zero values.
 
-3.3.  Reduction of NaNs and Infinities.
+3.2.2.  Reduction of NaNs and Infinities.
 
    [IEEE754] defines the NaN (Not a Number) value [NAN].  This is
    usually divided into two types: _quiet NaNs_ and _signalling NaNs_,
@@ -269,13 +246,42 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
    values to the half-width +INF having the canonical bit pattern 0x7c00
    and likewise with -INF to 0xfc00.
 
-3.4.  Reduction of BigNums to Integers
+3.2.3.  Reduction of Floating Point Values to Integers
 
-   While there is no requirement that dCBOR codecs implement support for
-   BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use
-   regular integer encodings where integers can represent the value.
+   dCBOR codecs that support floating point values (major type 7) MUST
+   reduce floating point values with no fractional part to the integer
+   value that can accurately represent it in the fewest bits.  If a
+   numeric value has a non-zero fractional part or an exponent that
+   takes it out of the range of representable integers, then it SHALL be
+   encoded as a floating point value as specified above.
 
-3.5.  65-bit negative integers disallowed
+   For the unsigned integers, from most to least preferred:
+
+   UInt8:  [0 ... 2^8 - 1]      [0 ... 255]
+   UInt16: [2^8 ... 2^16 - 1]   [256 ... 65535]
+   UInt32: [2^16 ... 2^32 - 1]  [65536 ... 4294967295]
+   UInt64: [2^32 ... 2^64 - 1]  [4294967296 ... 18446744073709551615]
+   Float: [2^64 ...]            [18446744073709551616 ...]
+
+   For the signed integers, from most to least preferred:
+
+Int8:   [-2^7 … 2^7 - 1]        [-128, 127]
+Int16:  [-2^15 … 2^15 - 1]      [-32768, 32767]
+Int32:  [-2^31 … 2^31 - 1]      [-2147483648, 2147483647]
+Int64:  [-2^63 … 2^63 - 1]      [-9223372036854775808, 9223372036854775807]
+Float:  [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775808 …]
+
+   This practice still produces well-formed CBOR according to the
+   standard, and all existing implementations will be able to read it.
+   It does exclude a map such as the following from being validated as
+   dCBOR, as it would have a duplicate key:
+
+   {
+      10: "ten",
+      10.0: "floating ten"
+   }
+
+3.3.  65-bit negative integers disallowed
 
    The largest negative integer that can be represented in 64-bit two's
    complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
@@ -292,9 +298,6 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
    the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1]:
    conformant encoders MUST never encode these values and conformant
    decoders MUST reject these values as invalid.
-
-   Implementations that support BIGNUM are able to encode and decode
-   these values as BIGNUM.
 
 4.  Application Level
 
@@ -343,9 +346,20 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
 
 5.  Future Work
 
-   The following issues are currently left for future work:
+   The following issues are currently left for future work, which may
+   become part of this draft or left for future specifications.
+   Community input is welcome.
 
-   *  How to deal with subnormal floating point values [SUBNORMAL].
+   *  How to deal with subnormal floating point values [SUBNORMAL],
+      including whether there should be special handling for them, and
+      if so, how.
+
+   *  How to numerically reduce values aside from machine-sized integers
+      and floating point values (major types 0, 1, and 7): For example,
+      big integers, decimal fractions, and rational numbers.
+
+   *  How to canonicalize other tagged CBOR constructs such as dates
+      (tag 1).
 
 6.  API-Level Recommendations
 
@@ -356,7 +370,7 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
    specification for deterministic encoding [RFC8949] §4.2, for example
    by emitting errors or warnings at deserialization time.  Conversely,
    many existing implementations do not carry any burden of ensuring
-   that CBOR is serialized in conformance with the CBOR determinstic
+   that CBOR is serialized in conformance with the CBOR deterministic
    encoding specification, again putting that burden on developers.
 
    The authors of this document believe that for applications where
@@ -387,7 +401,7 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
    *  Supports treating keys as duplicate that have identical dCBOR
       encodings, e.g., 10 and 10.0.
 
-   The dCBOR decoder SHOULD return an error if it encounters misordered
+   The dCBOR decoder SHOULD return an error if it encounters mis-ordered
    or duplicate map keys.
 
 6.3.  API Handling of Numeric Values
@@ -407,8 +421,9 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
          as an integer will fail.
 
       -  Similarly, if the value has a large exponent and therefore can
-         be represented as either a floating point value or a BigNum,
-         then attempting to extract it as a machine integer will fail.
+         be represented as either a floating point value (or possibly
+         another supported type such as BigNum), then attempting to
+         extract it as a machine integer will fail.
 
 6.4.  Validation Errors
 
@@ -419,8 +434,9 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
 
    *  badHeaderValue: unsupported CBOR major/minor item header
 
-   *  nonCanonicalNumeric: An integer, floating-point value, or BigNum
-      was encoded in non-canonical form
+   *  nonCanonicalNumeric: An integer, floating-point value, or other
+      supported numerical type (e.g. bignum) was encoded in non-
+      canonical form
 
    *  invalidString: An invalid UTF-8 string was encountered
 
@@ -472,7 +488,7 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
    dCBOR is well-formed CBOR.  Therefore, existing CBOR codecs can read
    dCBOR, and many existing codecs can also write dCBOR if the encoding
    rules are observed.  Protocols that adopt dCBOR will simply have more
-   stringent requirments for the CBOR they emit and ingest.
+   stringent requirements for the CBOR they emit and ingest.
 
 10.  References
 
@@ -519,7 +535,10 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
 
 Acknowledgments
 
-   TODO acknowledge.
+   The authors are grateful for the contributions of Carsten Bormann and
+   Anders Lundgren in the CBOR working group.
+
+   TODO other acknowledgements forthcoming.
 
 Authors' Addresses
 
