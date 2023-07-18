@@ -148,6 +148,10 @@ This practice still produces well-formed CBOR according to the standard, and all
 }
 ~~~
 
+## Reduction of Negative Zero.
+
+{{IEEE754}} defines a negative zero value `-0.0`. dCBOR encoders that support floating point MUST reduce all negative zero values to the integer value `0`. dCBOR decoders MUST reject any negative zero values.
+
 ## Reduction of NaNs and Infinities.
 
 {{IEEE754}} defines the `NaN` (Not a Number) value {{NAN}}. This is usually divided into two types: *quiet NaNs* and *signalling NaNs*, and the sign bit is used to distinguish between these two types. However, the specification also includes a range of "payload" bits. These bit fields have no definite purpose and could be used to break CBOR determinism.
