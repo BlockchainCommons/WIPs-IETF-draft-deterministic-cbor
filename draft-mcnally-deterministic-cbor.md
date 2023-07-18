@@ -148,7 +148,7 @@ This practice still produces well-formed CBOR according to the standard, and all
 }
 ~~~
 
-## Reduction of Negative Zero.
+### Reduction of Negative Zero.
 
 {{IEEE754}} defines a negative zero value `-0.0`. dCBOR encoders that support floating point MUST reduce all negative zero values to the integer value `0`. dCBOR decoders MUST reject any negative zero values.
 
