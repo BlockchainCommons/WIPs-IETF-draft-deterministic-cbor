@@ -71,10 +71,10 @@ Table of Contents
    3.  Serialization Level
      3.1.  Base Requirements
      3.2.  Reduction of Floating Point Values to Integers
-     3.3.  Reduction of Negative Zero.
-     3.4.  Reduction of NaNs and Infinities.
-     3.5.  Reduction of BigNums to Integers
-     3.6.  65-bit negative integers disallowed
+       3.2.1.  Reduction of Negative Zero.
+     3.3.  Reduction of NaNs and Infinities.
+     3.4.  Reduction of BigNums to Integers
+     3.5.  65-bit negative integers disallowed
    4.  Application Level
      4.1.  Optional/Default Values
      4.2.  Tagging Items
@@ -246,13 +246,13 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
       10.0: "floating ten"
    }
 
-3.3.  Reduction of Negative Zero.
+3.2.1.  Reduction of Negative Zero.
 
    [IEEE754] defines a negative zero value -0.0. dCBOR encoders that
    support floating point MUST reduce all negative zero values to the
    integer value 0. dCBOR decoders MUST reject any negative zero values.
 
-3.4.  Reduction of NaNs and Infinities.
+3.3.  Reduction of NaNs and Infinities.
 
    [IEEE754] defines the NaN (Not a Number) value [NAN].  This is
    usually divided into two types: _quiet NaNs_ and _signalling NaNs_,
@@ -269,13 +269,13 @@ BIGNUM: [… -2^63 - 1 U 2^63 …]  [… -9223372036854775809 U 9223372036854775
    values to the half-width +INF having the canonical bit pattern 0x7c00
    and likewise with -INF to 0xfc00.
 
-3.5.  Reduction of BigNums to Integers
+3.4.  Reduction of BigNums to Integers
 
    While there is no requirement that dCBOR codecs implement support for
    BigNums ≥ 2^64 (tags 2 and 3), codecs that do support them MUST use
    regular integer encodings where integers can represent the value.
 
-3.6.  65-bit negative integers disallowed
+3.5.  65-bit negative integers disallowed
 
    The largest negative integer that can be represented in 64-bit two's
    complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
