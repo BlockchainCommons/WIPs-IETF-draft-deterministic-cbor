@@ -9,6 +9,10 @@ This is the working area for the individual Internet-Draft, "draft-mcnally-deter
 
 ## Change History
 
+### August 4, 2023 - 02
+
+* Updated to reflect feedback up to IETF 117.
+
 ### May 4, 2023 - 01
 
 * Moved API recommendations to their own section.
