@@ -60,9 +60,9 @@ CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2. The
 
 # Introduction
 
-CBOR has many advantages over other data serialization formats. One of its strengths is specifications and guidelines for serializing data deterministically, such that multiple agents serializing the same data automatically achieve consensus on the exact byte-level form of that serialized data. This is particularly useful when data must be compared for semantic equivalence by comparing the hash of its contents.
+CBOR {{-CBOR}} has many advantages over other data serialization formats. One of its strengths is specifications and guidelines for serializing data deterministically, such that multiple agents serializing the same data automatically achieve consensus on the exact byte-level form of that serialized data. This is particularly useful when data must be compared for semantic equivalence by comparing the hash of its contents.
 
-Nonetheless, determinism is an opt-in feature of {{-CBOR}}, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. This document specifies a set of requirements for the application profile "dCBOR" that MUST be implemented at the codec level. These requirements include but go beyond {{-CBOR}} §4.2.
+Nonetheless, determinism is an opt-in feature of CBOR, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. This document specifies a set of requirements for the application profile "dCBOR" that MUST be implemented at the codec level. These requirements include but go beyond {{-CBOR}} §4.2.
 
 ## Conventions and Definitions
 
@@ -80,24 +80,40 @@ This application profile is intended to be used in conjunction with an applicati
 
 ## Base Requirements
 
-dCBOR encoders MUST only emit CBOR conforming to the requirements of {{-CBOR}} §4.2.1. To summarize:
+dCBOR encoders MUST only emit CBOR conforming to the requirements "Core Deterministic Encoding Requirements" of {{-CBOR}} §4.2.1.
 
-* Variable-length integers MUST be as short as possible.
-* Floating-point values MUST use the shortest form that preserves the value.
-* Indefinite-length arrays and maps MUST NOT be used.
-* Map keys MUST be sorted in byte-wise lexicographic order of their deterministic encodings.
+To summarize, dCBOR codecs:
 
-dCBOR codecs MUST validate and return errors for any CBOR that is not conformant.
+1. MUST encode variable-length integers using the shortest form possible.
+2. MUST encode floating-point values using the shortest form that preserves the value.
+3. MUST NOT encode indefinite-length arrays or maps.
+4. MUST sort map keys in bytewise lexicographic order of their deterministic encodings.
+
+In addition, dCBOR decoders:
+
+&nbsp;5\. MUST validate and return errors for any encoded CBOR that is not conformant to any part of this specification.
 
 ## Duplicate Map Keys
 
-Standard CBOR {{-CBOR}} defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6). dCBOR encoders MUST NOT emit CBOR that contains duplicate map keys, and dCBOR decoders MUST reject maps with duplicate keys.
+Standard CBOR {{-CBOR}} defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6).
+
+dCBOR codecs:
+
+1. MUST NOT emit CBOR that contains duplicate map keys.
+2. MUST reject encoded maps with duplicate keys.
 
 ## Numeric Reduction
 
-While there is no requirement that dCBOR codecs implement support for floating point numbers (CBOR major type 7), dCBOR codecs that do support them MUST reduce floating point values with a non-zero fractional part to the floating point encoding that can accurately represent it in the fewest bits. For dCBOR codecs that support floating point {{IEEE754}} binary16 MUST be supported, and is the most-preferred encoding for floating point values, followed by binary32 then binary64.
+dCBOR codecs that support floating point numbers (CBOR major type 7):
 
-This practice still produces well-formed CBOR according to the standard, and all existing generic codecs will be able to read it. It does exclude a map such as the following that would be allowed in standard CBOR from being validated as dCBOR, as `10.0` is an invalid numeric value in dCBOR, and using the unsigned integer value `10` more than once as a map key is not allowed:
+1. MUST reduce floating point values with no fractional part to the shortest integer encoding that can accurately represent it.
+2. MUST reduce floating point values with a non-zero fractional part to the shortest floating point encoding that can accurately represent it.
+3. MUST support floating point {{IEEE754}} binary16 as the most-preferred encoding for floating point values, followed by binary32, then binary64.
+
+This practice still produces well-formed CBOR according to the standard, and all existing generic decoders will be able to read it. It does exclude a map such as the following from being validated as dCBOR, even though it would be allowed in standard CBOR because:
+
+* `10.0` is an invalid numeric value in dCBOR, and
+* using the unsigned integer value `10` more than once as a map key is not allowed.
 
 ~~~
 {
@@ -108,23 +124,36 @@ This practice still produces well-formed CBOR according to the standard, and all
 
 ### Reduction of Negative Zero
 
-{{IEEE754}} defines a negative zero value `-0.0`. dCBOR encoders that support floating point MUST reduce all negative zero values to the integer value `0`. dCBOR decoders MUST reject any negative zero values. Therefore with dCBOR, `0.0`, `-0.0`, and `0` all encode to the same canonical single-byte value `0x00`.
+{{IEEE754}} defines a negative zero value `-0.0`. dCBOR codecs that support floating point:
+
+1. MUST reduce all negative zero values to the integer value `0`.
+2. MUST reject any encoded negative zero values.
+
+Therefore with dCBOR, `0.0`, `-0.0`, and `0` all encode to the same canonical single-byte value `0x00`.
 
 ### Reduction of NaNs and Infinities
 
 {{IEEE754}} defines the `NaN` (Not a Number) value {{NAN}}. This is usually divided into two types: *quiet NaNs* and *signalling NaNs*, and the sign bit is used to distinguish between these two types. The specification also includes a range of "payload" bits. These bit fields have no definite purpose and could be used to break determinism or exfiltrate data.
 
-dCBOR encoders that support floating point MUST reduce all `NaN` values to the binary16 quiet `NaN` value having the canonical bit pattern `0x7e00`.
+dCBOR encoders that support floating point:
 
-Similarly, encoders that support floating point MUST reduce all `+INF` values to the binary16 `+INF` having the canonical bit pattern `0x7c00` and likewise with `-INF` to `0xfc00`.
+1. MUST reduce all `NaN` values to the binary16 quiet `NaN` value having the canonical bit pattern `0x7e00`.
+2. MUST reject any other encoded `NaN` values.
+3. MUST reduce all `+INF` values to the binary16 `+INF` having the canonical bit pattern `0x7c00` and likewise with `-INF` to `0xfc00`.
+4. MUST reject any encoded `INF` or `-INF` values other than these.
 
 ## 65-bit Negative Integers
 
 The largest negative integer that can be represented in 64-bit two's complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
 
-However, standard CBOR major type 1 can encode negative integers as low as CBOR_NEGATIVE_INT_MAX, which is -2^64 (two's complement: 0x10000000000000000, CBOR: 0x3BFFFFFFFFFFFFFFFF). Negative integers in the range \[CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1\] require 65 bits of precision, and are thus not representable in typical machine-sized integers.
+However, standard CBOR major type 1 can encode negative integers as low as CBOR_NEGATIVE_INT_MAX, which is -2^64 (two's complement: 0x10000000000000000, CBOR: 0x3BFFFFFFFFFFFFFFFF).
 
-Because of this incompatibility between standard CBOR and typical machine-size representations, dCBOR disallows encoding negative integer values in the range \[CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1\]: conformant encoders MUST NOT encode these values as CBOR major type 1, and conformant decoders MUST reject these major type 1 CBOR values.
+Negative integers in the range \[CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1\] require 65 bits of precision, and are thus not representable in typical machine-sized integers.
+
+Because of this incompatibility between standard CBOR and typical machine-size representations, dCBOR disallows encoding negative integer values in the range \[CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1\]. dCBOR codecs:
+
+1. MUST NOT encode these values as CBOR major type 1.
+2. MUST reject these encoded major type 1 CBOR values.
 
 # Reference Implementations
 
