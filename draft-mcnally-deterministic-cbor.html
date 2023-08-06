@@ -1050,7 +1050,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">McNally &amp; Allen</td>
-<td class="center">Expires 5 February 2024</td>
+<td class="center">Expires 7 February 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1063,12 +1063,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-mcnally-deterministic-cbor-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-08-04" class="published">4 August 2023</time>
+<time datetime="2023-08-06" class="published">6 August 2023</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Experimental</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-02-05">5 February 2024</time></dd>
+<dd class="expires"><time datetime="2024-02-07">7 February 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1114,7 +1114,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 February 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 February 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1214,8 +1214,8 @@ svg :is([fill="white"], [fill^="#fff"]) {
       <h2 id="name-introduction">
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
-<p id="section-1-1">CBOR has many advantages over other data serialization formats. One of its strengths is specifications and guidelines for serializing data deterministically, such that multiple agents serializing the same data automatically achieve consensus on the exact byte-level form of that serialized data. This is particularly useful when data must be compared for semantic equivalence by comparing the hash of its contents.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Nonetheless, determinism is an opt-in feature of <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span>, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. This document specifies a set of requirements for the application profile "dCBOR" that <span class="bcp14">MUST</span> be implemented at the codec level. These requirements include but go beyond <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> §4.2.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-1">CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> has many advantages over other data serialization formats. One of its strengths is specifications and guidelines for serializing data deterministically, such that multiple agents serializing the same data automatically achieve consensus on the exact byte-level form of that serialized data. This is particularly useful when data must be compared for semantic equivalence by comparing the hash of its contents.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">Nonetheless, determinism is an opt-in feature of CBOR, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. This document specifies a set of requirements for the application profile "dCBOR" that <span class="bcp14">MUST</span> be implemented at the codec level. These requirements include but go beyond <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> §4.2.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <div id="conventions-and-definitions">
 <section id="section-1.1">
         <h3 id="name-conventions-and-definitions">
@@ -1243,18 +1243,24 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         <h3 id="name-base-requirements">
 <a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-base-requirements" class="section-name selfRef">Base Requirements</a>
         </h3>
-<p id="section-2.1-1">dCBOR encoders <span class="bcp14">MUST</span> only emit CBOR conforming to the requirements of <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> §4.2.1. To summarize:<a href="#section-2.1-1" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-2.1-2.1">Variable-length integers <span class="bcp14">MUST</span> be as short as possible.<a href="#section-2.1-2.1" class="pilcrow">¶</a>
+<p id="section-2.1-1">dCBOR encoders <span class="bcp14">MUST</span> only emit CBOR conforming to the requirements "Core Deterministic Encoding Requirements" of <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> §4.2.1.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-2">To summarize, dCBOR codecs:<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.1-3">
+<li id="section-2.1-3.1">
+            <span class="bcp14">MUST</span> encode variable-length integers using the shortest form possible.<a href="#section-2.1-3.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-2.1-2.2">Floating-point values <span class="bcp14">MUST</span> use the shortest form that preserves the value.<a href="#section-2.1-2.2" class="pilcrow">¶</a>
+          <li id="section-2.1-3.2">
+            <span class="bcp14">MUST</span> encode floating-point values using the shortest form that preserves the value.<a href="#section-2.1-3.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-2.1-2.3">Indefinite-length arrays and maps <span class="bcp14">MUST NOT</span> be used.<a href="#section-2.1-2.3" class="pilcrow">¶</a>
+          <li id="section-2.1-3.3">
+            <span class="bcp14">MUST NOT</span> encode indefinite-length arrays or maps.<a href="#section-2.1-3.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-2.1-2.4">Map keys <span class="bcp14">MUST</span> be sorted in byte-wise lexicographic order of their deterministic encodings.<a href="#section-2.1-2.4" class="pilcrow">¶</a>
+          <li id="section-2.1-3.4">
+            <span class="bcp14">MUST</span> sort map keys in bytewise lexicographic order of their deterministic encodings.<a href="#section-2.1-3.4" class="pilcrow">¶</a>
 </li>
-        </ul>
-<p id="section-2.1-3">dCBOR codecs <span class="bcp14">MUST</span> validate and return errors for any CBOR that is not conformant.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
+        </ol>
+<p id="section-2.1-4">In addition, dCBOR decoders:<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+<p id="section-2.1-5"> 5. <span class="bcp14">MUST</span> validate and return errors for any encoded CBOR that is not conformant to any part of this specification.<a href="#section-2.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="duplicate-map-keys">
@@ -1262,7 +1268,16 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         <h3 id="name-duplicate-map-keys">
 <a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-duplicate-map-keys" class="section-name selfRef">Duplicate Map Keys</a>
         </h3>
-<p id="section-2.2-1">Standard CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6). dCBOR encoders <span class="bcp14">MUST NOT</span> emit CBOR that contains duplicate map keys, and dCBOR decoders <span class="bcp14">MUST</span> reject maps with duplicate keys.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-1">Standard CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6).<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-2">dCBOR codecs:<a href="#section-2.2-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.2-3">
+<li id="section-2.2-3.1">
+            <span class="bcp14">MUST NOT</span> emit CBOR that contains duplicate map keys.<a href="#section-2.2-3.1" class="pilcrow">¶</a>
+</li>
+          <li id="section-2.2-3.2">
+            <span class="bcp14">MUST</span> reject encoded maps with duplicate keys.<a href="#section-2.2-3.2" class="pilcrow">¶</a>
+</li>
+        </ol>
 </section>
 </div>
 <div id="numeric-reduction">
@@ -1270,22 +1285,49 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         <h3 id="name-numeric-reduction">
 <a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-numeric-reduction" class="section-name selfRef">Numeric Reduction</a>
         </h3>
-<p id="section-2.3-1">While there is no requirement that dCBOR codecs implement support for floating point numbers (CBOR major type 7), dCBOR codecs that do support them <span class="bcp14">MUST</span> reduce floating point values with a non-zero fractional part to the floating point encoding that can accurately represent it in the fewest bits. For dCBOR codecs that support floating point <span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> binary16 <span class="bcp14">MUST</span> be supported, and is the most-preferred encoding for floating point values, followed by binary32 then binary64.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.3-2">This practice still produces well-formed CBOR according to the standard, and all existing generic codecs will be able to read it. It does exclude a map such as the following that would be allowed in standard CBOR from being validated as dCBOR, as <code>10.0</code> is an invalid numeric value in dCBOR, and using the unsigned integer value <code>10</code> more than once as a map key is not allowed:<a href="#section-2.3-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-2.3-3">
+<p id="section-2.3-1">dCBOR codecs that support floating point numbers (CBOR major type 7):<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.3-2">
+<li id="section-2.3-2.1">
+            <span class="bcp14">MUST</span> reduce floating point values with no fractional part to the shortest integer encoding that can accurately represent it.<a href="#section-2.3-2.1" class="pilcrow">¶</a>
+</li>
+          <li id="section-2.3-2.2">
+            <span class="bcp14">MUST</span> reduce floating point values with a non-zero fractional part to the shortest floating point encoding that can accurately represent it.<a href="#section-2.3-2.2" class="pilcrow">¶</a>
+</li>
+          <li id="section-2.3-2.3">
+            <span class="bcp14">MUST</span> support floating point <span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> binary16 as the most-preferred encoding for floating point values, followed by binary32, then binary64.<a href="#section-2.3-2.3" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-2.3-3">This practice still produces well-formed CBOR according to the standard, and all existing generic decoders will be able to read it. It does exclude a map such as the following from being validated as dCBOR, even though it would be allowed in standard CBOR because:<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-2.3-4.1">
+            <code>10.0</code> is an invalid numeric value in dCBOR, and<a href="#section-2.3-4.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-2.3-4.2">using the unsigned integer value <code>10</code> more than once as a map key is not allowed.<a href="#section-2.3-4.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+<div class="alignLeft art-text artwork" id="section-2.3-5">
 <pre>
 {
    10: "ten",
    10.0: "floating ten"
 }
-</pre><a href="#section-2.3-3" class="pilcrow">¶</a>
+</pre><a href="#section-2.3-5" class="pilcrow">¶</a>
 </div>
 <div id="reduction-of-negative-zero">
 <section id="section-2.3.1">
           <h4 id="name-reduction-of-negative-zero">
 <a href="#section-2.3.1" class="section-number selfRef">2.3.1. </a><a href="#name-reduction-of-negative-zero" class="section-name selfRef">Reduction of Negative Zero</a>
           </h4>
-<p id="section-2.3.1-1"><span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> defines a negative zero value <code>-0.0</code>. dCBOR encoders that support floating point <span class="bcp14">MUST</span> reduce all negative zero values to the integer value <code>0</code>. dCBOR decoders <span class="bcp14">MUST</span> reject any negative zero values. Therefore with dCBOR, <code>0.0</code>, <code>-0.0</code>, and <code>0</code> all encode to the same canonical single-byte value <code>0x00</code>.<a href="#section-2.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.3.1-1"><span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> defines a negative zero value <code>-0.0</code>. dCBOR codecs that support floating point:<a href="#section-2.3.1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.3.1-2">
+<li id="section-2.3.1-2.1">
+              <span class="bcp14">MUST</span> reduce all negative zero values to the integer value <code>0</code>.<a href="#section-2.3.1-2.1" class="pilcrow">¶</a>
+</li>
+            <li id="section-2.3.1-2.2">
+              <span class="bcp14">MUST</span> reject any encoded negative zero values.<a href="#section-2.3.1-2.2" class="pilcrow">¶</a>
+</li>
+          </ol>
+<p id="section-2.3.1-3">Therefore with dCBOR, <code>0.0</code>, <code>-0.0</code>, and <code>0</code> all encode to the same canonical single-byte value <code>0x00</code>.<a href="#section-2.3.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="reduction-of-nans-and-infinities">
@@ -1294,8 +1336,21 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <a href="#section-2.3.2" class="section-number selfRef">2.3.2. </a><a href="#name-reduction-of-nans-and-infin" class="section-name selfRef">Reduction of NaNs and Infinities</a>
           </h4>
 <p id="section-2.3.2-1"><span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> defines the <code>NaN</code> (Not a Number) value <span>[<a href="#NAN" class="cite xref">NAN</a>]</span>. This is usually divided into two types: <em>quiet NaNs</em> and <em>signalling NaNs</em>, and the sign bit is used to distinguish between these two types. The specification also includes a range of "payload" bits. These bit fields have no definite purpose and could be used to break determinism or exfiltrate data.<a href="#section-2.3.2-1" class="pilcrow">¶</a></p>
-<p id="section-2.3.2-2">dCBOR encoders that support floating point <span class="bcp14">MUST</span> reduce all <code>NaN</code> values to the binary16 quiet <code>NaN</code> value having the canonical bit pattern <code>0x7e00</code>.<a href="#section-2.3.2-2" class="pilcrow">¶</a></p>
-<p id="section-2.3.2-3">Similarly, encoders that support floating point <span class="bcp14">MUST</span> reduce all <code>+INF</code> values to the binary16 <code>+INF</code> having the canonical bit pattern <code>0x7c00</code> and likewise with <code>-INF</code> to <code>0xfc00</code>.<a href="#section-2.3.2-3" class="pilcrow">¶</a></p>
+<p id="section-2.3.2-2">dCBOR encoders that support floating point:<a href="#section-2.3.2-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.3.2-3">
+<li id="section-2.3.2-3.1">
+              <span class="bcp14">MUST</span> reduce all <code>NaN</code> values to the binary16 quiet <code>NaN</code> value having the canonical bit pattern <code>0x7e00</code>.<a href="#section-2.3.2-3.1" class="pilcrow">¶</a>
+</li>
+            <li id="section-2.3.2-3.2">
+              <span class="bcp14">MUST</span> reject any other encoded <code>NaN</code> values.<a href="#section-2.3.2-3.2" class="pilcrow">¶</a>
+</li>
+            <li id="section-2.3.2-3.3">
+              <span class="bcp14">MUST</span> reduce all <code>+INF</code> values to the binary16 <code>+INF</code> having the canonical bit pattern <code>0x7c00</code> and likewise with <code>-INF</code> to <code>0xfc00</code>.<a href="#section-2.3.2-3.3" class="pilcrow">¶</a>
+</li>
+            <li id="section-2.3.2-3.4">
+              <span class="bcp14">MUST</span> reject any encoded <code>INF</code> or <code>-INF</code> values other than these.<a href="#section-2.3.2-3.4" class="pilcrow">¶</a>
+</li>
+          </ol>
 </section>
 </div>
 </section>
@@ -1306,8 +1361,17 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-65-bit-negative-integers" class="section-name selfRef">65-bit Negative Integers</a>
         </h3>
 <p id="section-2.4-1">The largest negative integer that can be represented in 64-bit two's complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).<a href="#section-2.4-1" class="pilcrow">¶</a></p>
-<p id="section-2.4-2">However, standard CBOR major type 1 can encode negative integers as low as CBOR_NEGATIVE_INT_MAX, which is -2^64 (two's complement: 0x10000000000000000, CBOR: 0x3BFFFFFFFFFFFFFFFF). Negative integers in the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1] require 65 bits of precision, and are thus not representable in typical machine-sized integers.<a href="#section-2.4-2" class="pilcrow">¶</a></p>
-<p id="section-2.4-3">Because of this incompatibility between standard CBOR and typical machine-size representations, dCBOR disallows encoding negative integer values in the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1]: conformant encoders <span class="bcp14">MUST NOT</span> encode these values as CBOR major type 1, and conformant decoders <span class="bcp14">MUST</span> reject these major type 1 CBOR values.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
+<p id="section-2.4-2">However, standard CBOR major type 1 can encode negative integers as low as CBOR_NEGATIVE_INT_MAX, which is -2^64 (two's complement: 0x10000000000000000, CBOR: 0x3BFFFFFFFFFFFFFFFF).<a href="#section-2.4-2" class="pilcrow">¶</a></p>
+<p id="section-2.4-3">Negative integers in the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1] require 65 bits of precision, and are thus not representable in typical machine-sized integers.<a href="#section-2.4-3" class="pilcrow">¶</a></p>
+<p id="section-2.4-4">Because of this incompatibility between standard CBOR and typical machine-size representations, dCBOR disallows encoding negative integer values in the range [CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1]. dCBOR codecs:<a href="#section-2.4-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.4-5">
+<li id="section-2.4-5.1">
+            <span class="bcp14">MUST NOT</span> encode these values as CBOR major type 1.<a href="#section-2.4-5.1" class="pilcrow">¶</a>
+</li>
+          <li id="section-2.4-5.2">
+            <span class="bcp14">MUST</span> reject these encoded major type 1 CBOR values.<a href="#section-2.4-5.2" class="pilcrow">¶</a>
+</li>
+        </ol>
 </section>
 </div>
 </section>
