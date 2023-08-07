@@ -80,9 +80,9 @@ This application profile is intended to be used in conjunction with an applicati
 
 ## Base Requirements
 
-dCBOR encoders MUST only emit CBOR conforming to the requirements "Core Deterministic Encoding Requirements" of {{-CBOR}} §4.2.1.
+dCBOR encoders MUST only emit CBOR conforming to the requirements "Core Deterministic Encoding Requirements" of {{-CBOR}} §4.2.1. To summarize,
 
-To summarize, dCBOR codecs:
+dCBOR encoders:
 
 1. MUST encode variable-length integers using the shortest form possible.
 2. MUST encode floating-point values using the shortest form that preserves the value.
@@ -91,26 +91,48 @@ To summarize, dCBOR codecs:
 
 In addition, dCBOR decoders:
 
-&nbsp;5\. MUST validate and return errors for any encoded CBOR that is not conformant to any part of this specification.
+5. MUST reject any variable length integers that are not encoded in the shortest form possible.
+{:start="5"}
+6. MUST reject any floating-point values that are not encoded in the shortest form that preserves the value.
+{:start="6"}
+7. MUST reject any indefinite-length arrays or maps.
+{:start="7"}
+8. MUST reject any maps whose keys are not sorted in bytewise lexicographic order of their deterministic encodings.
+{:start="8"}
 
 ## Duplicate Map Keys
 
 Standard CBOR {{-CBOR}} defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6).
 
-dCBOR codecs:
+dCBOR encoders:
 
 1. MUST NOT emit CBOR that contains duplicate map keys.
+
+dCBOR decoders:
+
 2. MUST reject encoded maps with duplicate keys.
+{:start="2"}
 
 ## Numeric Reduction
 
 dCBOR codecs that support floating point numbers (CBOR major type 7):
 
-1. MUST reduce floating point values with no fractional part to the shortest integer encoding that can accurately represent it.
-2. MUST reduce floating point values with a non-zero fractional part to the shortest floating point encoding that can accurately represent it.
-3. MUST support floating point {{IEEE754}} binary16 as the most-preferred encoding for floating point values, followed by binary32, then binary64.
+1. MUST support floating point {{IEEE754}} binary16 as the most-preferred encoding for floating point values, followed by binary32, then binary64.
 
-This practice still produces well-formed CBOR according to the standard, and all existing generic decoders will be able to read it. It does exclude a map such as the following from being validated as dCBOR, even though it would be allowed in standard CBOR because:
+dCBOR encoders that support floating point numbers:
+
+2. MUST reduce floating point values with no fractional part to the shortest integer encoding that can accurately represent them.
+{:start="2"}
+
+3. MUST reduce floating point values with a non-zero fractional part to the shortest floating point encoding that can accurately represent them.
+{:start="3"}
+
+dCBOR decoders that support floating point numbers:
+
+4. MUST reject any encoded floating point values that are not encoded as the shortest encoding that can accurately represent them.
+{:start="4"}
+
+The above rules still produce well-formed CBOR according to the standard, and all existing generic decoders will be able to read it. It does exclude a map such as the following from being validated as dCBOR, even though it would be allowed in standard CBOR because:
 
 * `10.0` is an invalid numeric value in dCBOR, and
 * using the unsigned integer value `10` more than once as a map key is not allowed.
@@ -124,10 +146,16 @@ This practice still produces well-formed CBOR according to the standard, and all
 
 ### Reduction of Negative Zero
 
-{{IEEE754}} defines a negative zero value `-0.0`. dCBOR codecs that support floating point:
+{{IEEE754}} defines a negative zero value `-0.0`.
+
+dCBOR encoders that support floating point:
 
 1. MUST reduce all negative zero values to the integer value `0`.
+
+dCBOR decoders that support floating point:
+
 2. MUST reject any encoded negative zero values.
+{:start="2"}
 
 Therefore with dCBOR, `0.0`, `-0.0`, and `0` all encode to the same canonical single-byte value `0x00`.
 
@@ -138,22 +166,49 @@ Therefore with dCBOR, `0.0`, `-0.0`, and `0` all encode to the same canonical si
 dCBOR encoders that support floating point:
 
 1. MUST reduce all `NaN` values to the binary16 quiet `NaN` value having the canonical bit pattern `0x7e00`.
-2. MUST reject any other encoded `NaN` values.
-3. MUST reduce all `+INF` values to the binary16 `+INF` having the canonical bit pattern `0x7c00` and likewise with `-INF` to `0xfc00`.
-4. MUST reject any encoded `INF` or `-INF` values other than these.
+2. MUST reduce all `+INF` values to the binary16 `+INF` having the canonical bit pattern `0x7c00`.
+3. MUST reduce all `-INF` values to the binary16 `-INF` having the canonical bit pattern `0xfc00`.
+
+dCBOR decoders that support floating point:
+
+4. MUST reject any encoded `NaN` values not having the canonical bit pattern `0x7e00`.
+{:start="4"}
+5. MUST reject any encoded `+INF` values not having the canonical bit pattern `0x7c00`.
+{:start="5"}
+6. MUST reject any encoded `-INF` values not having the canonical bit pattern `0xfc00`.
+{:start="6"}
 
 ## 65-bit Negative Integers
 
-The largest negative integer that can be represented in 64-bit two's complement (STANDARD_NEGATIVE_INT_MAX) is -2^63 (0x8000000000000000).
+The largest negative integer that can be represented in 64-bit two's complement (`STANDARD_NEGATIVE_INT_MAX`) is -2<sup>63</sup> (`0x8000000000000000`).
 
-However, standard CBOR major type 1 can encode negative integers as low as CBOR_NEGATIVE_INT_MAX, which is -2^64 (two's complement: 0x10000000000000000, CBOR: 0x3BFFFFFFFFFFFFFFFF).
+However, standard CBOR major type 1 can encode negative integers as low as `CBOR_NEGATIVE_INT_MAX`, which is -2<sup>64</sup> (two's complement: `0x10000000000000000`, CBOR: `0x3BFFFFFFFFFFFFFFFF`).
 
-Negative integers in the range \[CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1\] require 65 bits of precision, and are thus not representable in typical machine-sized integers.
+Negative integers in the range \[`CBOR_NEGATIVE_INT_MAX` ... `STANDARD_NEGATIVE_INT_MAX` - 1\] require 65 bits of precision, and are thus not representable in typical machine-sized integers.
 
-Because of this incompatibility between standard CBOR and typical machine-size representations, dCBOR disallows encoding negative integer values in the range \[CBOR_NEGATIVE_INT_MAX ... STANDARD_NEGATIVE_INT_MAX - 1\]. dCBOR codecs:
+Because of this incompatibility between standard CBOR and typical machine-size representations, dCBOR disallows encoding negative integer values in the range \[`CBOR_NEGATIVE_INT_MAX` ... `STANDARD_NEGATIVE_INT_MAX` - 1\].
+
+dCBOR encoders:
 
 1. MUST NOT encode these values as CBOR major type 1.
+
+dCBOR decoders:
+
 2. MUST reject these encoded major type 1 CBOR values.
+{:start="2"}
+
+## Simple Values
+
+CBOR Major Type 7 includes the floating point values (`0xf7`, `0xfa`, `0xfb`) and also the "simple values" `false` (`0xf4`), `true` (`0xf5`), and `null` (`0xf6`).
+
+dCBOR encoders:
+
+1. MUST NOT encode major type 7 values other than `false`, `true`, `null`, and the floating point values.
+
+dCBOR decoders:
+
+2. MUST reject any encoded major type 7 values other than `false`, `true`, `null`, and the floating point values.
+{:start="2"}
 
 # Reference Implementations
 
