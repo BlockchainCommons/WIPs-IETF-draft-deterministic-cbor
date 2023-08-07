@@ -239,4 +239,4 @@ As of this writing the specification of deterministic CBOR beyond {{-CBOR}} is a
 # Acknowledgments
 {:numbered="false"}
 
-The authors are grateful for the contributions of Carsten Bormann and Anders Rundgren in the CBOR working group.
+The authors are grateful for the contributions of Carsten Bormann, Joe Hildebrand, and Anders Rundgren in the CBOR working group.
