@@ -210,6 +210,12 @@ dCBOR decoders:
 2. MUST reject any encoded major type 7 values other than `false`, `true`, `null`, and the floating point values.
 {:start="2"}
 
+## All Requirements are Narrowing
+
+Any apparent conflict between the requirements above are resolved by understanding that all of the requirements in this document are *narrowing*, meaning that starting from the CBOR specification {{-CBOR}} each requirement herein narrows the set of valid dCBOR encodings.
+
+For example: due to the requirements in §2.4., there are no valid dCBOR major type 1 values that can encode negative integers requiring more than 64 bits of precision, hence reduction of negative floating point values with no fractional part to negative integers (§2.3.) is narrowed to the range of valid dCBOR major type 1 negative integer encodings. Therefore any negative floating point values with no fractional part that fall outside this range are encoded as floating point values (§2.2.).
+
 # Reference Implementations
 
 This section is informative.
