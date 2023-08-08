@@ -9,6 +9,10 @@ This is the working area for the individual Internet-Draft, "draft-mcnally-deter
 
 ## Change History
 
+### August 8, 2023 - 05
+
+* Added clarification that all requirements are narrowing.
+
 ### August 6, 2023 - 04
 
 * Made rules for encoders and decoders much more explicit.
