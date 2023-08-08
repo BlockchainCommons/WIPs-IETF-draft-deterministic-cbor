@@ -5,7 +5,7 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 7 February 2024                                   6 August 2023
+Expires: 9 February 2024                                   8 August 2023
 
 
         Gordian dCBOR: A Deterministic CBOR Application Profile
@@ -41,7 +41,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 February 2024.
+   This Internet-Draft will expire on 9 February 2024.
 
 Copyright Notice
 
@@ -69,6 +69,7 @@ Table of Contents
        2.3.2.  Reduction of NaNs and Infinities
      2.4.  65-bit Negative Integers
      2.5.  Simple Values
+     2.6.  All Requirements are Narrowing
    3.  Reference Implementations
    4.  Security Considerations
    5.  IANA Considerations
@@ -311,6 +312,23 @@ Table of Contents
 
    2.  MUST reject any encoded major type 7 values other than false,
        true, null, and the floating point values.
+
+2.6.  All Requirements are Narrowing
+
+   Any apparent conflict between the requirements above are resolved by
+   understanding that all of the requirements in this document are
+   _narrowing_, meaning that starting from the CBOR specification
+   [RFC8949] each requirement herein narrows the set of valid dCBOR
+   encodings.
+
+   For example: due to the requirements in §2.4., there are no valid
+   dCBOR major type 1 values that can encode negative integers requiring
+   more than 64 bits of precision, hence reduction of negative floating
+   point values with no fractional part to negative integers (§2.3.) is
+   narrowed to the range of valid dCBOR major type 1 negative integer
+   encodings.  Therefore any negative floating point values with no
+   fractional part that fall outside this range are encoded as floating
+   point values (§2.2.).
 
 3.  Reference Implementations
 
