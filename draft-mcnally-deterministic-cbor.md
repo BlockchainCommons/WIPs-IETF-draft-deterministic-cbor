@@ -1,5 +1,5 @@
 ---
-title: "Gordian dCBOR: A Deterministic CBOR Application Profile"
+title: "dCBOR: A Deterministic CBOR Application Profile"
 abbrev: "dCBOR"
 docname: draft-mcnally-deterministic-cbor-latest
 category: exp
@@ -25,36 +25,49 @@ author:
     name: Christopher Allen
     organization: Blockchain Commons
     email: christophera@lifewithalacrity.com
+ -
+    ins: C. Bormann
+    name: Carsten Bormann
+    organization: Universität Bremen TZI
+    email: cabo@tzi.org
 
 normative:
     RFC8949: CBOR
-    IEEE754:
-        title: "IEEE, \"IEEE Standard for Floating-Point Arithmetic\", IEEE Std 754-2019, DOI 10.1109/IEEESTD.2019.8766229"
-        target: https://ieeexplore.ieee.org/document/8766229
+    RFC8610: CDDL
+    RFC7942: RFC7942
+    CDE:
+        title: "Bormann, C., \"CBOR Common Deterministic Encoding (CDE)\""
+        target: https://datatracker.ietf.org/doc/draft-ietf-cbor-cde/
+    IANACDDL:
+        title: "Concise Data Definition Language (CDDL)"
+        target: https://www.iana.org/assignments/cddl
 
 informative:
-    NAN:
-        title: "NaN"
-        target: https://en.wikipedia.org/wiki/NaN
-    SwiftDCBOR:
-        title: "Deterministic CBOR (\"dCBOR\") for Swift."
+    BCSwiftDCBOR:
+        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Swift.\""
         target: https://github.com/BlockchainCommons/BCSwiftDCBOR
-    RustDCBOR:
-        title: "Deterministic CBOR (\"dCBOR\") for Rust."
+    BCRustDCBOR:
+        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Rust.\""
         target: https://github.com/BlockchainCommons/bc-dcbor-rust
-    TypescriptDCBOR:
-        title: "Deterministic CBOR (\"dCBOR\") for Typescript."
+    BCTypescriptDCBOR:
+        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Typescript.\""
         target: https://github.com/BlockchainCommons/bc-dcbor-ts
-    BormannDCBOR:
-        title: "dCBOR – an Application Profile for Use with CBOR Deterministic Encoding"
-        target: https://www.ietf.org/archive/id/draft-bormann-cbor-dcbor-00.html
-    RundgrenDCBOR:
-        title: "Deterministically Encoded CBOR (D-CBOR)"
-        target: https://www.ietf.org/archive/id/draft-rundgren-deterministc-cbor-02.html
+    GordianEnvelope:
+        title: "McNally, W., \"Gordian Envelope\""
+        target: https://www.ietf.org/archive/id/draft-mcnally-envelope-05.html
+    cbor-deterministic:
+        title: "Bormann, C., \"cbor-deterministic gem\""
+        target: https://github.com/cabo/cbor-deterministic
+    cbor-diag:
+        title: "Bormann, C., \"CBOR diagnostic utilities\""
+        target: https://github.com/cabo/cbor-diag
+    cbor-dcbor:
+        title: "Bormann, C., \"PoC of the McNally/Allen dCBOR application-level CBOR representation rules\""
+        target: https://github.com/cabo/cbor-dcbor
 
 --- abstract
 
-CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2. The present document provides the application profile "dCBOR" that can be used to help achieve interoperable deterministic encoding.
+The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2, but leaves some important choices up to the application developer. The CBOR Common Deterministic Encoding (CDE) Internet Draft builds on this by specifying a baseline for application profiles that wish to implement deterministic encoding with CBOR. The present document provides an application profile "dCBOR" that can be used to help achieve interoperable deterministic encoding based on CDE for a variety of applications wishing an even narrower and clearly defined set of choices.
 
 --- middle
 
@@ -62,7 +75,9 @@ CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2. The
 
 CBOR {{-CBOR}} has many advantages over other data serialization formats. One of its strengths is specifications and guidelines for serializing data deterministically, such that multiple agents serializing the same data automatically achieve consensus on the exact byte-level form of that serialized data. This is particularly useful when data must be compared for semantic equivalence by comparing the hash of its contents.
 
-Nonetheless, determinism is an opt-in feature of CBOR, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. This document specifies a set of requirements for the application profile "dCBOR" that MUST be implemented at the codec level. These requirements include but go beyond {{-CBOR}} §4.2.
+Nonetheless, determinism is an opt-in feature of CBOR, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. Furthermore, the specification leaves a number of important decisions around determinism up to the application developer. The CBOR Common Deterministic Encoding (CDE) Internet Draft {{CDE}} builds on the basic CBOR specification by providing a baseline for application profiles that wish to implement deterministic encoding with CBOR.
+
+This document narrows CDE further into a set of requirements for the application profile "dCBOR". These requirements include but go beyond CDE, including requiring that dCBOR decoders validate that encoded CDE conforms to the requirements of this document.
 
 ## Conventions and Definitions
 
@@ -70,72 +85,66 @@ Nonetheless, determinism is an opt-in feature of CBOR, and most existing CBOR co
 
 # Application Profile
 
-The dCBOR Application Profile specifies the use of Deterministic Encoding as defined in Section 4.2 of {{-CBOR}} together with some application-level rules specified in this section.
+The dCBOR Application Profile specifies the use of Deterministic Encoding as defined in {{CDE}} and adds several exclusions and reductions specified in this section.
 
-The application-level rules specified here do not "fork" CBOR. A dCBOR implementation produces well-formed, deterministically encoded CBOR according to {{-CBOR}}, and existing generic CBOR decoders will therefore be able to decode it, including those that check for deterministic encoding. Similarly, generic CBOR encoders will be able to produce valid dCBOR if handed dCBOR conforming data model level information from an application.
+Just as CDE does not "fork" CBOR, the rules specified here do not "fork" CDE: A dCBOR implementation produces well-formed, deterministically encoded CDE according to {{CDE}}, and existing CBOR or CDE decoders will therefore be able to decode it. Similarly, CBOR or CDE encoders will be able to produce valid dCBOR if handed dCBOR conforming data model level information from an application.
 
-Note that the separation between standard CBOR processing and the processing required by the dCBOR application profile is a conceptual one: Both dCBOR processing and standard CBOR processing may be combined into a unified dCBOR/CBOR codec. The requirements in this document apply to encoding or decoding of dCBOR data, regardless of whether the codec is a unified dCBOR/CBOR codec operating in dCBOR-compliant modes, or a single-purpose dCBOR codec. Both of these are generically referred to as "dCBOR codecs" in this document.
+Note that the separation between standard CBOR or CDE processing and the processing required by the dCBOR application profile is a conceptual one: Both dCBOR processing and standard CDE/CBOR processing may be combined into a unified dCBOR/CDE/CBOR codec. The requirements in this document apply to encoding or decoding of dCBOR data, regardless of whether the codec is a unified dCBOR/CDE/CBOR codec operating in dCBOR-compliant modes, or a single-purpose dCBOR codec. Both of these are generically referred to as "dCBOR codecs" in this document.
 
-This application profile is intended to be used in conjunction with an application, which typically will use a subset of CBOR, which in turn influences which subset of the application profile is used. As a result, this application profile places no direct requirement on what subset of CBOR is implemented. For instance, there is no requirement that dCBOR implementations support floating point numbers (or any other kind of number, such as arbitrary precision integers or 64-bit negative integers) when they are used with applications that do not use them. However, this document does place requirements on dCBOR implementations that support negative 64-bit integers and 64-bit or smaller floating point numbers.
+This application profile is intended to be used in conjunction with an application, which typically will use a subset of CDE/CBOR, which in turn influences which subset of the application profile is used. As a result, this application profile places no direct requirement on what subset of CDE/CBOR is implemented. For instance, there is no requirement that dCBOR implementations support floating point numbers (or any other kind of non-basic integer type, such as arbitrary precision integers or complex numbers) when they are used with applications that do not use them. However, this document does place requirements on dCBOR implementations that support negative 64-bit integers and 64-bit or smaller floating point numbers.
 
-## Base Requirements
-
-dCBOR encoders MUST only emit CBOR conforming to the requirements "Core Deterministic Encoding Requirements" of {{-CBOR}} §4.2.1. To summarize,
+## Common Deterministic Encoding Conformance
 
 dCBOR encoders:
 
-1. MUST encode variable-length integers using the shortest form possible.
-2. MUST encode floating-point values using the shortest form that preserves the value.
-3. MUST NOT encode indefinite-length arrays or maps.
-4. MUST sort map keys in bytewise lexicographic order of their deterministic encodings.
+1. MUST only emit CBOR conforming "CBOR Common Deterministic Encoding (CDE)" {{CDE}}, including mandated preferred encoding of integers and floating point numbers and the lexicographic ordering of map keys.
 
-In addition, dCBOR decoders:
+dCBOR decoders:
 
-5. MUST reject any variable length integers that are not encoded in the shortest form possible.
-{:start="5"}
-6. MUST reject any floating-point values that are not encoded in the shortest form that preserves the value.
-{:start="6"}
-7. MUST reject any indefinite-length arrays or maps.
-{:start="7"}
-8. MUST reject any maps whose keys are not sorted in bytewise lexicographic order of their deterministic encodings.
-{:start="8"}
+2. MUST validate that encoded CBOR conforms to the requirements of {{CDE}}.
+{:start="2"}
 
 ## Duplicate Map Keys
 
-Standard CBOR {{-CBOR}} defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6).
+CBOR {{-CBOR}} defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6). {{CDE}} provides no additional mandates on this issue.
 
 dCBOR encoders:
 
-1. MUST NOT emit CBOR that contains duplicate map keys.
+1. MUST NOT emit CBOR maps that contains duplicate keys.
 
 dCBOR decoders:
 
 2. MUST reject encoded maps with duplicate keys.
 {:start="2"}
 
-## Numeric Reduction
+## 65-bit Negative Integers
 
-dCBOR codecs that support floating point numbers (CBOR major type 7):
+dCBOR limits the valid encodings of integers to those that can be contained in a 64-bit machine register, either as a signed (int64) or unsigned (uint64) integer. This includes values in the range `DCBOR_INT` = \[-2<sup>63</sup>, 2<sup>64</sup>-1\]. As always with CBOR, whether the value is interpreted as non-negative or negative depends on whether it is encoded as a major type 0 or 1 value.
 
-1. MUST support floating point {{IEEE754}} binary16 as the most-preferred encoding for floating point values, followed by binary32, then binary64.
+CBOR integers in the range `NEG_65` = \[-2<sup>64</sup>, -2<sup>63</sup> - 1\] require 65 bits of precision, and are thus not representable in typical machine-sized integers. `NEG_65` major type 1 values are invalid in dCBOR.
 
-dCBOR encoders that support floating point numbers:
+dCBOR encoders:
 
-2. MUST reduce floating point values with no fractional part to the shortest integer encoding that can accurately represent them.
+1. MUST NOT encode major type 1 CBOR values in `NEG_65`.
+
+dCBOR decoders:
+
+2. MUST reject major type 1 CBOR values in `NEG_65`.
 {:start="2"}
 
-3. MUST reduce floating point values with a non-zero fractional part to the shortest floating point encoding that can accurately represent them.
-{:start="3"}
+Specific applications will, of course, further restrict ranges of integers that are considered valid for the application, based on their position and semantics in the CBOR data item.
 
-dCBOR decoders that support floating point numbers:
+## Numeric Reduction
 
-4. MUST reject any encoded floating point values that are not encoded as the shortest encoding that can accurately represent them.
-{:start="4"}
+The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. Numeric reduction ensures that semantically equal numeric values (e.g. `2` and `2.0`) are encoded into identical byte streams (e.g. `0x02`) by encoding "Integral floating point values" (floating point values with a zero fractional part) as integers when possible.
 
-The above rules still produce well-formed CBOR according to the standard, and all existing generic decoders will be able to read it. It does exclude a map such as the following from being validated as dCBOR, even though it would be allowed in standard CBOR because:
+dCBOR implementations that support floating point numbers:
 
-* `10.0` is an invalid numeric value in dCBOR, and
-* using the unsigned integer value `10` more than once as a map key is not allowed.
+1. MUST check whether floating point values to be encoded have the numerically equal value in `DCBOR_INT` as defined above. If that is the case, it MUST be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of `DCBOR_INT`, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)
+
+This also means that the three representations of a zero number in CBOR (`0`, `0.0`, `-0.0` in diagnostic notation) are all reduced to the basic integer `0` (with preferred encoding `0x00`).
+
+Note that this reduction means some valid CDE/CBOR maps are not valid dCBOR maps, as numeric reduction can result in duplicate keys, for example, this is an invalid dCBOR map:
 
 ~~~
 {
@@ -144,62 +153,17 @@ The above rules still produce well-formed CBOR according to the standard, and al
 }
 ~~~
 
-### Reduction of Negative Zero
-
-{{IEEE754}} defines a negative zero value `-0.0`.
-
-dCBOR encoders that support floating point:
-
-1. MUST reduce all negative zero values to the integer value `0`.
-
-dCBOR decoders that support floating point:
-
-2. MUST reject any encoded negative zero values.
+2. MUST reduce all encoded NaN values to the quiet NaN value having the half-width CBOR representation `0xf97e00`.
 {:start="2"}
 
-Therefore with dCBOR, `0.0`, `-0.0`, and `0` all encode to the same canonical single-byte value `0x00`.
+dCBOR decoders that support floating point numbers:
 
-### Reduction of NaNs and Infinities
-
-{{IEEE754}} defines the `NaN` (Not a Number) value {{NAN}}. This is usually divided into two types: *quiet NaNs* and *signalling NaNs*, and the sign bit is used to distinguish between these two types. The specification also includes a range of "payload" bits. These bit fields have no definite purpose and could be used to break determinism or exfiltrate data.
-
-dCBOR encoders that support floating point:
-
-1. MUST reduce all `NaN` values to the binary16 quiet `NaN` value having the canonical bit pattern `0x7e00`.
-2. MUST reduce all `+INF` values to the binary16 `+INF` having the canonical bit pattern `0x7c00`.
-3. MUST reduce all `-INF` values to the binary16 `-INF` having the canonical bit pattern `0xfc00`.
-
-dCBOR decoders that support floating point:
-
-4. MUST reject any encoded `NaN` values not having the canonical bit pattern `0x7e00`.
-{:start="4"}
-5. MUST reject any encoded `+INF` values not having the canonical bit pattern `0x7c00`.
-{:start="5"}
-6. MUST reject any encoded `-INF` values not having the canonical bit pattern `0xfc00`.
-{:start="6"}
-
-## 65-bit Negative Integers
-
-The largest negative integer that can be represented in 64-bit two's complement (`STANDARD_NEGATIVE_INT_MAX`) is -2<sup>63</sup> (`0x8000000000000000`).
-
-However, standard CBOR major type 1 can encode negative integers as low as `CBOR_NEGATIVE_INT_MAX`, which is -2<sup>64</sup> (two's complement: `0x10000000000000000`, CBOR: `0x3BFFFFFFFFFFFFFFFF`).
-
-Negative integers in the range \[`CBOR_NEGATIVE_INT_MAX` ... `STANDARD_NEGATIVE_INT_MAX` - 1\] require 65 bits of precision, and are thus not representable in typical machine-sized integers.
-
-Because of this incompatibility between standard CBOR and typical machine-size representations, dCBOR disallows encoding negative integer values in the range \[`CBOR_NEGATIVE_INT_MAX` ... `STANDARD_NEGATIVE_INT_MAX` - 1\].
-
-dCBOR encoders:
-
-1. MUST NOT encode these values as CBOR major type 1.
-
-dCBOR decoders:
-
-2. MUST reject these encoded major type 1 CBOR values.
-{:start="2"}
+3. MUST reject any encoded floating point values that are not encoded according to the above rules.
+{:start="3"}
 
 ## Simple Values
 
-CBOR Major Type 7 includes the floating point values (`0xf7`, `0xfa`, `0xfb`) and also the "simple values" `false` (`0xf4`), `true` (`0xf5`), and `null` (`0xf6`).
+Only the three "simple" (major type 7) values `false` (0xf4), `true` (0xf5), and `null` (0xf6) and the floating point values are valid in dCBOR.
 
 dCBOR encoders:
 
@@ -210,21 +174,77 @@ dCBOR decoders:
 2. MUST reject any encoded major type 7 values other than `false`, `true`, `null`, and the floating point values.
 {:start="2"}
 
-## All Requirements are Narrowing
+# CDDL support
 
-Any apparent conflict between the requirements above are resolved by understanding that all of the requirements in this document are *narrowing*, meaning that starting from the CBOR specification {{-CBOR}} each requirement herein narrows the set of valid dCBOR encodings.
+Similar to the CDDL {{-CDDL}} support in CDE {{CDE}}, this specification adds two CDDL control operators that can be used to specify that the data items should be encoded in CBOR Common Deterministic Encoding (CDE), with the dCBOR application profile applied as well.
 
-For example: due to the requirements in §2.4., there are no valid dCBOR major type 1 values that can encode negative integers requiring more than 64 bits of precision, hence reduction of negative floating point values with no fractional part to negative integers (§2.3.) is narrowed to the range of valid dCBOR major type 1 negative integer encodings. Therefore any negative floating point values with no fractional part that fall outside this range are encoded as floating point values (§2.2.).
+The control operators `.dcbor` and `.dcborseq` are exactly like `.cde` and `.cdeseq` except that they also require the encoded data item(s) to conform to the dCBOR application profile.
+
+For example, the normative comment in Section 3 of {{GordianEnvelope}}:
+
+~~~
+leaf = #6.24(bytes)  ; MUST be dCBOR
+~~~
+
+...can now be formalized as:
+
+~~~
+leaf = #6.24(bytes .dcbor any)
+~~~
 
 # Reference Implementations
 
-This section is informative.
+This section is to be removed before publishing as an RFC.
 
-These are single-purpose dCBOR codecs that conform to these specifications:
+(Boilerplate as per Section 2.1 of {{RFC7942}}:)
 
-* Swift implementation {{SwiftDCBOR}}
-* Rust implementation {{RustDCBOR}}
-* TypeScript implementation {{TypescriptDCBOR}}
+This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in {{RFC7942}}. The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs. Please note that the listing of any individual implementation here does not imply endorsement by the IETF. Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors. This is not intended as, and must not be construed to be, a catalog of available implementations or their features. Readers are advised to note that other implementations may exist.
+
+According to {{RFC7942}}, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature. It is up to the individual working groups to use this information as they see fit".
+
+## Gordian dCBOR Application Profile
+
+### Swift
+
+- Description: Single-purpose dCBOR reference implementation for Swift.
+- Organization: Blockchain Commons
+- Implementation Location: {{BCSwiftDCBOR}}
+- Primary Maintainer: Wolf McNally
+- Languages: Swift
+- Coverage: Complete
+- Testing: Unit tests
+- Licensing: BSD-2-Clause-Patent
+
+### Rust
+
+- Description: Single-purpose dCBOR reference implementation for Rust.
+- Organization: Blockchain Commons
+- Implementation Location: {{BCRustDCBOR}}
+- Primary Maintainer: Wolf McNally
+- Languages: Rust
+- Coverage: Complete
+- Testing: Unit tests
+- Licensing: BSD-2-Clause-Patent
+
+### TypeScript
+
+- Description: Single-purpose dCBOR reference implementation for TypeScript.
+- Organization: Blockchain Commons
+- Implementation Location: {{BCTypescriptDCBOR}}
+- Primary Maintainer: Wolf McNally
+- Languages: TypeScript (transpiles to JavaScript)
+- Coverage: Complete
+- Testing: Unit tests
+- Licensing: BSD-2-Clause-Patent
+
+### Ruby
+
+- Implementation Location: [cbor-dcbor]
+- Primary Maintainer: Carsten Bormann
+- Languages: Ruby
+- Coverage: Complete specification; complemented by CBOR encoder/decoder and command line interface from [cbor-diag] and deterministic encoding from [cbor-deterministic]. Checking of dCBOR - exclusions not yet implemented.
+- Testing: Also available at https://cbor.me
+- Licensing: Apache-2.0
 
 # Security Considerations
 
@@ -234,15 +254,18 @@ Vulnerabilities regarding dCBOR will revolve around whether an attacker can find
 
 # IANA Considerations
 
-This document makes no requests of IANA.
+RFC Editor: please replace RFCXXXX with the RFC number of this RFC and remove this note.
 
-# Other Approaches
+This document requests IANA to register the contents of Table 1 into the registry "CDDL Control Operators" of {{IANACDDL}}:
 
-As of this writing the specification of deterministic CBOR beyond {{-CBOR}} is an active item before the CBOR working group. {{BormannDCBOR}} and {{RundgrenDCBOR}} are other approaches to deterministic CBOR.
+| Name       | Reference |
+|:-----------|:----------|
+| .dcbor     | \[RFCXXXX\] |
+| .dcborseq  | \[RFCXXXX\] |
 
 --- back
 
 # Acknowledgments
 {:numbered="false"}
 
-The authors are grateful for the contributions of Carsten Bormann, Joe Hildebrand, and Anders Rundgren in the CBOR working group.
+The authors are grateful for the contributions of Joe Hildebrand, Laurence Lundblade, and Anders Rundgren in the CBOR working group.
