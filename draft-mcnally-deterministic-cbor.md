@@ -31,12 +31,8 @@ author:
 normative:
     RFC8949: CBOR
     RFC8610: CDDL
-    CDE:
-        title: "Bormann, C., \"CBOR Common Deterministic Encoding (CDE)\""
-        target: https://datatracker.ietf.org/doc/draft-ietf-cbor-cde/
-    IANACDDL:
-        title: "Concise Data Definition Language (CDDL)"
-        target: https://www.iana.org/assignments/cddl
+    CDE: I-D.draft-ietf-cbor-cde
+    IANACDDL: IANA.cddl
 
 informative:
     BCSwiftDCBOR:
@@ -48,9 +44,7 @@ informative:
     BCTypescriptDCBOR:
         title: "McNally, W., \"Deterministic CBOR (dCBOR) for Typescript.\""
         target: https://github.com/BlockchainCommons/bc-dcbor-ts
-    GordianEnvelope:
-        title: "McNally, W., \"Gordian Envelope\""
-        target: https://www.ietf.org/archive/id/draft-mcnally-envelope-05.html
+    GordianEnvelope: I-D.mcnally-envelope
     cbor-deterministic:
         title: "Bormann, C., \"cbor-deterministic gem\""
         target: https://github.com/cabo/cbor-deterministic
