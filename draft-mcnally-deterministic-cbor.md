@@ -36,23 +36,35 @@ normative:
 
 informative:
     BCSwiftDCBOR:
-        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Swift.\""
+        author:
+            name: Wolf McNally
+        title: "Deterministic CBOR (dCBOR) for Swift."
         target: https://github.com/BlockchainCommons/BCSwiftDCBOR
     BCRustDCBOR:
-        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Rust.\""
+        author:
+            name: Wolf McNally
+        title: "Deterministic CBOR (dCBOR) for Rust."
         target: https://github.com/BlockchainCommons/bc-dcbor-rust
     BCTypescriptDCBOR:
-        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Typescript.\""
+        author:
+            name: Wolf McNally
+        title: "Deterministic CBOR (dCBOR) for Typescript."
         target: https://github.com/BlockchainCommons/bc-dcbor-ts
     GordianEnvelope: I-D.mcnally-envelope
     cbor-deterministic:
-        title: "Bormann, C., \"cbor-deterministic gem\""
+        author:
+            name: Carsten Bormann
+        title: "cbor-deterministic gem"
         target: https://github.com/cabo/cbor-deterministic
     cbor-diag:
-        title: "Bormann, C., \"CBOR diagnostic utilities\""
+        author:
+            name: Carsten Bormann
+        title: "CBOR diagnostic utilities"
         target: https://github.com/cabo/cbor-diag
     cbor-dcbor:
-        title: "Bormann, C., \"PoC of the McNally/Allen dCBOR application-level CBOR representation rules\""
+        author:
+            name: Carsten Bormann
+        title: "PoC of the McNally/Allen dCBOR application-level CBOR representation rules"
         target: https://github.com/cabo/cbor-dcbor
 
 --- abstract
