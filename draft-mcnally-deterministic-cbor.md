@@ -1,4 +1,6 @@
 ---
+v: 3
+
 title: "dCBOR: A Deterministic CBOR Application Profile"
 abbrev: "dCBOR"
 docname: draft-mcnally-deterministic-cbor-latest
@@ -10,23 +12,18 @@ area: Applications and Real-Time
 workgroup: Network Working Group
 keyword: Internet-Draft
 
-stand_alone: yes
-smart_quotes: no
 pi: [toc, sortrefs, symrefs]
 
 author:
  -
-    ins: W. McNally
     name: Wolf McNally
     organization: Blockchain Commons
     email: wolf@wolfmcnally.com
  -
-    ins: C. Allen
     name: Christopher Allen
     organization: Blockchain Commons
     email: christophera@lifewithalacrity.com
  -
-    ins: C. Bormann
     name: Carsten Bormann
     organization: Universität Bremen TZI
     email: cabo@tzi.org
