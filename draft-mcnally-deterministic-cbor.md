@@ -146,7 +146,7 @@ This also means that the three representations of a zero number in CBOR (`0`, `0
 
 Note that this reduction means some valid CDE/CBOR maps are not valid dCBOR maps, as numeric reduction can result in duplicate keys, for example, this is an invalid dCBOR map:
 
-~~~
+~~~ cbor-diag
 {
    10: "ten",
    10.0: "floating ten"
@@ -182,13 +182,13 @@ The control operators `.dcbor` and `.dcborseq` are exactly like `.cde` and `.cde
 
 For example, the normative comment in Section 3 of {{GordianEnvelope}}:
 
-~~~
+~~~ cddl
 leaf = #6.24(bytes)  ; MUST be dCBOR
 ~~~
 
 ...can now be formalized as:
 
-~~~
+~~~ cddl
 leaf = #6.24(bytes .dcbor any)
 ~~~
 
