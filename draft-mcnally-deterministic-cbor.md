@@ -198,9 +198,7 @@ leaf = #6.24(bytes .dcbor any)
 {:removeinrfc}
 {::boilerplate rfc7942info}
 
-## Gordian dCBOR Application Profile
-
-### Swift
+## Swift
 
 - Description: Single-purpose dCBOR reference implementation for Swift.
 - Organization: Blockchain Commons
@@ -211,7 +209,7 @@ leaf = #6.24(bytes .dcbor any)
 - Testing: Unit tests
 - Licensing: BSD-2-Clause-Patent
 
-### Rust
+## Rust
 
 - Description: Single-purpose dCBOR reference implementation for Rust.
 - Organization: Blockchain Commons
@@ -222,7 +220,7 @@ leaf = #6.24(bytes .dcbor any)
 - Testing: Unit tests
 - Licensing: BSD-2-Clause-Patent
 
-### TypeScript
+## TypeScript
 
 - Description: Single-purpose dCBOR reference implementation for TypeScript.
 - Organization: Blockchain Commons
@@ -233,7 +231,7 @@ leaf = #6.24(bytes .dcbor any)
 - Testing: Unit tests
 - Licensing: BSD-2-Clause-Patent
 
-### Ruby
+## Ruby
 
 - Implementation Location: [cbor-dcbor]
 - Primary Maintainer: Carsten Bormann
