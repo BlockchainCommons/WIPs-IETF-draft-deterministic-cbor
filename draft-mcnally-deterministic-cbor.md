@@ -256,6 +256,7 @@ This document requests IANA to register the contents of Table 1 into the registr
 |:-----------|:----------|
 | .dcbor     | \[RFCXXXX\] |
 | .dcborseq  | \[RFCXXXX\] |
+{: title="CDDL Control Operators for dCBOR"}
 
 --- back
 
