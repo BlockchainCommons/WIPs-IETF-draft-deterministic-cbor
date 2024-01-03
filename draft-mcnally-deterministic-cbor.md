@@ -110,7 +110,7 @@ CBOR {{-CBOR}} defines maps with duplicate keys as invalid, but leaves how to ha
 
 dCBOR encoders:
 
-1. MUST NOT emit CBOR maps that contains duplicate keys.
+1. MUST NOT emit CBOR maps that contain duplicate keys.
 
 dCBOR decoders:
 
