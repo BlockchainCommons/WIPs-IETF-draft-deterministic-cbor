@@ -14,6 +14,11 @@ keyword: Internet-Draft
 
 pi: [toc, sortrefs, symrefs]
 
+venue:
+#  group: "CBOR Maintenance and Extensions"
+#  mail: "cbor@ietf.org"
+  github: BlockchainCommons/WIPs-IETF-draft-deterministic-cbor
+
 author:
  -
     name: Wolf McNally
