@@ -194,7 +194,7 @@ leaf = #6.24(bytes)  ; MUST be dCBOR
 leaf = #6.24(bytes .dcbor any)
 ~~~
 
-# Reference Implementations
+# Implementation Status
 {:removeinrfc}
 {::boilerplate rfc7942info}
 
