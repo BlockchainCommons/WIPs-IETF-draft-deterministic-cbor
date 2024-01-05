@@ -9,11 +9,12 @@ This is the working area for the individual Internet-Draft, "draft-mcnally-deter
 
 ## Change History
 
-### December 19, 2023 - 06
+### January 4, 2024 - 06
 
 * Merged in contributions from [Carsten Bormann, "The CDE-based Application Profile dCBOR"](https://www.ietf.org/archive/id/draft-bormann-cbor-dcbor-04.html).
 * Added Carsten Bormann as a co-author.
 * Added Laurence Lundblade to acknowledgements.
+* Merged in PR from Carsten Bormann with housekeeping changes.
 
 ### August 8, 2023 - 05
 
