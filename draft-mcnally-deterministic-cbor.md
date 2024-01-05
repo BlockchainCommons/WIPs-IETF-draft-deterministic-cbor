@@ -1,4 +1,6 @@
 ---
+v: 3
+
 title: "dCBOR: A Deterministic CBOR Application Profile"
 abbrev: "dCBOR"
 docname: draft-mcnally-deterministic-cbor-latest
@@ -10,23 +12,23 @@ area: Applications and Real-Time
 workgroup: Network Working Group
 keyword: Internet-Draft
 
-stand_alone: yes
-smart_quotes: no
 pi: [toc, sortrefs, symrefs]
+
+venue:
+#  group: "CBOR Maintenance and Extensions"
+#  mail: "cbor@ietf.org"
+  github: BlockchainCommons/WIPs-IETF-draft-deterministic-cbor
 
 author:
  -
-    ins: W. McNally
     name: Wolf McNally
     organization: Blockchain Commons
     email: wolf@wolfmcnally.com
  -
-    ins: C. Allen
     name: Christopher Allen
     organization: Blockchain Commons
     email: christophera@lifewithalacrity.com
  -
-    ins: C. Bormann
     name: Carsten Bormann
     organization: Universität Bremen TZI
     email: cabo@tzi.org
@@ -34,35 +36,40 @@ author:
 normative:
     RFC8949: CBOR
     RFC8610: CDDL
-    RFC7942: RFC7942
-    CDE:
-        title: "Bormann, C., \"CBOR Common Deterministic Encoding (CDE)\""
-        target: https://datatracker.ietf.org/doc/draft-ietf-cbor-cde/
-    IANACDDL:
-        title: "Concise Data Definition Language (CDDL)"
-        target: https://www.iana.org/assignments/cddl
+    CDE: I-D.draft-ietf-cbor-cde
+    IANACDDL: IANA.cddl
 
 informative:
     BCSwiftDCBOR:
-        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Swift.\""
+        author:
+            name: Wolf McNally
+        title: "Deterministic CBOR (dCBOR) for Swift."
         target: https://github.com/BlockchainCommons/BCSwiftDCBOR
     BCRustDCBOR:
-        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Rust.\""
+        author:
+            name: Wolf McNally
+        title: "Deterministic CBOR (dCBOR) for Rust."
         target: https://github.com/BlockchainCommons/bc-dcbor-rust
     BCTypescriptDCBOR:
-        title: "McNally, W., \"Deterministic CBOR (dCBOR) for Typescript.\""
+        author:
+            name: Wolf McNally
+        title: "Deterministic CBOR (dCBOR) for Typescript."
         target: https://github.com/BlockchainCommons/bc-dcbor-ts
-    GordianEnvelope:
-        title: "McNally, W., \"Gordian Envelope\""
-        target: https://www.ietf.org/archive/id/draft-mcnally-envelope-05.html
+    GordianEnvelope: I-D.mcnally-envelope
     cbor-deterministic:
-        title: "Bormann, C., \"cbor-deterministic gem\""
+        author:
+            name: Carsten Bormann
+        title: "cbor-deterministic gem"
         target: https://github.com/cabo/cbor-deterministic
     cbor-diag:
-        title: "Bormann, C., \"CBOR diagnostic utilities\""
+        author:
+            name: Carsten Bormann
+        title: "CBOR diagnostic utilities"
         target: https://github.com/cabo/cbor-diag
     cbor-dcbor:
-        title: "Bormann, C., \"PoC of the McNally/Allen dCBOR application-level CBOR representation rules\""
+        author:
+            name: Carsten Bormann
+        title: "PoC of the McNally/Allen dCBOR application-level CBOR representation rules"
         target: https://github.com/cabo/cbor-dcbor
 
 --- abstract
@@ -110,7 +117,7 @@ CBOR {{-CBOR}} defines maps with duplicate keys as invalid, but leaves how to ha
 
 dCBOR encoders:
 
-1. MUST NOT emit CBOR maps that contains duplicate keys.
+1. MUST NOT emit CBOR maps that contain duplicate keys.
 
 dCBOR decoders:
 
@@ -146,7 +153,7 @@ This also means that the three representations of a zero number in CBOR (`0`, `0
 
 Note that this reduction means some valid CDE/CBOR maps are not valid dCBOR maps, as numeric reduction can result in duplicate keys, for example, this is an invalid dCBOR map:
 
-~~~
+~~~ cbor-diag
 {
    10: "ten",
    10.0: "floating ten"
@@ -182,29 +189,21 @@ The control operators `.dcbor` and `.dcborseq` are exactly like `.cde` and `.cde
 
 For example, the normative comment in Section 3 of {{GordianEnvelope}}:
 
-~~~
+~~~ cddl
 leaf = #6.24(bytes)  ; MUST be dCBOR
 ~~~
 
 ...can now be formalized as:
 
-~~~
+~~~ cddl
 leaf = #6.24(bytes .dcbor any)
 ~~~
 
-# Reference Implementations
+# Implementation Status
+{:removeinrfc}
+{::boilerplate rfc7942info}
 
-This section is to be removed before publishing as an RFC.
-
-(Boilerplate as per Section 2.1 of {{RFC7942}}:)
-
-This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in {{RFC7942}}. The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs. Please note that the listing of any individual implementation here does not imply endorsement by the IETF. Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors. This is not intended as, and must not be construed to be, a catalog of available implementations or their features. Readers are advised to note that other implementations may exist.
-
-According to {{RFC7942}}, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature. It is up to the individual working groups to use this information as they see fit".
-
-## Gordian dCBOR Application Profile
-
-### Swift
+## Swift
 
 - Description: Single-purpose dCBOR reference implementation for Swift.
 - Organization: Blockchain Commons
@@ -215,7 +214,7 @@ According to {{RFC7942}}, "this will allow reviewers and working groups to assig
 - Testing: Unit tests
 - Licensing: BSD-2-Clause-Patent
 
-### Rust
+## Rust
 
 - Description: Single-purpose dCBOR reference implementation for Rust.
 - Organization: Blockchain Commons
@@ -226,7 +225,7 @@ According to {{RFC7942}}, "this will allow reviewers and working groups to assig
 - Testing: Unit tests
 - Licensing: BSD-2-Clause-Patent
 
-### TypeScript
+## TypeScript
 
 - Description: Single-purpose dCBOR reference implementation for TypeScript.
 - Organization: Blockchain Commons
@@ -237,7 +236,7 @@ According to {{RFC7942}}, "this will allow reviewers and working groups to assig
 - Testing: Unit tests
 - Licensing: BSD-2-Clause-Patent
 
-### Ruby
+## Ruby
 
 - Implementation Location: [cbor-dcbor]
 - Primary Maintainer: Carsten Bormann
@@ -262,6 +261,7 @@ This document requests IANA to register the contents of Table 1 into the registr
 |:-----------|:----------|
 | .dcbor     | \[RFCXXXX\] |
 | .dcborseq  | \[RFCXXXX\] |
+{: title="CDDL Control Operators for dCBOR"}
 
 --- back
 
