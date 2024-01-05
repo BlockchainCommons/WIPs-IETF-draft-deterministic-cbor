@@ -1047,11 +1047,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">dCBOR</td>
-<td class="right">December 2023</td>
+<td class="right">January 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">McNally, et al.</td>
-<td class="center">Expires 21 June 2024</td>
+<td class="center">Expires 7 July 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1064,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-mcnally-deterministic-cbor-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2023-12-19" class="published">19 December 2023</time>
+<time datetime="2024-01-04" class="published">4 January 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Experimental</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-06-21">21 June 2024</time></dd>
+<dd class="expires"><time datetime="2024-07-07">7 July 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1093,12 +1093,14 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-abstract-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2, but leaves some important choices up to the application developer. The CBOR Common Deterministic Encoding (CDE) Internet Draft builds on this by specifying a baseline for application profiles that wish to implement deterministic encoding with CBOR. The present document provides an application profile "dCBOR" that can be used to help achieve interoperable deterministic encoding based on CDE for a variety of applications wishing an even narrower and clearly defined set of choices.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
-      <h2 id="name-discussion-venues">
-<a href="#name-discussion-venues" class="section-name selfRef">Discussion Venues</a>
+      <h2 id="name-about-this-document">
+<a href="#name-about-this-document" class="section-name selfRef">About This Document</a>
       </h2>
 <p id="section-note.1-1">This note is to be removed before publishing as an RFC.<a href="#section-note.1-1" class="pilcrow">¶</a></p>
-<p id="section-note.1-2">Source for this draft and an issue tracker can be found at
-    <span><a href="https://github.com/BlockchainCommons/WIPs-IETF-draft-deterministic-cbor">https://github.com/BlockchainCommons/WIPs-IETF-draft-deterministic-cbor</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">
+        Status information for this document may be found at <span><a href="https://datatracker.ietf.org/doc/draft-mcnally-deterministic-cbor/">https://datatracker.ietf.org/doc/draft-mcnally-deterministic-cbor/</a></span>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">Source for this draft and an issue tracker can be found at
+        <span><a href="https://github.com/BlockchainCommons/WIPs-IETF-draft-deterministic-cbor">https://github.com/BlockchainCommons/WIPs-IETF-draft-deterministic-cbor</a></span>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
 </section>
 <div id="status-of-memo">
 <section id="section-boilerplate.1">
@@ -1119,7 +1121,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 21 June 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 July 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1128,7 +1130,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2023 IETF Trust and the persons identified as the
+            Copyright (c) 2024 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1180,24 +1182,19 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-cddl-support" class="internal xref">CDDL support</a></p>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
-            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-reference-implementations" class="internal xref">Reference Implementations</a></p>
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-implementation-status" class="internal xref">Implementation Status</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
-                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-gordian-dcbor-application-p" class="internal xref">Gordian dCBOR Application Profile</a></p>
-<ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1.2.1">
-                    <p id="section-toc.1-1.4.2.1.2.1.1"><a href="#section-4.1.1" class="auto internal xref">4.1.1</a>.  <a href="#name-swift" class="internal xref">Swift</a></p>
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-swift" class="internal xref">Swift</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1.2.2">
-                    <p id="section-toc.1-1.4.2.1.2.2.1"><a href="#section-4.1.2" class="auto internal xref">4.1.2</a>.  <a href="#name-rust" class="internal xref">Rust</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-rust" class="internal xref">Rust</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1.2.3">
-                    <p id="section-toc.1-1.4.2.1.2.3.1"><a href="#section-4.1.3" class="auto internal xref">4.1.3</a>.  <a href="#name-typescript" class="internal xref">TypeScript</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.3">
+                <p id="section-toc.1-1.4.2.3.1"><a href="#section-4.3" class="auto internal xref">4.3</a>.  <a href="#name-typescript" class="internal xref">TypeScript</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1.2.4">
-                    <p id="section-toc.1-1.4.2.1.2.4.1"><a href="#section-4.1.4" class="auto internal xref">4.1.4</a>.  <a href="#name-ruby" class="internal xref">Ruby</a></p>
-</li>
-                </ul>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.4">
+                <p id="section-toc.1-1.4.2.4.1"><a href="#section-4.4" class="auto internal xref">4.4</a>.  <a href="#name-ruby" class="internal xref">Ruby</a></p>
 </li>
             </ul>
 </li>
@@ -1286,7 +1283,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <p id="section-2.2-2">dCBOR encoders:<a href="#section-2.2-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-2.2-3">
 <li id="section-2.2-3.1">
-            <span class="bcp14">MUST NOT</span> emit CBOR maps that contains duplicate keys.<a href="#section-2.2-3.1" class="pilcrow">¶</a>
+            <span class="bcp14">MUST NOT</span> emit CBOR maps that contain duplicate keys.<a href="#section-2.2-3.1" class="pilcrow">¶</a>
 </li>
         </ol>
 <p id="section-2.2-4">dCBOR decoders:<a href="#section-2.2-4" class="pilcrow">¶</a></p>
@@ -1333,7 +1330,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         </ol>
 <p id="section-2.4-4">This also means that the three representations of a zero number in CBOR (<code>0</code>, <code>0.0</code>, <code>-0.0</code> in diagnostic notation) are all reduced to the basic integer <code>0</code> (with preferred encoding <code>0x00</code>).<a href="#section-2.4-4" class="pilcrow">¶</a></p>
 <p id="section-2.4-5">Note that this reduction means some valid CDE/CBOR maps are not valid dCBOR maps, as numeric reduction can result in duplicate keys, for example, this is an invalid dCBOR map:<a href="#section-2.4-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-2.4-6">
+<div class="lang-cbor-diag sourcecode" id="section-2.4-6">
 <pre>
 {
    10: "ten",
@@ -1384,129 +1381,120 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <p id="section-3-1">Similar to the CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> support in CDE <span>[<a href="#CDE" class="cite xref">CDE</a>]</span>, this specification adds two CDDL control operators that can be used to specify that the data items should be encoded in CBOR Common Deterministic Encoding (CDE), with the dCBOR application profile applied as well.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">The control operators <code>.dcbor</code> and <code>.dcborseq</code> are exactly like <code>.cde</code> and <code>.cdeseq</code> except that they also require the encoded data item(s) to conform to the dCBOR application profile.<a href="#section-3-2" class="pilcrow">¶</a></p>
 <p id="section-3-3">For example, the normative comment in Section 3 of <span>[<a href="#GordianEnvelope" class="cite xref">GordianEnvelope</a>]</span>:<a href="#section-3-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3-4">
+<div class="lang-cddl sourcecode" id="section-3-4">
 <pre>
 leaf = #6.24(bytes)  ; MUST be dCBOR
 </pre><a href="#section-3-4" class="pilcrow">¶</a>
 </div>
 <p id="section-3-5">...can now be formalized as:<a href="#section-3-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3-6">
+<div class="lang-cddl sourcecode" id="section-3-6">
 <pre>
 leaf = #6.24(bytes .dcbor any)
 </pre><a href="#section-3-6" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
-<div id="reference-implementations">
+<div id="implementation-status">
 <section id="section-4">
-      <h2 id="name-reference-implementations">
-<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-reference-implementations" class="section-name selfRef">Reference Implementations</a>
+      <h2 id="name-implementation-status">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-implementation-status" class="section-name selfRef">Implementation Status</a>
       </h2>
 <p id="section-4-1">This section is to be removed before publishing as an RFC.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">(Boilerplate as per Section 2.1 of <span>[<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>:)<a href="#section-4-2" class="pilcrow">¶</a></p>
-<p id="section-4-3">This section records the status of known implementations of the protocol defined by this specification at the time of posting of this Internet-Draft, and is based on a proposal described in <span>[<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>. The description of implementations in this section is intended to assist the IETF in its decision processes in progressing drafts to RFCs. Please note that the listing of any individual implementation here does not imply endorsement by the IETF. Furthermore, no effort has been spent to verify the information presented here that was supplied by IETF contributors. This is not intended as, and must not be construed to be, a catalog of available implementations or their features. Readers are advised to note that other implementations may exist.<a href="#section-4-3" class="pilcrow">¶</a></p>
-<p id="section-4-4">According to <span>[<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>, "this will allow reviewers and working groups to assign due consideration to documents that have the benefit of running code, which may serve as evidence of valuable experimentation and feedback that have made the implemented protocols more mature. It is up to the individual working groups to use this information as they see fit".<a href="#section-4-4" class="pilcrow">¶</a></p>
-<div id="gordian-dcbor-application-profile">
-<section id="section-4.1">
-        <h3 id="name-gordian-dcbor-application-p">
-<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-gordian-dcbor-application-p" class="section-name selfRef">Gordian dCBOR Application Profile</a>
-        </h3>
+<p id="section-4-2">{::boilerplate rfc7942info}<a href="#section-4-2" class="pilcrow">¶</a></p>
 <div id="swift">
-<section id="section-4.1.1">
-          <h4 id="name-swift">
-<a href="#section-4.1.1" class="section-number selfRef">4.1.1. </a><a href="#name-swift" class="section-name selfRef">Swift</a>
-          </h4>
+<section id="section-4.1">
+        <h3 id="name-swift">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-swift" class="section-name selfRef">Swift</a>
+        </h3>
 <ul class="normal">
-<li class="normal" id="section-4.1.1-1.1">Description: Single-purpose dCBOR reference implementation for Swift.<a href="#section-4.1.1-1.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.1-1.1">Description: Single-purpose dCBOR reference implementation for Swift.<a href="#section-4.1-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.1-1.2">Organization: Blockchain Commons<a href="#section-4.1.1-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.1-1.2">Organization: Blockchain Commons<a href="#section-4.1-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.1-1.3">Implementation Location: <span>[<a href="#BCSwiftDCBOR" class="cite xref">BCSwiftDCBOR</a>]</span><a href="#section-4.1.1-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.1-1.3">Implementation Location: <span>[<a href="#BCSwiftDCBOR" class="cite xref">BCSwiftDCBOR</a>]</span><a href="#section-4.1-1.3" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.1-1.4">Primary Maintainer: Wolf McNally<a href="#section-4.1.1-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.1-1.4">Primary Maintainer: Wolf McNally<a href="#section-4.1-1.4" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.1-1.5">Languages: Swift<a href="#section-4.1.1-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.1-1.5">Languages: Swift<a href="#section-4.1-1.5" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.1-1.6">Coverage: Complete<a href="#section-4.1.1-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.1-1.6">Coverage: Complete<a href="#section-4.1-1.6" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.1-1.7">Testing: Unit tests<a href="#section-4.1.1-1.7" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.1-1.7">Testing: Unit tests<a href="#section-4.1-1.7" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.1-1.8">Licensing: BSD-2-Clause-Patent<a href="#section-4.1.1-1.8" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.1-1.8">Licensing: BSD-2-Clause-Patent<a href="#section-4.1-1.8" class="pilcrow">¶</a>
 </li>
-          </ul>
+        </ul>
 </section>
 </div>
 <div id="rust">
-<section id="section-4.1.2">
-          <h4 id="name-rust">
-<a href="#section-4.1.2" class="section-number selfRef">4.1.2. </a><a href="#name-rust" class="section-name selfRef">Rust</a>
-          </h4>
+<section id="section-4.2">
+        <h3 id="name-rust">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-rust" class="section-name selfRef">Rust</a>
+        </h3>
 <ul class="normal">
-<li class="normal" id="section-4.1.2-1.1">Description: Single-purpose dCBOR reference implementation for Rust.<a href="#section-4.1.2-1.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.2-1.1">Description: Single-purpose dCBOR reference implementation for Rust.<a href="#section-4.2-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.2-1.2">Organization: Blockchain Commons<a href="#section-4.1.2-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-1.2">Organization: Blockchain Commons<a href="#section-4.2-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.2-1.3">Implementation Location: <span>[<a href="#BCRustDCBOR" class="cite xref">BCRustDCBOR</a>]</span><a href="#section-4.1.2-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-1.3">Implementation Location: <span>[<a href="#BCRustDCBOR" class="cite xref">BCRustDCBOR</a>]</span><a href="#section-4.2-1.3" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.2-1.4">Primary Maintainer: Wolf McNally<a href="#section-4.1.2-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-1.4">Primary Maintainer: Wolf McNally<a href="#section-4.2-1.4" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.2-1.5">Languages: Rust<a href="#section-4.1.2-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-1.5">Languages: Rust<a href="#section-4.2-1.5" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.2-1.6">Coverage: Complete<a href="#section-4.1.2-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-1.6">Coverage: Complete<a href="#section-4.2-1.6" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.2-1.7">Testing: Unit tests<a href="#section-4.1.2-1.7" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-1.7">Testing: Unit tests<a href="#section-4.2-1.7" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.2-1.8">Licensing: BSD-2-Clause-Patent<a href="#section-4.1.2-1.8" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.2-1.8">Licensing: BSD-2-Clause-Patent<a href="#section-4.2-1.8" class="pilcrow">¶</a>
 </li>
-          </ul>
+        </ul>
 </section>
 </div>
 <div id="typescript">
-<section id="section-4.1.3">
-          <h4 id="name-typescript">
-<a href="#section-4.1.3" class="section-number selfRef">4.1.3. </a><a href="#name-typescript" class="section-name selfRef">TypeScript</a>
-          </h4>
+<section id="section-4.3">
+        <h3 id="name-typescript">
+<a href="#section-4.3" class="section-number selfRef">4.3. </a><a href="#name-typescript" class="section-name selfRef">TypeScript</a>
+        </h3>
 <ul class="normal">
-<li class="normal" id="section-4.1.3-1.1">Description: Single-purpose dCBOR reference implementation for TypeScript.<a href="#section-4.1.3-1.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.3-1.1">Description: Single-purpose dCBOR reference implementation for TypeScript.<a href="#section-4.3-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.3-1.2">Organization: Blockchain Commons<a href="#section-4.1.3-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-1.2">Organization: Blockchain Commons<a href="#section-4.3-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.3-1.3">Implementation Location: <span>[<a href="#BCTypescriptDCBOR" class="cite xref">BCTypescriptDCBOR</a>]</span><a href="#section-4.1.3-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-1.3">Implementation Location: <span>[<a href="#BCTypescriptDCBOR" class="cite xref">BCTypescriptDCBOR</a>]</span><a href="#section-4.3-1.3" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.3-1.4">Primary Maintainer: Wolf McNally<a href="#section-4.1.3-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-1.4">Primary Maintainer: Wolf McNally<a href="#section-4.3-1.4" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.3-1.5">Languages: TypeScript (transpiles to JavaScript)<a href="#section-4.1.3-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-1.5">Languages: TypeScript (transpiles to JavaScript)<a href="#section-4.3-1.5" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.3-1.6">Coverage: Complete<a href="#section-4.1.3-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-1.6">Coverage: Complete<a href="#section-4.3-1.6" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.3-1.7">Testing: Unit tests<a href="#section-4.1.3-1.7" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-1.7">Testing: Unit tests<a href="#section-4.3-1.7" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.3-1.8">Licensing: BSD-2-Clause-Patent<a href="#section-4.1.3-1.8" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.3-1.8">Licensing: BSD-2-Clause-Patent<a href="#section-4.3-1.8" class="pilcrow">¶</a>
 </li>
-          </ul>
+        </ul>
 </section>
 </div>
 <div id="ruby">
-<section id="section-4.1.4">
-          <h4 id="name-ruby">
-<a href="#section-4.1.4" class="section-number selfRef">4.1.4. </a><a href="#name-ruby" class="section-name selfRef">Ruby</a>
-          </h4>
+<section id="section-4.4">
+        <h3 id="name-ruby">
+<a href="#section-4.4" class="section-number selfRef">4.4. </a><a href="#name-ruby" class="section-name selfRef">Ruby</a>
+        </h3>
 <ul class="normal">
-<li class="normal" id="section-4.1.4-1.1">Implementation Location: <span>[<a href="#cbor-dcbor" class="cite xref">cbor-dcbor</a>]</span><a href="#section-4.1.4-1.1" class="pilcrow">¶</a>
+<li class="normal" id="section-4.4-1.1">Implementation Location: <span>[<a href="#cbor-dcbor" class="cite xref">cbor-dcbor</a>]</span><a href="#section-4.4-1.1" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.4-1.2">Primary Maintainer: Carsten Bormann<a href="#section-4.1.4-1.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.4-1.2">Primary Maintainer: Carsten Bormann<a href="#section-4.4-1.2" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.4-1.3">Languages: Ruby<a href="#section-4.1.4-1.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.4-1.3">Languages: Ruby<a href="#section-4.4-1.3" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.4-1.4">Coverage: Complete specification; complemented by CBOR encoder/decoder and command line interface from <span>[<a href="#cbor-diag" class="cite xref">cbor-diag</a>]</span> and deterministic encoding from <span>[<a href="#cbor-deterministic" class="cite xref">cbor-deterministic</a>]</span>. Checking of dCBOR - exclusions not yet implemented.<a href="#section-4.1.4-1.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.4-1.4">Coverage: Complete specification; complemented by CBOR encoder/decoder and command line interface from <span>[<a href="#cbor-diag" class="cite xref">cbor-diag</a>]</span> and deterministic encoding from <span>[<a href="#cbor-deterministic" class="cite xref">cbor-deterministic</a>]</span>. Checking of dCBOR - exclusions not yet implemented.<a href="#section-4.4-1.4" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.4-1.5">Testing: Also available at https://cbor.me<a href="#section-4.1.4-1.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.4-1.5">Testing: Also available at https://cbor.me<a href="#section-4.4-1.5" class="pilcrow">¶</a>
 </li>
-            <li class="normal" id="section-4.1.4-1.6">Licensing: Apache-2.0<a href="#section-4.1.4-1.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-4.4-1.6">Licensing: Apache-2.0<a href="#section-4.4-1.6" class="pilcrow">¶</a>
 </li>
-          </ul>
-</section>
-</div>
+        </ul>
 </section>
 </div>
 </section>
@@ -1527,8 +1515,11 @@ leaf = #6.24(bytes .dcbor any)
       </h2>
 <p id="section-6-1">RFC Editor: please replace RFCXXXX with the RFC number of this RFC and remove this note.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <p id="section-6-2">This document requests IANA to register the contents of Table 1 into the registry "CDDL Control Operators" of <span>[<a href="#IANACDDL" class="cite xref">IANACDDL</a>]</span>:<a href="#section-6-2" class="pilcrow">¶</a></p>
-<table class="center" id="table-1">
-        <caption><a href="#table-1" class="selfRef">Table 1</a></caption>
+<span id="name-cddl-control-operators-for-"></span><table class="center" id="table-1">
+        <caption>
+<a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-cddl-control-operators-for-" class="selfRef">CDDL Control Operators for dCBOR</a>
+        </caption>
 <thead>
           <tr>
             <th class="text-left" rowspan="1" colspan="1">Name</th>
@@ -1559,19 +1550,15 @@ leaf = #6.24(bytes .dcbor any)
 <dl class="references">
 <dt id="CDE">[CDE]</dt>
         <dd>
-<span class="refTitle">"Bormann, C., "CBOR Common Deterministic Encoding (CDE)""</span>, <span>n.d.</span>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-ietf-cbor-cde/">https://datatracker.ietf.org/doc/draft-ietf-cbor-cde/</a>&gt;</span>. </dd>
+<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"CBOR Common Deterministic Encoding (CDE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cbor-cde-00</span>, <time datetime="2023-11-27" class="refDate">27 November 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-00">https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-00</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="IANACDDL">[IANACDDL]</dt>
         <dd>
-<span class="refTitle">"Concise Data Definition Language (CDDL)"</span>, <span>n.d.</span>, <span>&lt;<a href="https://www.iana.org/assignments/cddl">https://www.iana.org/assignments/cddl</a>&gt;</span>. </dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"Concise Data Definition Language (CDDL)"</span>, <span>&lt;<a href="https://www.iana.org/assignments/cddl">https://www.iana.org/assignments/cddl</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC7942">[RFC7942]</dt>
-        <dd>
-<span class="refAuthor">Sheffer, Y.</span> and <span class="refAuthor">A. Farrel</span>, <span class="refTitle">"Improving Awareness of Running Code: The Implementation Status Section"</span>, <span class="seriesInfo">BCP 205</span>, <span class="seriesInfo">RFC 7942</span>, <span class="seriesInfo">DOI 10.17487/RFC7942</span>, <time datetime="2016-07" class="refDate">July 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7942">https://www.rfc-editor.org/rfc/rfc7942</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
         <dd>
@@ -1594,31 +1581,31 @@ leaf = #6.24(bytes .dcbor any)
 <dl class="references">
 <dt id="BCRustDCBOR">[BCRustDCBOR]</dt>
         <dd>
-<span class="refTitle">"McNally, W., "Deterministic CBOR (dCBOR) for Rust.""</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/BlockchainCommons/bc-dcbor-rust">https://github.com/BlockchainCommons/bc-dcbor-rust</a>&gt;</span>. </dd>
+<span class="refAuthor">McNally, W.</span>, <span class="refTitle">"Deterministic CBOR (dCBOR) for Rust."</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/BlockchainCommons/bc-dcbor-rust">https://github.com/BlockchainCommons/bc-dcbor-rust</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="BCSwiftDCBOR">[BCSwiftDCBOR]</dt>
         <dd>
-<span class="refTitle">"McNally, W., "Deterministic CBOR (dCBOR) for Swift.""</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/BlockchainCommons/BCSwiftDCBOR">https://github.com/BlockchainCommons/BCSwiftDCBOR</a>&gt;</span>. </dd>
+<span class="refAuthor">McNally, W.</span>, <span class="refTitle">"Deterministic CBOR (dCBOR) for Swift."</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/BlockchainCommons/BCSwiftDCBOR">https://github.com/BlockchainCommons/BCSwiftDCBOR</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="BCTypescriptDCBOR">[BCTypescriptDCBOR]</dt>
         <dd>
-<span class="refTitle">"McNally, W., "Deterministic CBOR (dCBOR) for Typescript.""</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/BlockchainCommons/bc-dcbor-ts">https://github.com/BlockchainCommons/bc-dcbor-ts</a>&gt;</span>. </dd>
+<span class="refAuthor">McNally, W.</span>, <span class="refTitle">"Deterministic CBOR (dCBOR) for Typescript."</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/BlockchainCommons/bc-dcbor-ts">https://github.com/BlockchainCommons/bc-dcbor-ts</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="cbor-dcbor">[cbor-dcbor]</dt>
         <dd>
-<span class="refTitle">"Bormann, C., "PoC of the McNally/Allen dCBOR application-level CBOR representation rules""</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/cabo/cbor-dcbor">https://github.com/cabo/cbor-dcbor</a>&gt;</span>. </dd>
+<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"PoC of the McNally/Allen dCBOR application-level CBOR representation rules"</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/cabo/cbor-dcbor">https://github.com/cabo/cbor-dcbor</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="cbor-deterministic">[cbor-deterministic]</dt>
         <dd>
-<span class="refTitle">"Bormann, C., "cbor-deterministic gem""</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/cabo/cbor-deterministic">https://github.com/cabo/cbor-deterministic</a>&gt;</span>. </dd>
+<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"cbor-deterministic gem"</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/cabo/cbor-deterministic">https://github.com/cabo/cbor-deterministic</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="cbor-diag">[cbor-diag]</dt>
         <dd>
-<span class="refTitle">"Bormann, C., "CBOR diagnostic utilities""</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/cabo/cbor-diag">https://github.com/cabo/cbor-diag</a>&gt;</span>. </dd>
+<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"CBOR diagnostic utilities"</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/cabo/cbor-diag">https://github.com/cabo/cbor-diag</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="GordianEnvelope">[GordianEnvelope]</dt>
       <dd>
-<span class="refTitle">"McNally, W., "Gordian Envelope""</span>, <span>n.d.</span>, <span>&lt;<a href="https://www.ietf.org/archive/id/draft-mcnally-envelope-05.html">https://www.ietf.org/archive/id/draft-mcnally-envelope-05.html</a>&gt;</span>. </dd>
+<span class="refAuthor">McNally, W.</span> and <span class="refAuthor">C. Allen</span>, <span class="refTitle">"The Gordian Envelope Structured Data Format"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mcnally-envelope-05</span>, <time datetime="2023-08-20" class="refDate">20 August 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-05">https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-05</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
