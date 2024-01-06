@@ -151,7 +151,7 @@ dCBOR implementations that support floating point numbers:
 
 This also means that the three representations of a zero number in CBOR (`0`, `0.0`, `-0.0` in diagnostic notation) are all reduced to the basic integer `0` (with preferred encoding `0x00`).
 
-Note that this reduction means some valid CDE/CBOR maps are not valid dCBOR maps, as numeric reduction can result in duplicate keys, for example, this is an invalid dCBOR map:
+Note that numeric reduction means that some valid CDE/CBOR maps are not valid dCBOR maps, as numeric reduction can result in duplicate keys. For example, the following is a valid CBOR/CDE map, but would be rejected as invalid by a dCBOR decoder because the value `10.0` is not a valid dCBOR encoding:
 
 ~~~ cbor-diag
 {
