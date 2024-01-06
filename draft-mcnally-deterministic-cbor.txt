@@ -5,9 +5,9 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 7 July 2024                                          C. Bormann
+Expires: 8 July 2024                                          C. Bormann
                                                   Universität Bremen TZI
-                                                          4 January 2024
+                                                          5 January 2024
 
 
             dCBOR: A Deterministic CBOR Application Profile
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 7 July 2024.
+   This Internet-Draft will expire on 8 July 2024.
 
 Copyright Notice
 
@@ -239,9 +239,11 @@ Table of Contents
    CBOR (0, 0.0, -0.0 in diagnostic notation) are all reduced to the
    basic integer 0 (with preferred encoding 0x00).
 
-   Note that this reduction means some valid CDE/CBOR maps are not valid
-   dCBOR maps, as numeric reduction can result in duplicate keys, for
-   example, this is an invalid dCBOR map:
+   Note that numeric reduction means that some valid CDE/CBOR maps are
+   not valid dCBOR maps, as numeric reduction can result in duplicate
+   keys.  For example, the following is a valid CBOR/CDE map, but would
+   be rejected as invalid by a dCBOR decoder because the value 10.0 is
+   not a valid dCBOR encoding:
 
    {
       10: "ten",
