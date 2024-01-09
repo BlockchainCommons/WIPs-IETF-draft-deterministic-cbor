@@ -5,9 +5,9 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 8 July 2024                                          C. Bormann
+Expires: 12 July 2024                                         C. Bormann
                                                   Universität Bremen TZI
-                                                          5 January 2024
+                                                          9 January 2024
 
 
             dCBOR: A Deterministic CBOR Application Profile
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 July 2024.
+   This Internet-Draft will expire on 12 July 2024.
 
 Copyright Notice
 
@@ -76,7 +76,7 @@ Table of Contents
    2.  Application Profile
      2.1.  Common Deterministic Encoding Conformance
      2.2.  Duplicate Map Keys
-     2.3.  65-bit Negative Integers
+     2.3.  "65-bit" Negative Integers
      2.4.  Numeric Reduction
      2.5.  Simple Values
    3.  CDDL support
@@ -189,26 +189,39 @@ Table of Contents
 
    2.  MUST reject encoded maps with duplicate keys.
 
-2.3.  65-bit Negative Integers
+2.3.  "65-bit" Negative Integers
 
-   dCBOR limits the valid encodings of integers to those that can be
-   contained in a 64-bit machine register, either as a signed (int64) or
-   unsigned (uint64) integer.  This includes values in the range
-   DCBOR_INT = [-2^63, 2^64-1].  As always with CBOR, whether the value
-   is interpreted as non-negative or negative depends on whether it is
+   dCBOR limits the range of integers to those that can be contained in
+   common 64-bit programming language integer types, either as a signed
+   (int64 or i64) or unsigned (uint64 or u64) integer.  In other words,
+   integer values in the range DCBOR_INT = [-2^63, 2^64-1] are valid.
+
+   CBOR integers in the basic generic data model have an argument of up
+   to 64 bits; whether the value is interpreted as non-negative or
+   negative then depends on the additional bit provided by whether it is
    encoded as a major type 0 or 1 value.
 
-   CBOR integers in the range NEG_65 = [-2^64, -2^63 - 1] require 65
-   bits of precision, and are thus not representable in typical machine-
-   sized integers.  NEG_65 major type 1 values are invalid in dCBOR.
+   Many programming languages offer a separate type that covers the
+   entire range of major type 0 (such as uint64 or u64), but do not
+   offer a type that provides the full range of negative integers that
+   can be encoded in CBOR major type 1.  (If a two's-complement signed
+   type were to be used to cover both ranges in full, it would need to
+   have at least 65 bits.)  We therefore use the name NEG_65 for the
+   range of negative numbers that can be encoded in major type 1, but do
+   not fit into int64, i.e., [-2^64, -2^63 - 1].  Integer values in this
+   range are invalid in dCBOR.
 
    dCBOR encoders:
 
-   1.  MUST NOT encode major type 1 CBOR values in NEG_65.
+   1.  MUST NOT encode CBOR integer values in the range NEG_65.
 
    dCBOR decoders:
 
-   2.  MUST reject major type 1 CBOR values in NEG_65.
+   2.  MUST reject CBOR integer values in the range NEG_65.
+
+   (As always with CBOR, whether the value is interpreted as non-
+   negative or negative depends on whether it is encoded as a major type
+   0 or 1 value.)
 
    Specific applications will, of course, further restrict ranges of
    integers that are considered valid for the application, based on
@@ -235,20 +248,37 @@ Table of Contents
        used for encoding.  (Specifically, conversion to a CBOR bignum is
        never considered.)
 
-   This also means that the three representations of a zero number in
-   CBOR (0, 0.0, -0.0 in diagnostic notation) are all reduced to the
-   basic integer 0 (with preferred encoding 0x00).
+       This also means that the three representations of a zero number
+       in CBOR (0, 0.0, -0.0 in diagnostic notation) are all reduced to
+       the basic integer 0 (with preferred encoding 0x00).
 
-   Note that numeric reduction means that some valid CDE/CBOR maps are
-   not valid dCBOR maps, as numeric reduction can result in duplicate
-   keys.  For example, the following is a valid CBOR/CDE map, but would
-   be rejected as invalid by a dCBOR decoder because the value 10.0 is
-   not a valid dCBOR encoding:
-
-   {
-      10: "ten",
-      10.0: "floating ten"
-   }
+      |  Note that numeric reduction means that some maps that are valid
+      |  CDE/CBOR cannot be reduced to valid dCBOR maps, as numeric
+      |  reduction can result in multiple entries with the same keys
+      |  ("duplicate keys").  For example, the following is a valid
+      |  CBOR/CDE map:
+      |  
+      |     {
+      |        10: "ten",
+      |        10.0: "floating ten"
+      |     }
+      |  
+      |         Figure 1: Valid CBOR data item with numeric map keys
+      |                           (also valid CDE)
+      |  
+      |  Applying numeric reduction to this map would yield the invalid
+      |  map:
+      |  
+      |     {  / invalid: multiple entries with the same key /
+      |        10: "ten",
+      |        10: "floating ten"
+      |     }
+      |  
+      |         Figure 2: Numeric reduction turns valid CBOR invalid
+      |  
+      |  In general, dCBOR applications need to avoid maps that have
+      |  entries with keys that are semantically equivalent in dCBOR's
+      |  numeric model.
 
    2.  MUST reduce all encoded NaN values to the quiet NaN value having
        the half-width CBOR representation 0xf97e00.
@@ -413,9 +443,9 @@ Table of Contents
 7.1.  Normative References
 
    [CDE]      Bormann, C., "CBOR Common Deterministic Encoding (CDE)",
-              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-00,
-              27 November 2023, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-cbor-cde-00>.
+              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-01,
+              8 January 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-cbor-cde-01>.
 
    [IANACDDL] IANA, "Concise Data Definition Language (CDDL)",
               <https://www.iana.org/assignments/cddl>.

@@ -1051,7 +1051,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">McNally, et al.</td>
-<td class="center">Expires 8 July 2024</td>
+<td class="center">Expires 12 July 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1064,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-mcnally-deterministic-cbor-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-01-05" class="published">5 January 2024</time>
+<time datetime="2024-01-09" class="published">9 January 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Experimental</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-07-08">8 July 2024</time></dd>
+<dd class="expires"><time datetime="2024-07-12">12 July 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1121,7 +1121,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 July 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 July 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1168,7 +1168,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-duplicate-map-keys" class="internal xref">Duplicate Map Keys</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3">
-                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-65-bit-negative-integers" class="internal xref">65-bit Negative Integers</a></p>
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-65-bit-negative-integers" class="internal xref">"65-bit" Negative Integers</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4">
                 <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-numeric-reduction" class="internal xref">Numeric Reduction</a></p>
@@ -1297,23 +1297,29 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <div id="bit-negative-integers">
 <section id="section-2.3">
         <h3 id="name-65-bit-negative-integers">
-<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-65-bit-negative-integers" class="section-name selfRef">65-bit Negative Integers</a>
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-65-bit-negative-integers" class="section-name selfRef">"65-bit" Negative Integers</a>
         </h3>
-<p id="section-2.3-1">dCBOR limits the valid encodings of integers to those that can be contained in a 64-bit machine register, either as a signed (int64) or unsigned (uint64) integer. This includes values in the range <code>DCBOR_INT</code> = [-2<sup>63</sup>, 2<sup>64</sup>-1]. As always with CBOR, whether the value is interpreted as non-negative or negative depends on whether it is encoded as a major type 0 or 1 value.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.3-2">CBOR integers in the range <code>NEG_65</code> = [-2<sup>64</sup>, -2<sup>63</sup> - 1] require 65 bits of precision, and are thus not representable in typical machine-sized integers. <code>NEG_65</code> major type 1 values are invalid in dCBOR.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
-<p id="section-2.3-3">dCBOR encoders:<a href="#section-2.3-3" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.3-4">
-<li id="section-2.3-4.1">
-            <span class="bcp14">MUST NOT</span> encode major type 1 CBOR values in <code>NEG_65</code>.<a href="#section-2.3-4.1" class="pilcrow">¶</a>
+<p id="section-2.3-1">dCBOR limits the range of integers to those that can be contained in common 64-bit programming language integer types, either as a signed (<code>int64</code> or <code>i64</code>) or unsigned (<code>uint64</code> or <code>u64</code>) integer.
+In other words, integer values in the range <code>DCBOR_INT</code> = [-2<sup>63</sup>, 2<sup>64</sup>-1] are valid.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-2">CBOR integers in the basic generic data model have an argument of up to 64 bits; whether the value is interpreted as non-negative or negative then depends on the additional bit provided by whether it is encoded as a major type 0 or 1 value.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
+<p id="section-2.3-3">Many programming languages offer a separate type that covers the entire range of major type 0 (such as <code>uint64</code> or <code>u64</code>), but do not offer a type that provides the full range of negative integers that can be encoded in CBOR major type 1.
+(If a two's-complement signed type were to be used to cover both ranges in full, it would need to have at least 65 bits.)
+We therefore use the name <code>NEG_65</code> for the range of negative numbers that can be encoded in major type 1, but do not fit into <code>int64</code>, i.e., [-2<sup>64</sup>, -2<sup>63</sup> - 1].
+Integer values in this range are invalid in dCBOR.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
+<p id="section-2.3-4">dCBOR encoders:<a href="#section-2.3-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.3-5">
+<li id="section-2.3-5.1">
+            <span class="bcp14">MUST NOT</span> encode CBOR integer values in the range <code>NEG_65</code>.<a href="#section-2.3-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.3-5">dCBOR decoders:<a href="#section-2.3-5" class="pilcrow">¶</a></p>
-<ol start="2" type="1" class="normal type-1" id="section-2.3-6">
-<li id="section-2.3-6.1">
-            <span class="bcp14">MUST</span> reject major type 1 CBOR values in <code>NEG_65</code>.<a href="#section-2.3-6.1" class="pilcrow">¶</a>
+<p id="section-2.3-6">dCBOR decoders:<a href="#section-2.3-6" class="pilcrow">¶</a></p>
+<ol start="2" type="1" class="normal type-1" id="section-2.3-7">
+<li id="section-2.3-7.1">
+            <span class="bcp14">MUST</span> reject CBOR integer values in the range <code>NEG_65</code>.<a href="#section-2.3-7.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.3-7">Specific applications will, of course, further restrict ranges of integers that are considered valid for the application, based on their position and semantics in the CBOR data item.<a href="#section-2.3-7" class="pilcrow">¶</a></p>
+<p id="section-2.3-8">(As always with CBOR, whether the value is interpreted as non-negative or negative depends on whether it is encoded as a major type 0 or 1 value.)<a href="#section-2.3-8" class="pilcrow">¶</a></p>
+<p id="section-2.3-9">Specific applications will, of course, further restrict ranges of integers that are considered valid for the application, based on their position and semantics in the CBOR data item.<a href="#section-2.3-9" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="numeric-reduction">
@@ -1325,28 +1331,49 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 <p id="section-2.4-2">dCBOR implementations that support floating point numbers:<a href="#section-2.4-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-2.4-3">
 <li id="section-2.4-3.1">
-            <span class="bcp14">MUST</span> check whether floating point values to be encoded have the numerically equal value in <code>DCBOR_INT</code> as defined above. If that is the case, it <span class="bcp14">MUST</span> be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of <code>DCBOR_INT</code>, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)<a href="#section-2.4-3.1" class="pilcrow">¶</a>
+            <p id="section-2.4-3.1.1"><span class="bcp14">MUST</span> check whether floating point values to be encoded have the numerically equal value in <code>DCBOR_INT</code> as defined above. If that is the case, it <span class="bcp14">MUST</span> be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of <code>DCBOR_INT</code>, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)<a href="#section-2.4-3.1.1" class="pilcrow">¶</a></p>
+<p id="section-2.4-3.1.2">
+This also means that the three representations of a zero number in CBOR (<code>0</code>, <code>0.0</code>, <code>-0.0</code> in diagnostic notation) are all reduced to the basic integer <code>0</code> (with preferred encoding <code>0x00</code>).<a href="#section-2.4-3.1.2" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<p id="section-2.4-4">This also means that the three representations of a zero number in CBOR (<code>0</code>, <code>0.0</code>, <code>-0.0</code> in diagnostic notation) are all reduced to the basic integer <code>0</code> (with preferred encoding <code>0x00</code>).<a href="#section-2.4-4" class="pilcrow">¶</a></p>
-<p id="section-2.4-5">Note that numeric reduction means that some valid CDE/CBOR maps are not valid dCBOR maps, as numeric reduction can result in duplicate keys. For example, the following is a valid CBOR/CDE map, but would be rejected as invalid by a dCBOR decoder because the value <code>10.0</code> is not a valid dCBOR encoding:<a href="#section-2.4-5" class="pilcrow">¶</a></p>
-<div class="lang-cbor-diag sourcecode" id="section-2.4-6">
+<aside id="section-2.4-4">
+          <p id="section-2.4-4.1">Note that numeric reduction means that some maps that are valid CDE/CBOR cannot be reduced to valid dCBOR maps, as numeric reduction can result in multiple entries with the same keys ("duplicate keys"). For example, the following is a valid CBOR/CDE map:<a href="#section-2.4-4.1" class="pilcrow">¶</a></p>
+<span id="name-valid-cbor-data-item-with-n"></span><figure id="figure-1">
+            <div class="lang-cbor-diag sourcecode" id="section-2.4-4.2.1">
 <pre>
 {
    10: "ten",
    10.0: "floating ten"
 }
-</pre><a href="#section-2.4-6" class="pilcrow">¶</a>
+</pre>
 </div>
-<ol start="2" type="1" class="normal type-1" id="section-2.4-7">
-<li id="section-2.4-7.1">
-            <span class="bcp14">MUST</span> reduce all encoded NaN values to the quiet NaN value having the half-width CBOR representation <code>0xf97e00</code>.<a href="#section-2.4-7.1" class="pilcrow">¶</a>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-valid-cbor-data-item-with-n" class="selfRef">Valid CBOR data item with numeric map keys (also valid CDE)</a>
+            </figcaption></figure>
+<p id="section-2.4-4.3">Applying numeric reduction to this map would yield the invalid map:<a href="#section-2.4-4.3" class="pilcrow">¶</a></p>
+<span id="name-numeric-reduction-turns-val"></span><figure id="figure-2">
+            <div class="lang-cbor-diag sourcecode" id="section-2.4-4.4.1">
+<pre>
+{  / invalid: multiple entries with the same key /
+   10: "ten",
+   10: "floating ten"
+}
+</pre>
+</div>
+<figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
+<a href="#name-numeric-reduction-turns-val" class="selfRef">Numeric reduction turns valid CBOR invalid</a>
+            </figcaption></figure>
+<p id="section-2.4-4.5">In general, dCBOR applications need to avoid maps that have entries with keys that are semantically equivalent in dCBOR's numeric model.<a href="#section-2.4-4.5" class="pilcrow">¶</a></p>
+</aside>
+<ol start="2" type="1" class="normal type-1" id="section-2.4-5">
+<li id="section-2.4-5.1">
+            <span class="bcp14">MUST</span> reduce all encoded NaN values to the quiet NaN value having the half-width CBOR representation <code>0xf97e00</code>.<a href="#section-2.4-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.4-8">dCBOR decoders that support floating point numbers:<a href="#section-2.4-8" class="pilcrow">¶</a></p>
-<ol start="3" type="1" class="normal type-1" id="section-2.4-9">
-<li id="section-2.4-9.1">
-            <span class="bcp14">MUST</span> reject any encoded floating point values that are not encoded according to the above rules.<a href="#section-2.4-9.1" class="pilcrow">¶</a>
+<p id="section-2.4-6">dCBOR decoders that support floating point numbers:<a href="#section-2.4-6" class="pilcrow">¶</a></p>
+<ol start="3" type="1" class="normal type-1" id="section-2.4-7">
+<li id="section-2.4-7.1">
+            <span class="bcp14">MUST</span> reject any encoded floating point values that are not encoded according to the above rules.<a href="#section-2.4-7.1" class="pilcrow">¶</a>
 </li>
         </ol>
 </section>
@@ -1550,7 +1577,7 @@ leaf = #6.24(bytes .dcbor any)
 <dl class="references">
 <dt id="CDE">[CDE]</dt>
         <dd>
-<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"CBOR Common Deterministic Encoding (CDE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cbor-cde-00</span>, <time datetime="2023-11-27" class="refDate">27 November 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-00">https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-00</a>&gt;</span>. </dd>
+<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"CBOR Common Deterministic Encoding (CDE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cbor-cde-01</span>, <time datetime="2024-01-08" class="refDate">8 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-01">https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-01</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="IANACDDL">[IANACDDL]</dt>
         <dd>
