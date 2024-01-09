@@ -149,16 +149,31 @@ dCBOR implementations that support floating point numbers:
 
 1. MUST check whether floating point values to be encoded have the numerically equal value in `DCBOR_INT` as defined above. If that is the case, it MUST be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of `DCBOR_INT`, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)
 
-This also means that the three representations of a zero number in CBOR (`0`, `0.0`, `-0.0` in diagnostic notation) are all reduced to the basic integer `0` (with preferred encoding `0x00`).
+   This also means that the three representations of a zero number in CBOR (`0`, `0.0`, `-0.0` in diagnostic notation) are all reduced to the basic integer `0` (with preferred encoding `0x00`).
 
-Note that numeric reduction means that some valid CDE/CBOR maps are not valid dCBOR maps, as numeric reduction can result in duplicate keys. For example, the following is a valid CBOR/CDE map, but would be rejected as invalid by a dCBOR decoder because the value `10.0` is not a valid dCBOR encoding:
+{:aside}
+> Note that numeric reduction means that some maps that are valid CDE/CBOR cannot be reduced to valid dCBOR maps, as numeric reduction can result in multiple entries with the same keys ("duplicate keys"). For example, the following is a valid CBOR/CDE map:
+>
+> ~~~ cbor-diag
+> {
+>    10: "ten",
+>    10.0: "floating ten"
+> }
+> ~~~
+> {: title="Valid CBOR data item with numeric map keys (also valid CDE)"}
+>
+> Applying numeric reduction to this map would yield the invalid map:
+>
+> ~~~ cbor-diag
+> {  / invalid: multiple entries with the same key /
+>    10: "ten",
+>    10: "floating ten"
+> }
+> ~~~
+> {: title="Numeric reduction turns valid CBOR invalid"}
+>
+> In general, dCBOR applications need to avoid maps that have entries with keys that are semantically equivalent in dCBOR's numeric model.
 
-~~~ cbor-diag
-{
-   10: "ten",
-   10.0: "floating ten"
-}
-~~~
 
 2. MUST reduce all encoded NaN values to the quiet NaN value having the half-width CBOR representation `0xf97e00`.
 {:start="2"}
