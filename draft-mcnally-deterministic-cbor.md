@@ -124,20 +124,28 @@ dCBOR decoders:
 2. MUST reject encoded maps with duplicate keys.
 {:start="2"}
 
-## 65-bit Negative Integers
+## "65-bit" Negative Integers
 
-dCBOR limits the valid encodings of integers to those that can be contained in a 64-bit machine register, either as a signed (int64) or unsigned (uint64) integer. This includes values in the range `DCBOR_INT` = \[-2<sup>63</sup>, 2<sup>64</sup>-1\]. As always with CBOR, whether the value is interpreted as non-negative or negative depends on whether it is encoded as a major type 0 or 1 value.
+dCBOR limits the range of integers to those that can be contained in common 64-bit programming language integer types, either as a signed (`int64` or `i64`) or unsigned (`uint64` or `u64`) integer.
+In other words, integer values in the range `DCBOR_INT` = \[-2<sup>63</sup>, 2<sup>64</sup>-1\] are valid.
 
-CBOR integers in the range `NEG_65` = \[-2<sup>64</sup>, -2<sup>63</sup> - 1\] require 65 bits of precision, and are thus not representable in typical machine-sized integers. `NEG_65` major type 1 values are invalid in dCBOR.
+CBOR integers in the basic generic data model have an argument of up to 64 bits; whether the value is interpreted as non-negative or negative then depends on the additional bit provided by whether it is encoded as a major type 0 or 1 value.
+
+Many programming languages offer a separate type that covers the entire range of major type 0 (such as `uint64` or `u64`), but do not offer a type that provides the full range of negative integers that can be encoded in CBOR major type 1.
+(If a two's-complement signed type were to be used to cover both ranges in full, it would need to have at least 65 bits.)
+We therefore use the name `NEG_65` for the range of negative numbers that can be encoded in major type 1, but do not fit into `int64`, i.e., \[-2<sup>64</sup>, -2<sup>63</sup> - 1\].
+Integer values in this range are invalid in dCBOR.
 
 dCBOR encoders:
 
-1. MUST NOT encode major type 1 CBOR values in `NEG_65`.
+1. MUST NOT encode CBOR integer values in the range `NEG_65`.
 
 dCBOR decoders:
 
-2. MUST reject major type 1 CBOR values in `NEG_65`.
+2. MUST reject CBOR integer values in the range `NEG_65`.
 {:start="2"}
+
+(As always with CBOR, whether the value is interpreted as non-negative or negative depends on whether it is encoded as a major type 0 or 1 value.)
 
 Specific applications will, of course, further restrict ranges of integers that are considered valid for the application, based on their position and semantics in the CBOR data item.
 
