@@ -8,6 +8,9 @@
 
 drafts=("$@")
 candidates=$((${#drafts[@]} * 5))
+versioned="${VERSIONED:-versioned}"
+txt_html_warning="$(mktemp)"
+trap 'rm -f "$txt_html_warning"' EXIT
 
 next() {
     printf "${1%-*}-%2.2d" $((1${1##*-} - 99))
@@ -34,6 +37,11 @@ build_target() {
     source_file=
     subst=()
     for file in $(git ls-tree --name-only "$tag" | grep '^draft-'); do
+        if [ "${file##*.}" = "txt" -o "${file##*.}" = "html" ]; then
+            echo "warning: $file is checked in at revision $tag" 1>&2
+            rm -f "$txt_html_warning"
+            continue
+        fi
         if [ "${file%.*}" = "${target_name%-*}" ]; then
             source_file="$file"
             file_tag="$target_name"
@@ -61,36 +69,57 @@ build_target() {
     fi
 
     target="${target_name}.${source_file##*.}"
-    if [ "$tag" == HEAD ]; then
-        printf "${target}: ${source_file}\n"
+    if [ "${source_file##*.}" != "xml" ] || [ "$tag" = HEAD ]; then
+        # Don't keep the temporary file (unless it is XML from a tag).
+        printf ".INTERMEDIATE: ${versioned}/${target}\n"
+    fi
+    if [ "$tag" = HEAD ]; then
+        printf "${versioned}/${target}: ${source_file} | ${versioned}\n"
         printf "\t"
         print_sed cat sed "${subst[@]}"
         printf " \$< >\$@\n"
     else
-        printf ".INTERMEDIATE: ${target}\n"
-        printf "${target}:\n"
+        # Keep the XML around for tagged builds (not HEAD).
+        printf ".SECONDARY: ${versioned}/${target%.*}.xml\n"
+        printf "${versioned}/${target}: | ${versioned}\n"
         printf "\tgit show \"$tag:$source_file\""
-	print_sed '' ' | sed' "${subst[@]}"
+        print_sed '' ' | sed' "${subst[@]}"
         printf " >\$@\n"
     fi
 }
 
+printf "${versioned}:\n"
+printf "\t@mkdir -p \$@\n"
+
 for draft in "${drafts[@]%.*}"; do
-    tags=($(git tag --list "${draft}-[0-9][0-9]"))
+    if [ "${draft#draft-}" != "$draft" ]; then
+        tags=($(git tag --list "${draft}-[0-9][0-9]"))
+    else
+        tags=($(git tag --list "$draft"))
+    fi
     for i in "${tags[@]}"; do
         build_target "$i" "$i"
     done
 
     if [ "${#tags[@]}" -gt 0 ]; then
         next_draft=$(next "${tags[$((${#tags[@]}-1))]}")
-    else
+    elif [ "${draft#draft-}" != "$draft" ]; then
         next_draft="${draft}-00"
+    else
+        next_draft=""
     fi
-    build_target HEAD "$next_draft"
+    if [ -n "$next_draft" ]; then
+        build_target HEAD "$next_draft"
 
-    if [ "${#tags[@]}" -gt 0 ]; then
-        # Write out a diff target
-        printf "diff-${draft}.html: ${tags[$((${#tags[@]}-1))]}.txt ${next_draft}.txt\n"
-        printf "\t-\$(rfcdiff) --html --stdout \$^ > \$@\n"
+        if [ "${#tags[@]}" -gt 0 ]; then
+            # Write out a diff target
+            printf "diff-${draft}.html: ${versioned}/${tags[$((${#tags[@]}-1))]}.txt ${versioned}/${next_draft}.txt\n"
+            printf "\t-\$(iddiff) \$^ > \$@\n"
+        fi
     fi
 done
+
+if [ ! -e "$txt_html_warning" ]; then
+    echo "warning: checked in txt or html files can cause issues" 1>&2
+    echo "warning: remove these files with \`git rm\`" 1>&2
+fi

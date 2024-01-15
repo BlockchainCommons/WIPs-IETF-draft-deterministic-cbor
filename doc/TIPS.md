@@ -54,10 +54,16 @@ $ git config --global pull.ff only
 Now when you pull, your local changes will be rebased onto remote changes.
 
 
-## When Using kramdown-rfc2629
+## When Using kramdown-rfc
 
 Set `KRAMDOWN_REFCACHEDIR` in your environment to `~/.cache/xml2rfc`.  If you
 have multiple repositories, this means that you only have a single global
 cache.  You will download the references for RFC 2119 far less often.  Also,
 this is where `xml2rfc` caches references, so both tools will prime the cache
 for the other.
+
+Always include the following in the YAML header of the markdown file:
+
+```yaml
+v: 3
+```

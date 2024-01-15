@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 exec 1>&2
 
@@ -9,25 +9,31 @@ fi
 
 hash gmake 2> /dev/null && MAKE=gmake || MAKE=make
 
+srcfiles=()
+xmlfiles=()
+htmlfiles=()
+function cleanup() {
+    rm -f "${srcfiles[@]}" "${xmlfiles[@]}" "${htmlfiles[@]}"
+}
 function abort() {
-    echo "Commit refused: documents don't build successfully."
+    echo "Commit refused: document build error."
     echo "To commit anyway, run \"git commit --no-verify\""
+    cleanup
     exit 1
 }
 trap abort ERR
+trap cleanup EXIT
 
-files=($(git status --porcelain draft-* | sed '/^[MARCU]/{s/.*draft-/draft-/;p;};d' | sort))
-txtfiles=()
-tmpfiles=()
-trap 'rm -f "${tmpfiles[@]}" "${txtfiles[@]}"' EXIT
+files=($(git status --porcelain draft-* rfc* | sed '/^[MAU]/{s/^.. //;p;};/^[RC]/{s/.* -> //;p;};d' | sort))
 for f in "${files[@]}"; do
     tmp="${f%.*}"-tmp$$."${f##*.}"
-    tmpfiles+=("$tmp")
-    txtfiles+=("${tmp%.*}.txt")
+    srcfiles+=("$tmp")
+    xmlfiles+=("${tmp%.*}.xml")
+    htmlfiles+=("${tmp%.*}.html")
     # This makes a copy of the staged file.
     (git show :"$f" 2>/dev/null || cat "$f") \
          | sed -e "s/${f%.*}-latest/${tmp%.*}-latest/g" > "$tmp"
 done
 [ "${#files[@]}" -eq 0 ] && exit 0
 
-"$MAKE" txt lint "drafts=${tmpfiles[*]%.*}" DISABLE_TARGETS_UPDATE=true
+"$MAKE" "${htmlfiles[@]}" lint "drafts=${xmlfiles[*]%.*}" EXTRA_TARGETS=false

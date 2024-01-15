@@ -28,3 +28,7 @@ draft-*
 issues.json
 pulls.json
 *.DS_Store
+*.DS_Store
+Gemfile.lock
+.gems
+.venv

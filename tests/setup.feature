@@ -13,10 +13,12 @@ Feature: Initial setup
      and a file is created called ".github/workflows/ghpages.yml"
      and a file is created called ".github/workflows/publish.yml"
      and a file is created called ".github/workflows/archive.yml"
-     and a file is created called ".note.xml"
+     and a file is created called ".github/CODEOWNERS"
+     and a file is created called ".editorconfig"
      and a branch is created called "gh-pages" containing "index.html"
      and a branch is created called "gh-pages" containing "archive.json"
      and gitignore lists xml files
+     and gitignore negation rules come last
      and a precommit hook is installed
 
   Scenario:  Run setup script with XSLT on correctly-set-up directory
@@ -32,11 +34,41 @@ Feature: Initial setup
      and a file is created called ".github/workflows/ghpages.yml"
      and a file is created called ".github/workflows/publish.yml"
      and a file is created called ".github/workflows/archive.yml"
-     and a file is created called ".note.xml"
+     and a file is created called ".github/CODEOWNERS"
+     and a file is created called ".editorconfig"
      and a branch is created called "gh-pages" containing "index.html"
      and a branch is created called "gh-pages" containing "archive.json"
      and gitignore lists xml files
+     and gitignore negation rules come last
      and a precommit hook is installed
+
+  Scenario:  Run setup script with INDEX_FORMAT set
+    Given a git repo with a single Kramdown draft
+     when the setup script is run with "INDEX_FORMAT=md"
+     then it succeeds
+     and a file is created called "Makefile" which contains "INDEX_FORMAT := md"
+     and a file is created called "README.md"
+     and a file is created called "CONTRIBUTING.md"
+     and a file is created called "LICENSE.md"
+     and a file is created called ".gitignore"
+     and a file is created called ".circleci/config.yml"
+     and a file is created called ".github/workflows/ghpages.yml"
+     and a file is created called ".github/workflows/publish.yml"
+     and a file is created called ".github/workflows/archive.yml"
+     and a file is created called ".github/CODEOWNERS"
+     and a file is created called ".editorconfig"
+     and a branch is created called "gh-pages" containing "index.md"
+     and a branch is created called "gh-pages" containing "archive.json"
+     and gitignore lists xml files
+     and gitignore negation rules come last
+     and a precommit hook is installed
+
+  Scenario:  Run setup script when the file contains the wrong name
+    Given a git repo with a single Kramdown draft
+     and drafts are modified with sed -e "s/-latest/-01/g"
+     when the setup script is run
+     then it fails
+     and generates a message "Check names"
 
   Scenario:  Run setup script on directory with no draft
     Given an empty git repo
@@ -75,3 +107,4 @@ Feature: Initial setup
      then it succeeds
      and gitignore lists "IGNORE-ME"
      and gitignore lists xml files
+     and gitignore negation rules come last

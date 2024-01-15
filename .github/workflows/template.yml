@@ -1,0 +1,54 @@
+name: "Validate Workflows in Template"
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+    - ".github/workflows/template.yml"
+    - "template/.github/workflows/**"
+    - "v3.css"
+    - "Gemfile"
+    - "action/docker/Gemfile"
+    - "requirements.txt"
+    - "action/docker/requirements.txt"
+
+
+jobs:
+  build:
+    name: "Validate Workflows"
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: "Checkout"
+      uses: actions/checkout@v3
+
+    - name: "Verify Gemfile and requirements.txt consistency"
+      run: |
+        e=''
+        for src in Gemfile requirements.txt; do
+          dst="docker/action/$src"
+          [ -f "$src" ] || e="$e\n$src is missing"
+          [ -f "$dst" ] || e="$e\n$dst is missing"
+          diff -u "$dst" "$src" || e="$e\n$src and $dst differ"
+        done
+        if [ -n "$e" ]; then
+          ! printf "$e"
+        fi
+
+    - name: "Compare workflow files in internet-draft-template"
+      run: |
+        git clone --depth 1 https://github.com/martinthomson/internet-draft-template idt
+        e=''
+        for src in template/.github/workflows/*.yml; do
+          dst="idt/${src#*/}"
+          [ -f "$dst" ] || e="$e\nworkflow ${src##*/} is missing from internet-draft-template"
+          diff -u "$dst" "$src" || e="$e\nworkflow ${src##*/} differs"
+        done
+        if [ -n "$e" ]; then
+          ! printf "$e"
+        fi
+
+    - name: "Compare CSS in rfc-css"
+      run: |
+        git clone --depth 1 https://github.com/martinthomson/rfc-css rfc-css
+        diff -u <(./rfc-css/combine.sh) v3.css || ! echo "v3.css differs from rfc-css"

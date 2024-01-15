@@ -6,7 +6,7 @@ $ make
 
 Turn internet-draft source into text and HTML.  This supports XML files using
 [xml2rfc](https://xml2rfc.tools.ietf.org/), markdown files using either
-[kramdown-rfc2629](https://github.com/cabo/kramdown-rfc2629) or
+[kramdown-rfc](https://github.com/cabo/kramdown-rfc) or
 [mmark](https://github.com/miekg/mmark)
 
 ```sh
@@ -14,7 +14,7 @@ $ make diff
 ```
 
 Show changes since your last draft submission using
-[rfcdiff](https://tools.ietf.org/tools/rfcdiff/).
+[rfcdiff](https://www.ietf.org/rfcdiff).
 
 ```sh
 $ make gh-pages
@@ -34,7 +34,8 @@ $ make upload
 ```
 
 Upload tagged changes to the IETF datatracker using the
-[API](https://datatracker.ietf.org/api/submit).
+[API](https://datatracker.ietf.org/api/submit).  This will also manage draft
+renames by setting the "replaces" field.
 
 ```sh
 $ make lint
@@ -51,7 +52,7 @@ hook so that it runs before each commit.
 $ make idnits
 ```
 
-Check for nits using the [idnits](https://tools.ietf.org/tools/idnits/) tool.
+Check for nits using the [idnits](https://www.ietf.org/tools/idnits) tool.
 
 ```sh
 $ make issues
@@ -63,12 +64,12 @@ Download a copy of GitHub issues and pull requests.
 ## Setup a Repository
 
 When you [setup a repository](REPO.md), this tool installs a stub `Makefile`.
-It also creates the following files from a template: `.gitignore`,
-`CONTRIBUTING.md`, `LICENSE.md`, `.travis.yml`, and GitHub Action configuration
+It also creates the following files from a template: `README.md`, `.gitignore`,
+`CONTRIBUTING.md`, `LICENSE.md`, files for GitHub pages, and GitHub Action configuration
 under `.github/workflows/` (see below).
 
 
-## With Continuous Integration Services
+## Automation Features
 
 Using [GitHub Actions](https://github.com/features/actions) you get automated
 continuous integration that can:
@@ -77,7 +78,7 @@ continuous integration that can:
 * Automatically maintain a readable copy for display on GitHub Pages.
 * Automatically save a copy of GitHub issues and pull requests to the repository
   for offline access.  This includes a simple HTML viewer.
-* Automatically submit tagged versions of drafts to the IETF datatracker.
+* Automatically [submit tagged versions of drafts](./SUBMITTING.md) to the IETF datatracker.
 
 Alternatively, you can also use [circleci](http://circleci.com/) or
 [travis](https://travis-ci.org/) [as described

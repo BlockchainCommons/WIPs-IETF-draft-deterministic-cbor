@@ -18,25 +18,24 @@ def cd(newdir):
         os.chdir(prevdir)
 
 
-@given(u"an empty git repo")
+@given("an empty git repo")
 def step_impl(context):
     context.test_dir = os.getcwd()
     context.working_dir = mkdtemp()
     context.origin_dir = mkdtemp()
     with cd(context.origin_dir):
-        call(["git", "init"])
-        call(["git", "checkout", "--orphan", "main"])
+        call(["git", "init", "-b", "main"])
         # Need to checkout another branch so that pushes to main work.
-        call(["git", "checkout", "-b", "testing"])
+        call(["git", "checkout", "-b", "nonce-c1a3d943"])
 
     with cd(context.working_dir):
         call(["git", "clone", context.origin_dir, "."])
-        call(["git", "checkout", "--orphan", "main"])
+        call(["git", "checkout", "-b", "main"])
         call(["git", "config", "user.name", "Behave Tests"])
         call(["git", "config", "user.email", "behave@example.com"])
 
 
-@given(u'the default branch is "{branch}"')
+@given('the default branch is "{branch}"')
 def step_impl(context, branch):
     with cd(context.working_dir):
         call(["git", "checkout", "-b", branch])
@@ -44,7 +43,7 @@ def step_impl(context, branch):
         call(["git", "remote", "set-head", "origin", branch])
 
 
-@given(u"a git repo with no origin")
+@given("a git repo with no origin")
 def step_impl(context):
     context.test_dir = os.getcwd()
     context.working_dir = mkdtemp()
@@ -55,13 +54,13 @@ def step_impl(context):
         call(["git", "config", "user.email", "behave@example.com"])
 
 
-@given(u"lib is cloned in")
+@given("lib is cloned in")
 def step_impl(context):
     with cd(context.working_dir):
         call(["ln", "-s", context.test_dir, "lib"])
 
 
-@given(u"the repo is tagged")
+@given("the repo is tagged")
 def step_impl(context):
     with cd(context.working_dir):
         md_files = glob("draft-*.md")
@@ -70,13 +69,13 @@ def step_impl(context):
             call(["git", "tag", "-am", "testing", tag])
 
 
-@given(u"an empty origin remote is added")
+@given("an empty origin remote is added")
 def step_impl(context):
     with cd(context.working_dir):
         call(["git", "remote", "add", "origin", mkdtemp()])
 
 
-@given(u"a Kramdown draft is created")
+@given("a Kramdown draft is created")
 def step_impl(context):
     with cd(context.working_dir):
         random_string = "".join(
@@ -89,8 +88,8 @@ def step_impl(context):
                 [
                     "sed",
                     "-e",
-                    "s/draft-hartke-xmpp-stupid/{}/".format(draft_name),
-                    "lib/doc/example.md",
+                    f"s/draft-todo-yourname-protocol/{draft_name}/",
+                    "lib/example/draft-todo-yourname-protocol.md",
                 ],
                 stdout=newFile,
             )
@@ -98,7 +97,7 @@ def step_impl(context):
         call(["git", "commit", "-am", "Initial commit of {}".format(draft_name)])
 
 
-@given(u'a .gitignore with the line "{ignore}"')
+@given('a .gitignore with the line "{ignore}"')
 def step_impl(context, ignore):
     with cd(context.working_dir):
         with open(".gitignore", "w") as gi:
@@ -107,16 +106,16 @@ def step_impl(context, ignore):
         call(["git", "commit", "-am", "Create .gitignore with '{}'".format(ignore)])
 
 
-@given(u"pushed to origin/main")
+@given("pushed to origin/main")
 def step_impl(context):
     with cd(context.working_dir):
         call(["git", "push", "origin", "main"])
 
 
-@given(u"a git repo with a single Kramdown draft")
+@given("a git repo with a single Kramdown draft")
 def step_impl(context):
     context.execute_steps(
-        u"""
+        """
         Given an empty git repo
         and lib is cloned in
         and a Kramdown draft is created
@@ -124,25 +123,31 @@ def step_impl(context):
     )
 
 
-@given(u"a git repo with multiple Kramdown drafts")
+@given("a git repo with multiple Kramdown drafts")
 def step_impl(context):
     context.execute_steps(
-        u"""
+        """
         Given a git repo with a single Kramdown draft
         and a Kramdown draft is created
         and pushed to origin/main"""
     )
 
 
-@given(u"a configured git repo with a Kramdown draft")
+@given("a configured git repo with a Kramdown draft")
 def step_impl(context):
-    context.execute_steps(u"Given a git repo with a single Kramdown draft")
+    context.execute_steps("Given a git repo with a single Kramdown draft")
     with cd(context.working_dir):
-        context.result = call(["make", "-f", "lib/setup.mk"])
+        context.result = call(["make", "-f", "lib/setup.mk", "BRANCH_FETCH=false"])
 
 
-@given(u"a configured git repo with multiple Kramdown drafts")
+@given("a configured git repo with multiple Kramdown drafts")
 def step_impl(context):
-    context.execute_steps(u"Given a git repo with multiple Kramdown drafts")
+    context.execute_steps("Given a git repo with multiple Kramdown drafts")
     with cd(context.working_dir):
-        context.result = call(["make", "-f", "lib/setup.mk"])
+        context.result = call(["make", "-f", "lib/setup.mk", "BRANCH_FETCH=false"])
+
+
+@given('drafts are modified with sed -e "{}"')
+def step_impl(context, script):
+    with cd(context.working_dir):
+        call(["sed", "-i~", "-e", script] + glob("draft-*"))
