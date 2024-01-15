@@ -5,10 +5,8 @@
 *.upload
 .tags
 /*-[0-9][0-9].xml
-/.gems/
 /.refcache
 /.targets.mk
-/.venv/
 /.vscode/
 /node_modules/
 /versioned/
@@ -27,7 +25,6 @@ rfc2629xslt
 draft-*
 issues.json
 pulls.json
-*.DS_Store
 *.DS_Store
 Gemfile.lock
 .gems
