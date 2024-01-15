@@ -3,92 +3,28 @@ jobs:
   build:
     docker:
       - image: martinthomson/i-d-template:latest
-    resource_class: small
     working_directory: ~/draft
 
     steps:
-      - run:
-          name: "Print Configuration"
-          command: |
-            xml2rfc --version
-            gem list -q kramdown-rfc
-            echo -n 'mmark '; mmark --version
-
-      - restore_cache:
-          name: "Restoring cache - Git"
-          keys:
-            - v2-cache-git-{{ .Branch }}-{{ .Revision }}
-            - v2-cache-git-{{ .Branch }}
-            - v2-cache-git-
-
-      - restore_cache:
-          name: "Restoring cache - References"
-          keys:
-            - v1-cache-references-{{ epoch }}
-            - v1-cache-references-
-
-      # Workaround for https://discuss.circleci.com/t/22437
-      - run:
-          name: Tag Checkout
-          command: |
-            if [ -n "$CIRCLE_TAG" ] && [ -d .git ]; then
-              remote=$(echo "$CIRCLE_REPOSITORY_URL" | \
-                       sed -e 's,/^git.github.com:,https://github.com/,')
-              git fetch -f "$remote" "refs/tags/$CIRCLE_TAG:refs/tags/$CIRCLE_TAG" || \
-                (echo 'Removing .git cache for tag build'; rm -rf .git)
-            fi
-
       - checkout
 
-      # Build txt and html versions of drafts
       - run:
-          name: "Build Drafts"
-          command: make
-
-      # Update editor's copy on gh-pages
-      - run:
-          name: "Update GitHub Pages"
+          name: "Check Formatting"
           command: |
-            if [ "${CIRCLE_TAG#draft-}" == "$CIRCLE_TAG" ]; then
-              make gh-pages
-            fi
+            pip3 install --user black==19.3b0 && ln -s $HOME/.local/bin/black $BINDIR
+            black --check .
 
-      # For tagged builds, upload to the datatracker.
-      - deploy:
-          name: "Upload to Datatracker"
+      - run:
+          name: "Run Tests"
           command: |
-            if [ "${CIRCLE_TAG#draft-}" != "$CIRCLE_TAG" ]; then
-              make upload
+            if [ -z "$CIRCLE_TAG" ]; then
+              pip3 install --user behave && ln -s $HOME/.local/bin/behave $BINDIR
+              mkdir -p /tmp/artifacts
+              behave --junit --junit-directory /tmp/artifacts tests/*.feature
             fi
-
-      # Archive GitHub Issues
-      - run:
-          name: "Archive GitHub Issues"
-          command: "make archive || make archive DISABLE_ARCHIVE_FETCH=true && make gh-archive"
-
-      # Create and store artifacts
-      - run:
-          name: "Create Artifacts"
-          command: "make artifacts CI_ARTIFACTS=/tmp/artifacts"
 
       - store_artifacts:
           path: /tmp/artifacts
-
-      - run:
-          name: "Prepare for Caching"
-          command: "git reflog expire --expire=now --all && git gc --prune=now"
-
-      - save_cache:
-          name: "Saving Cache - Git"
-          key: v2-cache-git-{{ .Branch }}-{{ .Revision }}
-          paths:
-            - ~/draft/.git
-
-      - save_cache:
-          name: "Saving Cache - Drafts"
-          key: v1-cache-references-{{ epoch }}
-          paths:
-            - ~/.cache/xml2rfc
 
 
 workflows:
