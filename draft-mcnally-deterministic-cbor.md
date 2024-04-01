@@ -38,6 +38,7 @@ normative:
     RFC8610: CDDL
     CDE: I-D.draft-ietf-cbor-cde
     IANACDDL: IANA.cddl
+    IANACBORTAGS: IANA.cbor-tags
 
 informative:
     BCSwiftDCBOR:
@@ -277,6 +278,13 @@ Vulnerabilities regarding dCBOR will revolve around whether an attacker can find
 # IANA Considerations
 
 RFC Editor: please replace RFCXXXX with the RFC number of this RFC and remove this note.
+
+This document requests IANA to register the following CBOR tag in the "CBOR Tags" registry of {{IANACBORTAGS}}:
+
+| Tag | Data Item | Semantics | Reference |
+|:----|:----------|:----------|:----------|
+| #201 | (any) | enclosed dCBOR | \[RFCXXXX\] |
+{: title="CBOR Tag for dCBOR"}
 
 This document requests IANA to register the contents of Table 1 into the registry "CDDL Control Operators" of {{IANACDDL}}:
 
