@@ -16,7 +16,7 @@
 <meta content="draft-mcnally-deterministic-cbor-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.17.1
-    Python 3.10.11
+    Python 3.10.13
     appdirs 1.4.4
     ConfigArgParse 1.5.3
     google-i18n-address 2.5.2
@@ -1047,11 +1047,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">dCBOR</td>
-<td class="right">January 2024</td>
+<td class="right">April 2024</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">McNally, et al.</td>
-<td class="center">Expires 12 July 2024</td>
+<td class="center">Expires 12 October 2024</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1064,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-mcnally-deterministic-cbor-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2024-01-09" class="published">9 January 2024</time>
+<time datetime="2024-04-10" class="published">10 April 2024</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Experimental</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2024-07-12">12 July 2024</time></dd>
+<dd class="expires"><time datetime="2024-10-12">12 October 2024</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1121,7 +1121,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 12 July 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 October 2024.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1168,13 +1168,10 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-duplicate-map-keys" class="internal xref">Duplicate Map Keys</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3">
-                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-65-bit-negative-integers" class="internal xref">"65-bit" Negative Integers</a></p>
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-numeric-reduction" class="internal xref">Numeric Reduction</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4">
-                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-numeric-reduction" class="internal xref">Numeric Reduction</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.5">
-                <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="auto internal xref">2.5</a>.  <a href="#name-simple-values" class="internal xref">Simple Values</a></p>
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-simple-values" class="internal xref">Simple Values</a></p>
 </li>
             </ul>
 </li>
@@ -1294,52 +1291,24 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         </ol>
 </section>
 </div>
-<div id="bit-negative-integers">
-<section id="section-2.3">
-        <h3 id="name-65-bit-negative-integers">
-<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-65-bit-negative-integers" class="section-name selfRef">"65-bit" Negative Integers</a>
-        </h3>
-<p id="section-2.3-1">dCBOR limits the range of integers to those that can be contained in common 64-bit programming language integer types, either as a signed (<code>int64</code> or <code>i64</code>) or unsigned (<code>uint64</code> or <code>u64</code>) integer.
-In other words, integer values in the range <code>DCBOR_INT</code> = [-2<sup>63</sup>, 2<sup>64</sup>-1] are valid.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.3-2">CBOR integers in the basic generic data model have an argument of up to 64 bits; whether the value is interpreted as non-negative or negative then depends on the additional bit provided by whether it is encoded as a major type 0 or 1 value.<a href="#section-2.3-2" class="pilcrow">¶</a></p>
-<p id="section-2.3-3">Many programming languages offer a separate type that covers the entire range of major type 0 (such as <code>uint64</code> or <code>u64</code>), but do not offer a type that provides the full range of negative integers that can be encoded in CBOR major type 1.
-(If a two's-complement signed type were to be used to cover both ranges in full, it would need to have at least 65 bits.)
-We therefore use the name <code>NEG_65</code> for the range of negative numbers that can be encoded in major type 1, but do not fit into <code>int64</code>, i.e., [-2<sup>64</sup>, -2<sup>63</sup> - 1].
-Integer values in this range are invalid in dCBOR.<a href="#section-2.3-3" class="pilcrow">¶</a></p>
-<p id="section-2.3-4">dCBOR encoders:<a href="#section-2.3-4" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.3-5">
-<li id="section-2.3-5.1">
-            <span class="bcp14">MUST NOT</span> encode CBOR integer values in the range <code>NEG_65</code>.<a href="#section-2.3-5.1" class="pilcrow">¶</a>
-</li>
-        </ol>
-<p id="section-2.3-6">dCBOR decoders:<a href="#section-2.3-6" class="pilcrow">¶</a></p>
-<ol start="2" type="1" class="normal type-1" id="section-2.3-7">
-<li id="section-2.3-7.1">
-            <span class="bcp14">MUST</span> reject CBOR integer values in the range <code>NEG_65</code>.<a href="#section-2.3-7.1" class="pilcrow">¶</a>
-</li>
-        </ol>
-<p id="section-2.3-8">(As always with CBOR, whether the value is interpreted as non-negative or negative depends on whether it is encoded as a major type 0 or 1 value.)<a href="#section-2.3-8" class="pilcrow">¶</a></p>
-<p id="section-2.3-9">Specific applications will, of course, further restrict ranges of integers that are considered valid for the application, based on their position and semantics in the CBOR data item.<a href="#section-2.3-9" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="numeric-reduction">
-<section id="section-2.4">
+<section id="section-2.3">
         <h3 id="name-numeric-reduction">
-<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-numeric-reduction" class="section-name selfRef">Numeric Reduction</a>
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-numeric-reduction" class="section-name selfRef">Numeric Reduction</a>
         </h3>
-<p id="section-2.4-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. Numeric reduction ensures that semantically equal numeric values (e.g. <code>2</code> and <code>2.0</code>) are encoded into identical byte streams (e.g. <code>0x02</code>) by encoding "Integral floating point values" (floating point values with a zero fractional part) as integers when possible.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
-<p id="section-2.4-2">dCBOR implementations that support floating point numbers:<a href="#section-2.4-2" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.4-3">
-<li id="section-2.4-3.1">
-            <p id="section-2.4-3.1.1"><span class="bcp14">MUST</span> check whether floating point values to be encoded have the numerically equal value in <code>DCBOR_INT</code> as defined above. If that is the case, it <span class="bcp14">MUST</span> be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of <code>DCBOR_INT</code>, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)<a href="#section-2.4-3.1.1" class="pilcrow">¶</a></p>
-<p id="section-2.4-3.1.2">
-This also means that the three representations of a zero number in CBOR (<code>0</code>, <code>0.0</code>, <code>-0.0</code> in diagnostic notation) are all reduced to the basic integer <code>0</code> (with preferred encoding <code>0x00</code>).<a href="#section-2.4-3.1.2" class="pilcrow">¶</a></p>
+<p id="section-2.3-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. Numeric reduction ensures that semantically equal numeric values (e.g. <code>2</code> and <code>2.0</code>) are encoded into identical byte streams (e.g. <code>0x02</code>) by encoding "Integral floating point values" (floating point values with a zero fractional part) as integers when possible.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-2">dCBOR implementations that support floating point numbers:<a href="#section-2.3-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.3-3">
+<li id="section-2.3-3.1">
+            <p id="section-2.3-3.1.1"><span class="bcp14">MUST</span> check whether floating point values to be encoded have the numerically equal value in <code>DCBOR_INT</code> = [-2<sup>63</sup>, 2<sup>64</sup>-1]. If that is the case, it <span class="bcp14">MUST</span> be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of <code>DCBOR_INT</code>, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)<a href="#section-2.3-3.1.1" class="pilcrow">¶</a></p>
+<p id="section-2.3-3.1.2">
+This also means that the three representations of a zero number in CBOR (<code>0</code>, <code>0.0</code>, <code>-0.0</code> in diagnostic notation) are all reduced to the basic integer <code>0</code> (with preferred encoding <code>0x00</code>).<a href="#section-2.3-3.1.2" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<aside id="section-2.4-4">
-          <p id="section-2.4-4.1">Note that numeric reduction means that some maps that are valid CDE/CBOR cannot be reduced to valid dCBOR maps, as numeric reduction can result in multiple entries with the same keys ("duplicate keys"). For example, the following is a valid CBOR/CDE map:<a href="#section-2.4-4.1" class="pilcrow">¶</a></p>
+<aside id="section-2.3-4">
+          <p id="section-2.3-4.1">Note that numeric reduction means that some maps that are valid CDE/CBOR cannot be reduced to valid dCBOR maps, as numeric reduction can result in multiple entries with the same keys ("duplicate keys"). For example, the following is a valid CBOR/CDE map:<a href="#section-2.3-4.1" class="pilcrow">¶</a></p>
 <span id="name-valid-cbor-data-item-with-n"></span><figure id="figure-1">
-            <div class="lang-cbor-diag sourcecode" id="section-2.4-4.2.1">
+            <div class="lang-cbor-diag sourcecode" id="section-2.3-4.2.1">
 <pre>
 {
    10: "ten",
@@ -1350,9 +1319,9 @@ This also means that the three representations of a zero number in CBOR (<code>0
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
 <a href="#name-valid-cbor-data-item-with-n" class="selfRef">Valid CBOR data item with numeric map keys (also valid CDE)</a>
             </figcaption></figure>
-<p id="section-2.4-4.3">Applying numeric reduction to this map would yield the invalid map:<a href="#section-2.4-4.3" class="pilcrow">¶</a></p>
+<p id="section-2.3-4.3">Applying numeric reduction to this map would yield the invalid map:<a href="#section-2.3-4.3" class="pilcrow">¶</a></p>
 <span id="name-numeric-reduction-turns-val"></span><figure id="figure-2">
-            <div class="lang-cbor-diag sourcecode" id="section-2.4-4.4.1">
+            <div class="lang-cbor-diag sourcecode" id="section-2.3-4.4.1">
 <pre>
 {  / invalid: multiple entries with the same key /
    10: "ten",
@@ -1363,37 +1332,37 @@ This also means that the three representations of a zero number in CBOR (<code>0
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-numeric-reduction-turns-val" class="selfRef">Numeric reduction turns valid CBOR invalid</a>
             </figcaption></figure>
-<p id="section-2.4-4.5">In general, dCBOR applications need to avoid maps that have entries with keys that are semantically equivalent in dCBOR's numeric model.<a href="#section-2.4-4.5" class="pilcrow">¶</a></p>
+<p id="section-2.3-4.5">In general, dCBOR applications need to avoid maps that have entries with keys that are semantically equivalent in dCBOR's numeric model.<a href="#section-2.3-4.5" class="pilcrow">¶</a></p>
 </aside>
-<ol start="2" type="1" class="normal type-1" id="section-2.4-5">
-<li id="section-2.4-5.1">
-            <span class="bcp14">MUST</span> reduce all encoded NaN values to the quiet NaN value having the half-width CBOR representation <code>0xf97e00</code>.<a href="#section-2.4-5.1" class="pilcrow">¶</a>
+<ol start="2" type="1" class="normal type-1" id="section-2.3-5">
+<li id="section-2.3-5.1">
+            <span class="bcp14">MUST</span> reduce all encoded NaN values to the quiet NaN value having the half-width CBOR representation <code>0xf97e00</code>.<a href="#section-2.3-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.4-6">dCBOR decoders that support floating point numbers:<a href="#section-2.4-6" class="pilcrow">¶</a></p>
-<ol start="3" type="1" class="normal type-1" id="section-2.4-7">
-<li id="section-2.4-7.1">
-            <span class="bcp14">MUST</span> reject any encoded floating point values that are not encoded according to the above rules.<a href="#section-2.4-7.1" class="pilcrow">¶</a>
+<p id="section-2.3-6">dCBOR decoders that support floating point numbers:<a href="#section-2.3-6" class="pilcrow">¶</a></p>
+<ol start="3" type="1" class="normal type-1" id="section-2.3-7">
+<li id="section-2.3-7.1">
+            <span class="bcp14">MUST</span> reject any encoded floating point values that are not encoded according to the above rules.<a href="#section-2.3-7.1" class="pilcrow">¶</a>
 </li>
         </ol>
 </section>
 </div>
 <div id="simple-values">
-<section id="section-2.5">
+<section id="section-2.4">
         <h3 id="name-simple-values">
-<a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-simple-values" class="section-name selfRef">Simple Values</a>
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-simple-values" class="section-name selfRef">Simple Values</a>
         </h3>
-<p id="section-2.5-1">Only the three "simple" (major type 7) values <code>false</code> (0xf4), <code>true</code> (0xf5), and <code>null</code> (0xf6) and the floating point values are valid in dCBOR.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
-<p id="section-2.5-2">dCBOR encoders:<a href="#section-2.5-2" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.5-3">
-<li id="section-2.5-3.1">
-            <span class="bcp14">MUST NOT</span> encode major type 7 values other than <code>false</code>, <code>true</code>, <code>null</code>, and the floating point values.<a href="#section-2.5-3.1" class="pilcrow">¶</a>
+<p id="section-2.4-1">Only the three "simple" (major type 7) values <code>false</code> (0xf4), <code>true</code> (0xf5), and <code>null</code> (0xf6) and the floating point values are valid in dCBOR.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.4-2">dCBOR encoders:<a href="#section-2.4-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.4-3">
+<li id="section-2.4-3.1">
+            <span class="bcp14">MUST NOT</span> encode major type 7 values other than <code>false</code>, <code>true</code>, <code>null</code>, and the floating point values.<a href="#section-2.4-3.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.5-4">dCBOR decoders:<a href="#section-2.5-4" class="pilcrow">¶</a></p>
-<ol start="2" type="1" class="normal type-1" id="section-2.5-5">
-<li id="section-2.5-5.1">
-            <span class="bcp14">MUST</span> reject any encoded major type 7 values other than <code>false</code>, <code>true</code>, <code>null</code>, and the floating point values.<a href="#section-2.5-5.1" class="pilcrow">¶</a>
+<p id="section-2.4-4">dCBOR decoders:<a href="#section-2.4-4" class="pilcrow">¶</a></p>
+<ol start="2" type="1" class="normal type-1" id="section-2.4-5">
+<li id="section-2.4-5.1">
+            <span class="bcp14">MUST</span> reject any encoded major type 7 values other than <code>false</code>, <code>true</code>, <code>null</code>, and the floating point values.<a href="#section-2.4-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
 </section>
@@ -1427,7 +1396,25 @@ leaf = #6.24(bytes .dcbor any)
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-implementation-status" class="section-name selfRef">Implementation Status</a>
       </h2>
 <p id="section-4-1">This section is to be removed before publishing as an RFC.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">{::boilerplate rfc7942info}<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-2">(Boilerplate as per <span><a href="https://rfc-editor.org/rfc/rfc7942#section-2.1" class="relref">Section 2.1</a> of [<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>:)<a href="#section-4-2" class="pilcrow">¶</a></p>
+<p id="section-4-3">This section records the status of known implementations of the
+protocol defined by this specification at the time of posting of
+this Internet-Draft, and is based on a proposal described in
+<span>[<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>.  The description of implementations in this section is
+intended to assist the IETF in its decision processes in
+progressing drafts to RFCs.  Please note that the listing of any
+individual implementation here does not imply endorsement by the
+IETF.  Furthermore, no effort has been spent to verify the
+information presented here that was supplied by IETF contributors.
+This is not intended as, and must not be construed to be, a
+catalog of available implementations or their features.  Readers
+are advised to note that other implementations may exist.<a href="#section-4-3" class="pilcrow">¶</a></p>
+<p id="section-4-4">According to <span>[<a href="#RFC7942" class="cite xref">RFC7942</a>]</span>, "this will allow reviewers and working
+groups to assign due consideration to documents that have the
+benefit of running code, which may serve as evidence of valuable
+experimentation and feedback that have made the implemented
+protocols more mature.  It is up to the individual working groups
+to use this information as they see fit".<a href="#section-4-4" class="pilcrow">¶</a></p>
 <div id="swift">
 <section id="section-4.1">
         <h3 id="name-swift">
@@ -1541,10 +1528,33 @@ leaf = #6.24(bytes .dcbor any)
 <a href="#section-6" class="section-number selfRef">6. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
       </h2>
 <p id="section-6-1">RFC Editor: please replace RFCXXXX with the RFC number of this RFC and remove this note.<a href="#section-6-1" class="pilcrow">¶</a></p>
-<p id="section-6-2">This document requests IANA to register the contents of Table 1 into the registry "CDDL Control Operators" of <span>[<a href="#IANACDDL" class="cite xref">IANACDDL</a>]</span>:<a href="#section-6-2" class="pilcrow">¶</a></p>
-<span id="name-cddl-control-operators-for-"></span><table class="center" id="table-1">
+<p id="section-6-2">This document requests IANA to register the following CBOR tag in the "CBOR Tags" registry of <span>[<a href="#IANACBORTAGS" class="cite xref">IANACBORTAGS</a>]</span>:<a href="#section-6-2" class="pilcrow">¶</a></p>
+<span id="name-cbor-tag-for-dcbor"></span><table class="center" id="table-1">
         <caption>
 <a href="#table-1" class="selfRef">Table 1</a>:
+<a href="#name-cbor-tag-for-dcbor" class="selfRef">CBOR Tag for dCBOR</a>
+        </caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Tag</th>
+            <th class="text-left" rowspan="1" colspan="1">Data Item</th>
+            <th class="text-left" rowspan="1" colspan="1">Semantics</th>
+            <th class="text-left" rowspan="1" colspan="1">Reference</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">#201</td>
+            <td class="text-left" rowspan="1" colspan="1">(any)</td>
+            <td class="text-left" rowspan="1" colspan="1">enclosed dCBOR</td>
+            <td class="text-left" rowspan="1" colspan="1">[RFCXXXX]</td>
+          </tr>
+        </tbody>
+      </table>
+<p id="section-6-4">This document requests IANA to register the contents of Table 1 into the registry "CDDL Control Operators" of <span>[<a href="#IANACDDL" class="cite xref">IANACDDL</a>]</span>:<a href="#section-6-4" class="pilcrow">¶</a></p>
+<span id="name-cddl-control-operators-for-"></span><table class="center" id="table-2">
+        <caption>
+<a href="#table-2" class="selfRef">Table 2</a>:
 <a href="#name-cddl-control-operators-for-" class="selfRef">CDDL Control Operators for dCBOR</a>
         </caption>
 <thead>
@@ -1570,6 +1580,7 @@ leaf = #6.24(bytes .dcbor any)
       <h2 id="name-references">
 <a href="#section-7" class="section-number selfRef">7. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
+<div id="sec-normative-references">
 <section id="section-7.1">
         <h3 id="name-normative-references">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
@@ -1577,11 +1588,15 @@ leaf = #6.24(bytes .dcbor any)
 <dl class="references">
 <dt id="CDE">[CDE]</dt>
         <dd>
-<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"CBOR Common Deterministic Encoding (CDE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cbor-cde-01</span>, <time datetime="2024-01-08" class="refDate">8 January 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-01">https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-01</a>&gt;</span>. </dd>
+<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"CBOR Common Deterministic Encoding (CDE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cbor-cde-02</span>, <time datetime="2024-03-03" class="refDate">3 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-02">https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-02</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="IANACBORTAGS">[IANACBORTAGS]</dt>
+        <dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR) Tags"</span>, <span>&lt;<a href="http://www.iana.org/assignments/cbor-tags">http://www.iana.org/assignments/cbor-tags</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="IANACDDL">[IANACDDL]</dt>
         <dd>
-<span class="refAuthor">IANA</span>, <span class="refTitle">"Concise Data Definition Language (CDDL)"</span>, <span>&lt;<a href="https://www.iana.org/assignments/cddl">https://www.iana.org/assignments/cddl</a>&gt;</span>. </dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"Concise Data Definition Language (CDDL)"</span>, <span>&lt;<a href="http://www.iana.org/assignments/cddl">http://www.iana.org/assignments/cddl</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
@@ -1601,6 +1616,8 @@ leaf = #6.24(bytes .dcbor any)
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
+<div id="sec-informative-references">
 <section id="section-7.2">
         <h3 id="name-informative-references">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
@@ -1631,11 +1648,16 @@ leaf = #6.24(bytes .dcbor any)
 <span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"CBOR diagnostic utilities"</span>, <span>n.d.</span>, <span>&lt;<a href="https://github.com/cabo/cbor-diag">https://github.com/cabo/cbor-diag</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="GordianEnvelope">[GordianEnvelope]</dt>
+        <dd>
+<span class="refAuthor">McNally, W.</span> and <span class="refAuthor">C. Allen</span>, <span class="refTitle">"The Gordian Envelope Structured Data Format"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mcnally-envelope-07</span>, <time datetime="2024-03-31" class="refDate">31 March 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-07">https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-07</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7942">[RFC7942]</dt>
       <dd>
-<span class="refAuthor">McNally, W.</span> and <span class="refAuthor">C. Allen</span>, <span class="refTitle">"The Gordian Envelope Structured Data Format"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mcnally-envelope-05</span>, <time datetime="2023-08-20" class="refDate">20 August 2023</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-05">https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-05</a>&gt;</span>. </dd>
+<span class="refAuthor">Sheffer, Y.</span> and <span class="refAuthor">A. Farrel</span>, <span class="refTitle">"Improving Awareness of Running Code: The Implementation Status Section"</span>, <span class="seriesInfo">BCP 205</span>, <span class="seriesInfo">RFC 7942</span>, <span class="seriesInfo">DOI 10.17487/RFC7942</span>, <time datetime="2016-07" class="refDate">July 2016</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7942">https://www.rfc-editor.org/rfc/rfc7942</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 </dl>
 </section>
+</div>
 </section>
 <div id="acknowledgments">
 <section id="appendix-A">

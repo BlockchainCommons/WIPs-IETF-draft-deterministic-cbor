@@ -5,9 +5,9 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 12 July 2024                                         C. Bormann
+Expires: 12 October 2024                                      C. Bormann
                                                   Universität Bremen TZI
-                                                          9 January 2024
+                                                           10 April 2024
 
 
             dCBOR: A Deterministic CBOR Application Profile
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 July 2024.
+   This Internet-Draft will expire on 12 October 2024.
 
 Copyright Notice
 
@@ -76,9 +76,8 @@ Table of Contents
    2.  Application Profile
      2.1.  Common Deterministic Encoding Conformance
      2.2.  Duplicate Map Keys
-     2.3.  "65-bit" Negative Integers
-     2.4.  Numeric Reduction
-     2.5.  Simple Values
+     2.3.  Numeric Reduction
+     2.4.  Simple Values
    3.  CDDL support
    4.  Implementation Status
      4.1.  Swift
@@ -189,45 +188,7 @@ Table of Contents
 
    2.  MUST reject encoded maps with duplicate keys.
 
-2.3.  "65-bit" Negative Integers
-
-   dCBOR limits the range of integers to those that can be contained in
-   common 64-bit programming language integer types, either as a signed
-   (int64 or i64) or unsigned (uint64 or u64) integer.  In other words,
-   integer values in the range DCBOR_INT = [-2^63, 2^64-1] are valid.
-
-   CBOR integers in the basic generic data model have an argument of up
-   to 64 bits; whether the value is interpreted as non-negative or
-   negative then depends on the additional bit provided by whether it is
-   encoded as a major type 0 or 1 value.
-
-   Many programming languages offer a separate type that covers the
-   entire range of major type 0 (such as uint64 or u64), but do not
-   offer a type that provides the full range of negative integers that
-   can be encoded in CBOR major type 1.  (If a two's-complement signed
-   type were to be used to cover both ranges in full, it would need to
-   have at least 65 bits.)  We therefore use the name NEG_65 for the
-   range of negative numbers that can be encoded in major type 1, but do
-   not fit into int64, i.e., [-2^64, -2^63 - 1].  Integer values in this
-   range are invalid in dCBOR.
-
-   dCBOR encoders:
-
-   1.  MUST NOT encode CBOR integer values in the range NEG_65.
-
-   dCBOR decoders:
-
-   2.  MUST reject CBOR integer values in the range NEG_65.
-
-   (As always with CBOR, whether the value is interpreted as non-
-   negative or negative depends on whether it is encoded as a major type
-   0 or 1 value.)
-
-   Specific applications will, of course, further restrict ranges of
-   integers that are considered valid for the application, based on
-   their position and semantics in the CBOR data item.
-
-2.4.  Numeric Reduction
+2.3.  Numeric Reduction
 
    The purpose of determinism is to ensure that semantically equivalent
    data items are encoded into identical byte streams.  Numeric
@@ -239,7 +200,7 @@ Table of Contents
    dCBOR implementations that support floating point numbers:
 
    1.  MUST check whether floating point values to be encoded have the
-       numerically equal value in DCBOR_INT as defined above.  If that
+       numerically equal value in DCBOR_INT = [-2^63, 2^64-1].  If that
        is the case, it MUST be converted to that numerically equal
        integer value before encoding it.  (Preferred encoding will then
        ensure the shortest length encoding is used.)  If a floating
@@ -288,7 +249,7 @@ Table of Contents
    3.  MUST reject any encoded floating point values that are not
        encoded according to the above rules.
 
-2.5.  Simple Values
+2.4.  Simple Values
 
    Only the three "simple" (major type 7) values false (0xf4), true
    (0xf5), and null (0xf6) and the floating point values are valid in
@@ -328,7 +289,27 @@ Table of Contents
 
    This section is to be removed before publishing as an RFC.
 
-   {::boilerplate rfc7942info}
+   (Boilerplate as per Section 2.1 of [RFC7942]:)
+
+   This section records the status of known implementations of the
+   protocol defined by this specification at the time of posting of this
+   Internet-Draft, and is based on a proposal described in [RFC7942].
+   The description of implementations in this section is intended to
+   assist the IETF in its decision processes in progressing drafts to
+   RFCs.  Please note that the listing of any individual implementation
+   here does not imply endorsement by the IETF.  Furthermore, no effort
+   has been spent to verify the information presented here that was
+   supplied by IETF contributors.  This is not intended as, and must not
+   be construed to be, a catalog of available implementations or their
+   features.  Readers are advised to note that other implementations may
+   exist.
+
+   According to [RFC7942], "this will allow reviewers and working groups
+   to assign due consideration to documents that have the benefit of
+   running code, which may serve as evidence of valuable experimentation
+   and feedback that have made the implemented protocols more mature.
+   It is up to the individual working groups to use this information as
+   they see fit".
 
 4.1.  Swift
 
@@ -424,6 +405,17 @@ Table of Contents
    RFC Editor: please replace RFCXXXX with the RFC number of this RFC
    and remove this note.
 
+   This document requests IANA to register the following CBOR tag in the
+   "CBOR Tags" registry of [IANACBORTAGS]:
+
+             +======+===========+================+===========+
+             | Tag  | Data Item | Semantics      | Reference |
+             +======+===========+================+===========+
+             | #201 | (any)     | enclosed dCBOR | [RFCXXXX] |
+             +------+-----------+----------------+-----------+
+
+                        Table 1: CBOR Tag for dCBOR
+
    This document requests IANA to register the contents of Table 1 into
    the registry "CDDL Control Operators" of [IANACDDL]:
 
@@ -435,7 +427,7 @@ Table of Contents
                          | .dcborseq | [RFCXXXX] |
                          +-----------+-----------+
 
-                           Table 1: CDDL Control
+                           Table 2: CDDL Control
                             Operators for dCBOR
 
 7.  References
@@ -443,12 +435,16 @@ Table of Contents
 7.1.  Normative References
 
    [CDE]      Bormann, C., "CBOR Common Deterministic Encoding (CDE)",
-              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-01,
-              8 January 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-cbor-cde-01>.
+              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-02,
+              3 March 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-cbor-cde-02>.
+
+   [IANACBORTAGS]
+              IANA, "Concise Binary Object Representation (CBOR) Tags",
+              <http://www.iana.org/assignments/cbor-tags>.
 
    [IANACDDL] IANA, "Concise Data Definition Language (CDDL)",
-              <https://www.iana.org/assignments/cddl>.
+              <http://www.iana.org/assignments/cddl>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -500,9 +496,14 @@ Table of Contents
    [GordianEnvelope]
               McNally, W. and C. Allen, "The Gordian Envelope Structured
               Data Format", Work in Progress, Internet-Draft, draft-
-              mcnally-envelope-05, 20 August 2023,
+              mcnally-envelope-07, 31 March 2024,
               <https://datatracker.ietf.org/doc/html/draft-mcnally-
-              envelope-05>.
+              envelope-07>.
+
+   [RFC7942]  Sheffer, Y. and A. Farrel, "Improving Awareness of Running
+              Code: The Implementation Status Section", BCP 205,
+              RFC 7942, DOI 10.17487/RFC7942, July 2016,
+              <https://www.rfc-editor.org/rfc/rfc7942>.
 
 Acknowledgments
 
