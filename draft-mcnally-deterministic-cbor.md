@@ -125,38 +125,13 @@ dCBOR decoders:
 2. MUST reject encoded maps with duplicate keys.
 {:start="2"}
 
-## "65-bit" Negative Integers
-
-dCBOR limits the range of integers to those that can be contained in common 64-bit programming language integer types, either as a signed (`int64` or `i64`) or unsigned (`uint64` or `u64`) integer.
-In other words, integer values in the range `DCBOR_INT` = \[-2<sup>63</sup>, 2<sup>64</sup>-1\] are valid.
-
-CBOR integers in the basic generic data model have an argument of up to 64 bits; whether the value is interpreted as non-negative or negative then depends on the additional bit provided by whether it is encoded as a major type 0 or 1 value.
-
-Many programming languages offer a separate type that covers the entire range of major type 0 (such as `uint64` or `u64`), but do not offer a type that provides the full range of negative integers that can be encoded in CBOR major type 1.
-(If a two's-complement signed type were to be used to cover both ranges in full, it would need to have at least 65 bits.)
-We therefore use the name `NEG_65` for the range of negative numbers that can be encoded in major type 1, but do not fit into `int64`, i.e., \[-2<sup>64</sup>, -2<sup>63</sup> - 1\].
-Integer values in this range are invalid in dCBOR.
-
-dCBOR encoders:
-
-1. MUST NOT encode CBOR integer values in the range `NEG_65`.
-
-dCBOR decoders:
-
-2. MUST reject CBOR integer values in the range `NEG_65`.
-{:start="2"}
-
-(As always with CBOR, whether the value is interpreted as non-negative or negative depends on whether it is encoded as a major type 0 or 1 value.)
-
-Specific applications will, of course, further restrict ranges of integers that are considered valid for the application, based on their position and semantics in the CBOR data item.
-
 ## Numeric Reduction
 
 The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. Numeric reduction ensures that semantically equal numeric values (e.g. `2` and `2.0`) are encoded into identical byte streams (e.g. `0x02`) by encoding "Integral floating point values" (floating point values with a zero fractional part) as integers when possible.
 
 dCBOR implementations that support floating point numbers:
 
-1. MUST check whether floating point values to be encoded have the numerically equal value in `DCBOR_INT` as defined above. If that is the case, it MUST be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of `DCBOR_INT`, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)
+1. MUST check whether floating point values to be encoded have the numerically equal value in `DCBOR_INT` = \[-2<sup>63</sup>, 2<sup>64</sup>-1\]. If that is the case, it MUST be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of `DCBOR_INT`, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)
 
    This also means that the three representations of a zero number in CBOR (`0`, `0.0`, `-0.0` in diagnostic notation) are all reduced to the basic integer `0` (with preferred encoding `0x00`).
 
