@@ -193,7 +193,7 @@ result will conform to dCBOR also at the encoded data item level.
 (In conjunction with this semantics, tag 201 may also be employed as a
 boundary marker leading from an overall structure to specific
 application data items; see {{Section 3 of GordianEnvelope}} for an
-example of this usage.)
+example for this usage.)
 
 # Implementation Status
 {:removeinrfc}
