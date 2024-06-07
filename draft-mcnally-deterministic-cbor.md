@@ -180,23 +180,20 @@ dCBOR decoders:
 2. MUST reject any encoded major type 7 values other than `false`, `true`, `null`, and the floating point values.
 {:start="2"}
 
-# CDDL support
+# CDDL support, Declarative Tag
 
 Similar to the CDDL {{-CDDL}} support in CDE {{CDE}}, this specification adds two CDDL control operators that can be used to specify that the data items should be encoded in CBOR Common Deterministic Encoding (CDE), with the dCBOR application profile applied as well.
 
 The control operators `.dcbor` and `.dcborseq` are exactly like `.cde` and `.cdeseq` except that they also require the encoded data item(s) to conform to the dCBOR application profile.
 
-For example, the normative comment in Section 3 of {{GordianEnvelope}}:
-
-~~~ cddl
-leaf = #6.24(bytes)  ; MUST be dCBOR
-~~~
-
-...can now be formalized as:
-
-~~~ cddl
-leaf = #6.24(bytes .dcbor any)
-~~~
+Tag 201 ({{tag201}}) is defined in this specification as a way to declare its tag
+content to conform to the dCBOR application profile at the data model level.
+As a result, when this data item is encoded using CDE rules, the encoded
+result will conform to dCBOR also at the encoded data item level.
+(In conjunction with this semantics, tag 201 may also be employed as a
+boundary marker leading from an overall structure to specific
+application data items; see {{Section 3 of GordianEnvelope}} for an
+example of this usage.)
 
 # Implementation Status
 {:removeinrfc}
@@ -250,7 +247,7 @@ This document inherits the security considerations of CBOR {{-CBOR}}.
 
 Vulnerabilities regarding dCBOR will revolve around whether an attacker can find value in producing semantically equivalent documents that are nonetheless serialized into non-identical byte streams. Such documents could be used to contain malicious payloads or exfiltrate sensitive data. The ability to create such documents could indicate the failure of a dCBOR decoder to correctly validate according to this document, or the failure of the developer to properly specify or implement application protocol requirements using dCBOR. Whether these possibilities present an identifiable attack surface is a question that developers should consider.
 
-# IANA Considerations
+# IANA Considerations {#tag201}
 
 RFC Editor: please replace RFCXXXX with the RFC number of this RFC and remove this note.
 
