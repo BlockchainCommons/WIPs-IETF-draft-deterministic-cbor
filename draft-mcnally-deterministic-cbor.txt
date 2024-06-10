@@ -5,9 +5,9 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 12 October 2024                                      C. Bormann
+Expires: 12 December 2024                                     C. Bormann
                                                   Universität Bremen TZI
-                                                           10 April 2024
+                                                            10 June 2024
 
 
             dCBOR: A Deterministic CBOR Application Profile
@@ -53,7 +53,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 October 2024.
+   This Internet-Draft will expire on 12 December 2024.
 
 Copyright Notice
 
@@ -78,7 +78,7 @@ Table of Contents
      2.2.  Duplicate Map Keys
      2.3.  Numeric Reduction
      2.4.  Simple Values
-   3.  CDDL support
+   3.  CDDL support, Declarative Tag
    4.  Implementation Status
      4.1.  Swift
      4.2.  Rust
@@ -265,7 +265,7 @@ Table of Contents
    2.  MUST reject any encoded major type 7 values other than false,
        true, null, and the floating point values.
 
-3.  CDDL support
+3.  CDDL support, Declarative Tag
 
    Similar to the CDDL [RFC8610] support in CDE [CDE], this
    specification adds two CDDL control operators that can be used to
@@ -277,13 +277,14 @@ Table of Contents
    .cdeseq except that they also require the encoded data item(s) to
    conform to the dCBOR application profile.
 
-   For example, the normative comment in Section 3 of [GordianEnvelope]:
-
-   leaf = #6.24(bytes)  ; MUST be dCBOR
-
-   ...can now be formalized as:
-
-   leaf = #6.24(bytes .dcbor any)
+   Tag 201 (Section 6) is defined in this specification as a way to
+   declare its tag content to conform to the dCBOR application profile
+   at the data model level.  As a result, when this data item is encoded
+   using CDE rules, the encoded result will conform to dCBOR also at the
+   encoded data item level.  (In conjunction with this semantics, tag
+   201 may also be employed as a boundary marker leading from an overall
+   structure to specific application data items; see Section 3 of
+   [GordianEnvelope] for an example for this usage.)
 
 4.  Implementation Status
 
