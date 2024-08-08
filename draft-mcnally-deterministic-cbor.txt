@@ -5,9 +5,11 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 12 December 2024                                     C. Bormann
+Expires: 8 February 2025                                      C. Bormann
                                                   Universität Bremen TZI
-                                                            10 June 2024
+                                                            L. Lundblade
+                                                     Security Theory LLC
+                                                           7 August 2024
 
 
             dCBOR: A Deterministic CBOR Application Profile
@@ -53,7 +55,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 December 2024.
+   This Internet-Draft will expire on 8 February 2025.
 
 Copyright Notice
 
@@ -78,6 +80,7 @@ Table of Contents
      2.2.  Duplicate Map Keys
      2.3.  Numeric Reduction
      2.4.  Simple Values
+     2.5.  Strings
    3.  CDDL support, Declarative Tag
    4.  Implementation Status
      4.1.  Swift
@@ -86,9 +89,12 @@ Table of Contents
      4.4.  Ruby
    5.  Security Considerations
    6.  IANA Considerations
-   7.  References
-     7.1.  Normative References
-     7.2.  Informative References
+   7.  Appendix A: dCBOR Numeric Test Vectors
+     7.1.  dCBOR Numeric Encodings
+     7.2.  Invalid dCBOR Encodings
+   8.  References
+     8.1.  Normative References
+     8.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -265,6 +271,17 @@ Table of Contents
    2.  MUST reject any encoded major type 7 values other than false,
        true, null, and the floating point values.
 
+2.5.  Strings
+
+   dCBOR encoders:
+
+   1.  MUST only emit text strings that are in Unicode Normalization
+       Form C (NFC) [UNICODE-NORM].
+
+   dCBOR decoders:
+
+   1.  MUST reject any encoded text strings that are not in NFC.
+
 3.  CDDL support, Declarative Tag
 
    Similar to the CDDL [RFC8610] support in CDE [CDE], this
@@ -406,8 +423,8 @@ Table of Contents
    RFC Editor: please replace RFCXXXX with the RFC number of this RFC
    and remove this note.
 
-   This document requests IANA to register the following CBOR tag in the
-   "CBOR Tags" registry of [IANACBORTAGS]:
+   IANA has registered the following CBOR tag in the "CBOR Tags"
+   registry of [IANACBORTAGS]:
 
              +======+===========+================+===========+
              | Tag  | Data Item | Semantics      | Reference |
@@ -431,21 +448,195 @@ Table of Contents
                            Table 2: CDDL Control
                             Operators for dCBOR
 
-7.  References
+7.  Appendix A: dCBOR Numeric Test Vectors
 
-7.1.  Normative References
+   The following tables provide common and edge-case numeric test
+   vectors for dCBOR encoders and decoders, and are intended to exercise
+   the requirements of this specification.
+
+7.1.  dCBOR Numeric Encodings
+
+   +=========================+====================+====================+
+   | Value                   | dCBOR Encoding     | Note               |
+   +=========================+====================+====================+
+   | 0                       | 00                 |                    |
+   +-------------------------+--------------------+--------------------+
+   | 1                       | 01                 |                    |
+   +-------------------------+--------------------+--------------------+
+   | 23                      | 17                 |                    |
+   +-------------------------+--------------------+--------------------+
+   | 24                      | 1818               |                    |
+   +-------------------------+--------------------+--------------------+
+   | 255 (2^8 - 1)           | 18ff               |                    |
+   +-------------------------+--------------------+--------------------+
+   | 65535 (2^16 - 1)        | 19ffff             |                    |
+   +-------------------------+--------------------+--------------------+
+   | 65536 (2^16)            | 1a00010000         |                    |
+   +-------------------------+--------------------+--------------------+
+   | 4294967295 (2^32 - 1)   | 1affffffff         |                    |
+   +-------------------------+--------------------+--------------------+
+   | 4294967296 (2^32)       | 1b0000000100000000 |                    |
+   +-------------------------+--------------------+--------------------+
+   | 18446744073709551615    | 1bffffffffffffffff |                    |
+   | (2^64 - 1)              |                    |                    |
+   +-------------------------+--------------------+--------------------+
+   | -1                      | 20                 |                    |
+   +-------------------------+--------------------+--------------------+
+   | -2                      | 21                 |                    |
+   +-------------------------+--------------------+--------------------+
+   | -127 (-2^8 - 1)         | 387e               |                    |
+   +-------------------------+--------------------+--------------------+
+   | -128 (-2^7)             | 387f               |                    |
+   +-------------------------+--------------------+--------------------+
+   | -32768 (-2^16)          | 397fff             |                    |
+   +-------------------------+--------------------+--------------------+
+   | -2147483648 (-2^31)     | 3a7fffffff         |                    |
+   +-------------------------+--------------------+--------------------+
+   | -9223372036854775808    | 3b7fffffffffffffff |                    |
+   | (-2^63)                 |                    |                    |
+   +-------------------------+--------------------+--------------------+
+   | 1.5                     | f93e00             |                    |
+   +-------------------------+--------------------+--------------------+
+   | 2345678.25              | fa4a0f2b39         |                    |
+   +-------------------------+--------------------+--------------------+
+   | 1.2                     | fb3ff3333333333333 |                    |
+   +-------------------------+--------------------+--------------------+
+   | 42.0                    | 182a               | Reduced.           |
+   +-------------------------+--------------------+--------------------+
+   | 2345678.0               | 1a0023cace         | Reduced.           |
+   +-------------------------+--------------------+--------------------+
+   | -2345678.0              | 3a0023cacd         | Reduced.           |
+   +-------------------------+--------------------+--------------------+
+   | -0.0                    | 00                 | Reduced.           |
+   +-------------------------+--------------------+--------------------+
+   | 5.960464477539063e-08   | f90001             | Smallest half-     |
+   |                         |                    | precision          |
+   |                         |                    | subnormal.         |
+   +-------------------------+--------------------+--------------------+
+   | 1.401298464324817e-45   | fa00000001         | Smallest single    |
+   |                         |                    | subnormal.         |
+   +-------------------------+--------------------+--------------------+
+   | 5e-324                  | fb0000000000000001 | Smallest double    |
+   |                         |                    | subnormal.         |
+   +-------------------------+--------------------+--------------------+
+   | 2.2250738585072014e-308 | fb0010000000000000 | Smallest double    |
+   |                         |                    | normal.            |
+   +-------------------------+--------------------+--------------------+
+   | 6.103515625e-05         | f90400             | Smallest half-     |
+   |                         |                    | precision normal.  |
+   +-------------------------+--------------------+--------------------+
+   | 65504.0                 | 19ffe0             | Reduced.  Largest  |
+   |                         |                    | possible half-     |
+   |                         |                    | precision.         |
+   +-------------------------+--------------------+--------------------+
+   | 33554430.0              | 1a01fffffe         | Reduced.           |
+   |                         |                    | Exponent 24 to     |
+   |                         |                    | test single        |
+   |                         |                    | exponent           |
+   |                         |                    | boundary.          |
+   +-------------------------+--------------------+--------------------+
+   | -9223372036854774784.0  | 3b7ffffffffffffbff | Reduced.  Most     |
+   |                         |                    | negative double    |
+   |                         |                    | that converts to   |
+   |                         |                    | int64.             |
+   +-------------------------+--------------------+--------------------+
+   | 18446744073709550000.0  | 1bfffffffffffff800 | Reduced.  Largest  |
+   |                         |                    | double that can    |
+   |                         |                    | convert to         |
+   |                         |                    | uint64, almost     |
+   |                         |                    | UINT64_MAX.        |
+   +-------------------------+--------------------+--------------------+
+   | 18446744073709552000.0  | fa5f800000         | Just too large to  |
+   |                         |                    | convert to         |
+   |                         |                    | uint64, but        |
+   |                         |                    | converts to a      |
+   |                         |                    | single, just over  |
+   |                         |                    | UINT64_MAX.        |
+   +-------------------------+--------------------+--------------------+
+   | -18446742974197924000.0 | fadf7fffff         | Large negative     |
+   |                         |                    | that converts to   |
+   |                         |                    | float, but too     |
+   |                         |                    | large for int64.   |
+   +-------------------------+--------------------+--------------------+
+   | 3.4028234663852886e+38  | fa7f7fffff         | Largest possible   |
+   |                         |                    | single.            |
+   +-------------------------+--------------------+--------------------+
+   | 3.402823466385289e+38   | fb47efffffe0000001 | Slightly larger    |
+   |                         |                    | than largest       |
+   |                         |                    | possible single.   |
+   +-------------------------+--------------------+--------------------+
+   | 1.7976931348623157e+308 | fb7fefffffffffffff | Largest double.    |
+   +-------------------------+--------------------+--------------------+
+   | Infinity (any size)     | f97c00             | Canonicalized.     |
+   +-------------------------+--------------------+--------------------+
+   | -Infinity (any size)    | f9fc00             | Canonicalized.     |
+   +-------------------------+--------------------+--------------------+
+   | NaN (any size, any      | f97e00             | Canonicalized.     |
+   | payload)                |                    |                    |
+   +-------------------------+--------------------+--------------------+
+
+                                  Table 3
+
+7.2.  Invalid dCBOR Encodings
+
+   These are valid CBOR encodings that MUST be rejected as invalid by a
+   dCBOR-compliant decoder.
+
+   +=======================+====================+======================+
+   | Value                 | CBOR Encoding      | Reason for           |
+   |                       |                    | Rejection            |
+   +=======================+====================+======================+
+   | 12.0                  | f94a00             | Can be reduced       |
+   |                       |                    | to 12.               |
+   +-----------------------+--------------------+----------------------+
+   | 1.5                   | fb3ff8000000000000 | Not preferred        |
+   |                       |                    | encoding.            |
+   +-----------------------+--------------------+----------------------+
+   | -9223372036854775809  | 3b8000000000000000 | 65-bit negative      |
+   | (-2^63 - 1)           |                    | integer value.       |
+   +-----------------------+--------------------+----------------------+
+   | -18446744073709551616 | 3bffffffffffffffff | 65-bit negative      |
+   | (-2^64)               |                    | integer value.       |
+   +-----------------------+--------------------+----------------------+
+   | Infinity              | fb7ff0000000000000 | Not preferred        |
+   |                       |                    | encoding.            |
+   +-----------------------+--------------------+----------------------+
+   | Infinity              | fa7f800000         | Not preferred        |
+   |                       |                    | encoding.            |
+   +-----------------------+--------------------+----------------------+
+   | -Infinity             | fbfff0000000000000 | Not preferred        |
+   |                       |                    | encoding.            |
+   +-----------------------+--------------------+----------------------+
+   | -Infinity             | faff800000         | Not preferred        |
+   |                       |                    | encoding.            |
+   +-----------------------+--------------------+----------------------+
+   | NaN                   | fb7ff9100000000001 | Not canonical        |
+   |                       |                    | NaN.                 |
+   +-----------------------+--------------------+----------------------+
+   | NaN                   | faffc00001         | Not canonical        |
+   |                       |                    | NaN.                 |
+   +-----------------------+--------------------+----------------------+
+   | NaN                   | f97e01             | Not canonical        |
+   |                       |                    | NaN.                 |
+   +-----------------------+--------------------+----------------------+
+
+                                  Table 4
+
+8.  References
+
+8.1.  Normative References
 
    [CDE]      Bormann, C., "CBOR Common Deterministic Encoding (CDE)",
-              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-02,
-              3 March 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-cbor-cde-02>.
+              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-05,
+              25 July 2024, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-cbor-cde-05>.
 
    [IANACBORTAGS]
               IANA, "Concise Binary Object Representation (CBOR) Tags",
-              <http://www.iana.org/assignments/cbor-tags>.
+              <https://www.iana.org/assignments/cbor-tags>.
 
    [IANACDDL] IANA, "Concise Data Definition Language (CDDL)",
-              <http://www.iana.org/assignments/cddl>.
+              <https://www.iana.org/assignments/cddl>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -467,7 +658,11 @@ Table of Contents
               DOI 10.17487/RFC8949, December 2020,
               <https://www.rfc-editor.org/rfc/rfc8949>.
 
-7.2.  Informative References
+   [UNICODE-NORM]
+              "Unicode Normalization Forms", n.d.,
+              <https://unicode.org/reports/tr15/>.
+
+8.2.  Informative References
 
    [BCRustDCBOR]
               McNally, W., "Deterministic CBOR (dCBOR) for Rust.", n.d.,
@@ -508,8 +703,8 @@ Table of Contents
 
 Acknowledgments
 
-   The authors are grateful for the contributions of Joe Hildebrand,
-   Laurence Lundblade, and Anders Rundgren in the CBOR working group.
+   The authors are grateful for the contributions of Joe Hildebrand and
+   Anders Rundgren in the CBOR working group.
 
 Authors' Addresses
 
@@ -526,3 +721,8 @@ Authors' Addresses
    Carsten Bormann
    Universität Bremen TZI
    Email: cabo@tzi.org
+
+
+   Laurence Lundblade
+   Security Theory LLC
+   Email: lgl@securitytheory.com
