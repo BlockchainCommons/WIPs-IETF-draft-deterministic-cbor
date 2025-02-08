@@ -27,6 +27,12 @@ kramdown-rfc ?= kramdown-rfc
 export KRAMDOWN_NO_TARGETS := true
 export KRAMDOWN_PERSISTENT := true
 
+# Use an emoji for the favicon
+FAVICON_EMOJI ?=
+ifneq (,$(FAVICON_EMOJI))
+FAVICON ?= <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>$(FAVICON_EMOJI)</text></svg>">
+endif
+
 #  mmark (https://github.com/mmarkdown/mmark)
 mmark ?= mmark
 
@@ -39,7 +45,7 @@ oxtradoc ?= oxtradoc.in
 xsltproc ?= xsltproc
 
 # For sanity checkout your draft:
-#   https://www.ietf.org/tools/idnits
+#   https://github.com/ietf-tools/idnits
 idnits ?= idnits
 
 # For diff:
@@ -89,6 +95,15 @@ else
 ifeq (,$(KRAMDOWN_REFCACHEDIR))
 ifeq (true,$(CI))
 XML2RFC_REFCACHEDIR := $(realpath .)/.refcache
+# In CI, only cache drafts for 5 minutes to pick up on recent updates.
+export KRAMDOWN_REFCACHETTL := 300
+else
+# When running locally, cache drafts for a week.
+export KRAMDOWN_REFCACHETTL_RFC := 23673600
+# Cache IANA and DOI for 3 months since they change rarely.
+export KRAMDOWN_REFCACHETTL := 604800
+# Cache RFCs for 9 months since they are immutable.
+export KRAMDOWN_REFCACHETTL_DOI_IANA := 7776000
 endif
 XML2RFC_REFCACHEDIR ?= $(HOME)/.cache/xml2rfc
 KRAMDOWN_REFCACHEDIR := $(XML2RFC_REFCACHEDIR)

@@ -1,10 +1,14 @@
+# This file is not the same as other .mk files here.
+# It is not included from main.mk, rather it includes main.mk.
 .PHONY: setup
 setup: setup-default-branch setup-ghpages setup-precommit
 
 LIBDIR ?= lib
 include $(LIBDIR)/main.mk
 
-# Check that everything is ready
+# Check that everything is ready.
+# These checks are all safeguards to ensure that this process doesn't
+# damage the repository too much by accident.
 ifeq (,$(wildcard .git))
 $(error Please make sure that this is a git repository by running "git init")
 endif
@@ -19,7 +23,7 @@ LATEST_WARNING := $(strip $(foreach draft,$(filter-out rfc%,$(drafts_source)),\
 ifneq (,$(LATEST_WARNING))
 $(error Check names: $(LATEST_WARNING))
 endif
-ifneq (,$(strip $(shell git status -s --porcelain 2>/dev/null | grep -E -v '^.. (.gitignore|.targets.mk|$(LIBDIR)/?|$(LIBDIR)/.template-files.mk)$$')))
+ifneq (,$(strip $(shell git -c core.excludesfile=$(LIBDIR)/template/.gitignore status -s --porcelain 2>/dev/null | grep -v '^.. $(LIBDIR)')))
 $(error You have uncommitted changes or untracked files, please commit them before running setup)
 endif
 ifneq ($(GIT_REMOTE),$(shell git remote 2>/dev/null | grep '^$(GIT_REMOTE)$$'))
@@ -89,7 +93,7 @@ README.md: $(LIBDIR)/setup-readme.sh $(drafts_xml) $(filter %.md, $(TEMPLATE_FIL
 
 .PHONY: setup-note
 setup-note: $(LIBDIR)/setup-note.sh
-	$(LIBDIR)/setup-note.sh $(GITHUB_HOST) $(GITHUB_USER) $(GITHUB_REPO) $(drafts_source) >.note.xml
+	$(LIBDIR)/setup-note.sh $(GITHUB_HOST) $(GITHUB_USER) $(GITHUB_REPO) $(drafts_source)
 	if [ -s .note.xml ]; then git add .note.xml; fi
 
 .github/CODEOWNERS: $(LIBDIR)/setup-codeowners.py $(drafts_xml) $(DEPS_FILES)

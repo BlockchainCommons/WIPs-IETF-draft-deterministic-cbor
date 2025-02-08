@@ -25,17 +25,20 @@ endif
 
 .%.upload: %.xml
 	set -ex; tag="$(notdir $(basename $<))"; \
-	email="$$(git tag --list --format '%(taggeremail)' "$$tag" | sed -e 's/^<//;s/>$$//')"; \
-	[ -z "$$email" ] && email=$$(xmllint --xpath '/rfc/front/author[1]/address/email/text()' $< 2>/dev/null); \
-	[ -z "$$email" ] && ! echo "Unable to find email to use for submission." 1>&2; \
+	email="$$($(LIBDIR)/get-email.sh "$$tag" "$<")"; \
+	[ -z "$$email" ] && exit 1; \
 	replaces() { \
-	  last=($$(git log --follow --name-only --format=format: -- "$$1" | \
-		   sed -e '/^$$/d' | grep -v draft-todo-yourname-protocol | cut -f 2 | uniq | tail +2 | head -1)); \
-	  [ -z "$$last" ] && return; \
-	  echo -F; echo "replaces=$${last%.*}"; \
+	  [ "$${1##*-}" = "00" ] || return; \
+	  file="$$(git ls-files "$${1%-[0-9][0-9]}.*")"; \
+	  for last in $$(git log --follow --name-only --format=format: -- "$${file%-[0-9][0-9]}" | \
+		sed -e '/^$$/d' | grep -v draft-todo-yourname-protocol | cut -f 2 | uniq | tail +2); do \
+	    if [ -n "$$(git tag -l "$${last%.*}-[0-9][0-9]")" ]; then \
+	      echo -F; echo "replaces=$${last%.*}"; break; \
+	    fi; \
+	  done; \
 	}; \
 	$(if $(TRACE_FILE),$(trace) $< -s upload-request )$(curl) -D "$@" \
-	    -F "user=$$email" -F "xml=@$<" $$(replaces "$$(git ls-files "$${tag%-[0-9][0-9]}"'.*')") \
+	    -F "user=$$email" -F "xml=@$<" $$(replaces "$$tag") \
 	    "$(DATATRACKER_UPLOAD_URL)" && echo && \
 	  (head -1 "$@" | grep -q '^HTTP/\S\S* 20[01]\b' || $(trace) $< -s upload-result ! cat "$@" 1>&2)
 

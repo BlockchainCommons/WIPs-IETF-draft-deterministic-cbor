@@ -32,6 +32,12 @@ function get_title() {
     echo "${t[*]}"
 }
 
+if [[ "$OSTYPE" =~ (darwin|bsd).* ]] ; then
+  function sed_no_backup() { sed -i '' "$@" ; }
+else
+  function sed_no_backup() { sed -i "$@" ; }
+fi
+
 first=true
 for d in "$@"; do
     fullname="${d%.xml}"
@@ -45,7 +51,7 @@ for d in "$@"; do
 
         if [ "$author" = "ietf" ]; then
             status="Working Group"
-            status_full="IETF [${wgupper} Working Group](https://datatracker.ietf.org/wg/${wg}/documents/) Internet-Draft"
+            status_full="IETF [${wgupper} Working Group](https://datatracker.ietf.org/group/${wg}/documents/) Internet-Draft"
         else
             status="Individual"
             status_full="individual Internet-Draft"
@@ -119,8 +125,16 @@ if [ -n "$wg_all" ]; then
         ml_arch="$(xmllint --xpath '/response/objects/object[1]/list_archive/text()' "$tmp")"
         ml_sub="$(xmllint --xpath '/response/objects/object[1]/list_subscribe/text()' "$tmp")"
 
-        sed -i -e '/^## Working Group Info/,$ {1s///;t;d;}' CONTRIBUTING.md
+        # This little script probably needs some documentation:
+        # /^$/{H;d;} appends blank lines in the hold buffer, without printing them.
+        # /^## .*/d deletes from the the Working Group Info section header to the end.
+        # /./{x;/\n/{s/.//;p;};x;} prints a blank line before a non-blank line,
+        #    but only if the hold buffer has a blank line in it.
+        #    The s/.//;p; part ensures that an extra blank line isn't added by deleting one.
+        sed_no_backup -e '/^$/{H;d;};/^## Working Group Info/,$d;/./{x;/\n/{s/.//;p;};x;}' CONTRIBUTING.md
         cat >>CONTRIBUTING.md <<EOF
+
+
 ## Working Group Information
 
 Discussion of this work occurs on the [${group_name}

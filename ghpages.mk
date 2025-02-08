@@ -27,7 +27,11 @@ endif
 endif
 endif
 
-# Default to pushing if a key or token is available.
+# Disable pushing if we're not setup and for pull requests.
+# Otherwise, enable it if we appear to have credentials.
+ifeq (true,$(PRE_SETUP))
+PUSH_GHPAGES ?= false
+endif
 ifeq (pull_request,$(GITHUB_EVENT_NAME))
 PUSH_GHPAGES ?= false
 endif
@@ -72,11 +76,11 @@ endif
 
 GHPAGES_PUBLISHED := $(drafts_html) $(drafts_txt) $(GHPAGES_EXTRA)
 GHPAGES_INSTALLED := $(addprefix $(GHPAGES_TARGET)/,$(GHPAGES_PUBLISHED))
-$(GHPAGES_INSTALLED): $(GHPAGES_PUBLISHED) $(GHPAGES_TARGET)
+$(GHPAGES_INSTALLED): $(GHPAGES_PUBLISHED) $(GHPAGES_TARGET) | cleanup-ghpages
 	cp -f $(notdir $@) $@
 
 GHPAGES_ALL := $(GHPAGES_INSTALLED) $(GHPAGES_TARGET)/index.$(INDEX_FORMAT)
-$(GHPAGES_TARGET)/index.$(INDEX_FORMAT): $(GHPAGES_INSTALLED) $(DEPS_FILES)
+$(GHPAGES_TARGET)/index.$(INDEX_FORMAT): $(GHPAGES_INSTALLED) $(DEPS_FILES) | cleanup-ghpages
 	$(LIBDIR)/build-index.sh $(INDEX_FORMAT) "$(dir $@)" "$(SOURCE_BRANCH)" "$(GITHUB_HOST)" "$(GITHUB_USER)" "$(GITHUB_REPO)" $(drafts_source) >$@
 
 ifneq ($(GHPAGES_TARGET),$(GHPAGES_ROOT))
@@ -96,7 +100,8 @@ cleanup-ghpages: $(GHPAGES_ROOT)
 	  git remote prune $$remote; \
 	done;
 
-# Drop old ${PAGES_BRANCH} commits
+ifneq (true,$(CI))
+# Drop old ${PAGES_BRANCH} commits.
 # Retain $(GHPAGES_COMMIT_TTL) days of history.
 # Only run this if more than $(GHPAGES_COMMIT_TTL)*2 days of history exists.
 	@KEEP=$$((`date '+%s'`-($(GHPAGES_COMMIT_TTL)*86400))); \
@@ -109,6 +114,7 @@ cleanup-ghpages: $(GHPAGES_ROOT)
 		FILTER_BRANCH_SQUELCH_WARNING=1 git -C $(GHPAGES_ROOT) filter-branch ${PAGES_BRANCH}; \
 	  fi \
 	fi
+endif
 
 # Clean up obsolete directories
 # Keep old branches for $(GHPAGES_BRANCH_TTL) days after the last changes (on the ${PAGES_BRANCH} branch).
@@ -134,7 +140,7 @@ ifneq (,$(MAKE_TRACE))
 ghpages:
 	@$(call MAKE_TRACE,ghpages)
 else
-ghpages: cleanup-ghpages $(GHPAGES_ALL)
+ghpages: $(GHPAGES_ALL)
 	git -C $(GHPAGES_ROOT) add -f $(GHPAGES_ALL)
 	if test `git -C $(GHPAGES_ROOT) status --porcelain | grep '^[A-Z]' | wc -l` -gt 0; then \
 	  git -C $(GHPAGES_ROOT) $(CI_AUTHOR) commit -m "Script updating ${PAGES_BRANCH} from $(shell git rev-parse --short HEAD). [ci skip]"; fi

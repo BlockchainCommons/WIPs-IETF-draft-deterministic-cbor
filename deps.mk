@@ -104,6 +104,21 @@
 
 .PHONY: deps clean-deps update-deps
 
+# Make really doesn't handle spaces in filenames well.
+# Using $(realpath) exposes make to spaces in directory names above this one.
+# Though we might prefer to use $(realpath), this function operates a fallback
+# so that the full path is not used if there are spaces in directory names.
+ifeq ($(words $(realpath $(LIBDIR))),1)
+safe-realpath = $(realpath $(1))
+relative-paths := false
+else
+ifneq (,$(DISABLE_SPACES_WARNING))
+$(warning Your $$LIBDIR ($(LIBDIR)) contains spaces; some things might break.)
+endif
+safe-realpath = $(1)
+relative-paths := true
+endif
+
 ifeq (true,$(DISABLE_CACHE))
 no-cache := --no-cache
 no-cache-dir := --no-cache-dir
@@ -114,10 +129,10 @@ endif
 
 ifeq (true,$(CI))
 # Override VENVDIR so we can use caching in CI.
-VENVDIR = $(realpath .)/.venv
+VENVDIR = $(call safe-realpath,.)/.venv
 endif
 
-VENVDIR ?= $(realpath $(LIBDIR))/.venv
+VENVDIR ?= $(call safe-realpath,$(LIBDIR))/.venv
 REQUIREMENTS_TXT := $(wildcard requirements.txt)
 
 ifneq (,$(strip $(REQUIREMENTS_TXT)))
@@ -137,7 +152,7 @@ ifeq (true,$(CI))
 # Under CI, install from the local requirements.txt, but install globally (no venv).
 pip ?= pip3
 $(LOCAL_VENV):
-	$(pip) install $(no-cache-dir) $(foreach path,$(REQUIREMENTS_TXT),-r $(path))
+	"$(pip)" install --no-user $(no-cache-dir) $(foreach path,$(REQUIREMENTS_TXT),-r $(path))
 	@touch $@
 
 # No clean-deps target in CI..
@@ -162,8 +177,8 @@ endif
 clean-deps:: clean-venv
 endif # CI
 update-deps::
-	$(pip) install $(no-cache-dir) --upgrade --upgrade-strategy eager \
-	  $(foreach path,$(REQUIREMENTS_TXT),-r $(path))
+	"$(pip)" install --no-user $(no-cache-dir) --upgrade --upgrade-strategy eager \
+	  $(foreach path,$(REQUIREMENTS_TXT),-r "$(path)")
 endif # -e requirements.txt
 
 # Variable defaults for CI
@@ -183,42 +198,55 @@ BUNDLE_IGNORE_MESSAGES := true
 export BUNDLE_IGNORE_MESSAGES
 ifeq (true,$(CI))
 # Override BUNDLE_PATH so we can use caching in CI.
-BUNDLE_PATH := $(realpath .)/.gems
+BUNDLE_PATH := $(call safe-realpath,.)/.gems
 BUNDLE_DISABLE_VERSION_CHECK := true
 export BUNDLE_DISABLE_VERSION_CHECK
 endif
-export BUNDLE_PATH ?= $(realpath $(LIBDIR))/.gems
+BUNDLE_PATH ?= $(call safe-realpath,$(LIBDIR))/.gems
 # Install binaries to somewhere sensible instead of .../ruby/$v/bin where $v
 # doesn't even match the current ruby version.
-export BUNDLE_BIN := $(BUNDLE_PATH)/bin
+BUNDLE_BIN := $(BUNDLE_PATH)/bin
 export PATH := $(BUNDLE_BIN):$(PATH)
+ifeq (true,$(relative-paths))
+# This means that BUNDLE_PATH is relative, which bundler will interpret
+# as being relative to the Gemfile, not the current directory, so tweak
+# the two path settings for bundler.  After setting $PATH.
+# Thankfully, we don't install from $(LIBDIR)/Gemfile in CI, which
+# would mean that this would need to be "../.gems" there.
+$(warning Using a relative path for bundler)
+bundle-path-override-lib := BUNDLE_PATH=$(LIBDIR)/.gems BUNDLE_BIN=$(LIBDIR)/.gems/bin
+bundle-path-override := BUNDLE_PATH=.gems BUNDLE_BIN=.gems/bin
+endif
+export BUNDLE_PATH
+export BUNDLE_BIN
+
 
 ifneq (,$(wildcard Gemfile))
 # A local Gemfile exists.
 DEPS_FILES += Gemfile.lock
 Gemfile.lock: Gemfile
-	bundle install $(no-cache) --gemfile=$(realpath $<)
+	$(bundle-path-override-lib) bundle install $(no-cache) --gemfile="$(call safe-realpath,$<)"
 	@touch $@
 
 update-deps:: Gemfile
-	bundle update $(bundle-update-all) --gemfile=$(realpath $<)
+	$(bundle-path-override-lib) bundle update $(bundle-update-all) --gemfile="$(call safe-realpath,$<)"
 
 clean-deps::
-	-rm -rf $(BUNDLE_PATH)
+	-rm -rf "$(BUNDLE_PATH)"
 endif # Gemfile
 
 ifneq (true,$(CI))
 # Install kramdown-rfc.
 DEPS_FILES += $(LIBDIR)/Gemfile.lock
 $(LIBDIR)/Gemfile.lock: $(LIBDIR)/Gemfile
-	bundle install $(no-cache) --gemfile=$(realpath $<)
+	$(bundle-path-override) bundle install $(no-cache) --gemfile="$(call safe-realpath,$<)"
 	@touch $@
 
 update-deps:: $(LIBDIR)/Gemfile
-	bundle update $(bundle-update-all) --gemfile=$(realpath $<)
+	$(bundle-path-override) bundle update $(bundle-update-all) --gemfile="$(call safe-realpath,$<)"
 
 clean-deps::
-	-rm -rf $(BUNDLE_PATH)
+	-rm -rf "$(BUNDLE_PATH)"
 endif # !CI
 endif # !NO_RUBY
 
@@ -232,8 +260,8 @@ NO_NODEJS := true
 endif
 
 ifneq (true,$(NO_NODEJS))
-ifneq (,$(wildcard package.json))
 export PATH := $(abspath node_modules/.bin):$(PATH)
+ifneq (,$(wildcard package.json))
 DEPS_FILES += package-lock.json
 package-lock.json: package.json
 	npm install
