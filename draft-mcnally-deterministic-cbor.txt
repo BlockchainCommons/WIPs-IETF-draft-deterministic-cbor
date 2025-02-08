@@ -5,11 +5,11 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Experimental                         Blockchain Commons
-Expires: 8 February 2025                                      C. Bormann
+Expires: 11 August 2025                                       C. Bormann
                                                   Universität Bremen TZI
                                                             L. Lundblade
                                                      Security Theory LLC
-                                                           7 August 2024
+                                                         7 February 2025
 
 
             dCBOR: A Deterministic CBOR Application Profile
@@ -55,11 +55,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 February 2025.
+   This Internet-Draft will expire on 11 August 2025.
 
 Copyright Notice
 
-   Copyright (c) 2024 IETF Trust and the persons identified as the
+   Copyright (c) 2025 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -627,9 +627,9 @@ Table of Contents
 8.1.  Normative References
 
    [CDE]      Bormann, C., "CBOR Common Deterministic Encoding (CDE)",
-              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-05,
-              25 July 2024, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-cbor-cde-05>.
+              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-07,
+              21 January 2025, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-cbor-cde-07>.
 
    [IANACBORTAGS]
               IANA, "Concise Binary Object Representation (CBOR) Tags",
@@ -692,9 +692,9 @@ Table of Contents
    [GordianEnvelope]
               McNally, W. and C. Allen, "The Gordian Envelope Structured
               Data Format", Work in Progress, Internet-Draft, draft-
-              mcnally-envelope-07, 31 March 2024,
+              mcnally-envelope-08, 24 September 2024,
               <https://datatracker.ietf.org/doc/html/draft-mcnally-
-              envelope-07>.
+              envelope-08>.
 
    [RFC7942]  Sheffer, Y. and A. Farrel, "Improving Awareness of Running
               Code: The Implementation Status Section", BCP 205,
