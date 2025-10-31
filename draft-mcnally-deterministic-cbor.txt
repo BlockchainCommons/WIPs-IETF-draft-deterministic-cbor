@@ -4,15 +4,15 @@
 
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
-Intended status: Experimental                         Blockchain Commons
-Expires: 11 August 2025                                       C. Bormann
+Intended status: Standards Track                      Blockchain Commons
+Expires: 4 May 2026                                           C. Bormann
                                                   Universität Bremen TZI
                                                             L. Lundblade
                                                      Security Theory LLC
-                                                         7 February 2025
+                                                         31 October 2025
 
 
-            dCBOR: A Deterministic CBOR Application Profile
+                       dCBOR: Deterministic CBOR
                 draft-mcnally-deterministic-cbor-latest
 
 Abstract
@@ -21,12 +21,9 @@ Abstract
    data items are encoded into identical byte streams.  CBOR (RFC 8949)
    defines "Deterministically Encoded CBOR" in its Section 4.2, but
    leaves some important choices up to the application developer.  The
-   CBOR Common Deterministic Encoding (CDE) Internet Draft builds on
-   this by specifying a baseline for application profiles that wish to
-   implement deterministic encoding with CBOR.  The present document
-   provides an application profile "dCBOR" that can be used to help
-   achieve interoperable deterministic encoding based on CDE for a
-   variety of applications wishing an even narrower and clearly defined
+   present document specifies dCBOR, a set of narrowing rules for CBOR
+   that can be used to help achieve interoperable deterministic encoding
+   for a variety of applications desiring a narrow and clearly defined
    set of choices.
 
 About This Document
@@ -55,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 August 2025.
+   This Internet-Draft will expire on 4 May 2026.
 
 Copyright Notice
 
@@ -75,12 +72,14 @@ Table of Contents
 
    1.  Introduction
      1.1.  Conventions and Definitions
-   2.  Application Profile
-     2.1.  Common Deterministic Encoding Conformance
-     2.2.  Duplicate Map Keys
-     2.3.  Numeric Reduction
-     2.4.  Simple Values
-     2.5.  Strings
+   2.  Narrowing Rules
+     2.1.  Definite Length Items
+     2.2.  Preferred Serialization
+     2.3.  Ordered Map Keys
+     2.4.  Duplicate Map Keys
+     2.5.  Numeric Reduction
+     2.6.  Simple Values
+     2.7.  Strings
    3.  CDDL support, Declarative Tag
    4.  Implementation Status
      4.1.  Swift
@@ -92,9 +91,16 @@ Table of Contents
    7.  Appendix A: dCBOR Numeric Test Vectors
      7.1.  dCBOR Numeric Encodings
      7.2.  Invalid dCBOR Encodings
-   8.  References
-     8.1.  Normative References
-     8.2.  Informative References
+   8.  Appendix B: Design Principles
+     8.1.  Why Numeric Reduction?
+     8.2.  Why Not undefined?
+     8.3.  Why only a single NaN?
+     8.4.  Why not other simple values?
+     8.5.  Limiting Principles
+     8.6.  Why not define an API?
+   9.  References
+     9.1.  Normative References
+     9.2.  Informative References
    Acknowledgments
    Authors' Addresses
 
@@ -113,15 +119,12 @@ Table of Contents
    serialization and validation of deterministic encoding during
    deserialization on the engineer.  Furthermore, the specification
    leaves a number of important decisions around determinism up to the
-   application developer.  The CBOR Common Deterministic Encoding (CDE)
-   Internet Draft [CDE] builds on the basic CBOR specification by
-   providing a baseline for application profiles that wish to implement
-   deterministic encoding with CBOR.
+   application developer.
 
-   This document narrows CDE further into a set of requirements for the
-   application profile "dCBOR".  These requirements include but go
-   beyond CDE, including requiring that dCBOR decoders validate that
-   encoded CDE conforms to the requirements of this document.
+   This document narrows CBOR to a set of requirements called "dCBOR".
+   These requirements include choices left open in CBOR, but also go
+   beyond, including requiring that dCBOR decoders validate that encoded
+   CBOR conforms to the requirements of this document.
 
 1.1.  Conventions and Definitions
 
@@ -131,60 +134,92 @@ Table of Contents
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-2.  Application Profile
+2.  Narrowing Rules
 
-   The dCBOR Application Profile specifies the use of Deterministic
-   Encoding as defined in [CDE] and adds several exclusions and
-   reductions specified in this section.
+   This section specifies the exclusions and reductions that dCBOR
+   applies to CBOR.
 
-   Just as CDE does not "fork" CBOR, the rules specified here do not
-   "fork" CDE: A dCBOR implementation produces well-formed,
-   deterministically encoded CDE according to [CDE], and existing CBOR
-   or CDE decoders will therefore be able to decode it.  Similarly, CBOR
-   or CDE encoders will be able to produce valid dCBOR if handed dCBOR
-   conforming data model level information from an application.
+   The rules specified here do not "fork" CBOR: A dCBOR implementation
+   produces well-formed, deterministically encoded CBOR according to
+   [RFC8949], and existing CBOR decoders will therefore be able to
+   decode it.  Similarly, CBOR encoders will be able to produce valid
+   dCBOR if handed dCBOR-conforming data model level information from an
+   application.
 
-   Note that the separation between standard CBOR or CDE processing and
-   the processing required by the dCBOR application profile is a
-   conceptual one: Both dCBOR processing and standard CDE/CBOR
-   processing may be combined into a unified dCBOR/CDE/CBOR codec.  The
-   requirements in this document apply to encoding or decoding of dCBOR
-   data, regardless of whether the codec is a unified dCBOR/CDE/CBOR
-   codec operating in dCBOR-compliant modes, or a single-purpose dCBOR
-   codec.  Both of these are generically referred to as "dCBOR codecs"
-   in this document.
+   Note that the separation between standard CBOR processing and the
+   processing required by the dCBOR rules is a conceptual one: Both
+   dCBOR processing and standard CBOR processing may be combined into a
+   unified dCBOR/CBOR codec.  The requirements in this document apply to
+   encoding or decoding of dCBOR data, regardless of whether the codec
+   is a unified dCBOR/CBOR codec operating in dCBOR-compliant modes, or
+   a single-purpose dCBOR codec.  Both of these are generically referred
+   to as "dCBOR codecs" in this document.
 
-   This application profile is intended to be used in conjunction with
-   an application, which typically will use a subset of CDE/CBOR, which
-   in turn influences which subset of the application profile is used.
-   As a result, this application profile places no direct requirement on
-   what subset of CDE/CBOR is implemented.  For instance, there is no
-   requirement that dCBOR implementations support floating point numbers
-   (or any other kind of non-basic integer type, such as arbitrary
-   precision integers or complex numbers) when they are used with
-   applications that do not use them.  However, this document does place
-   requirements on dCBOR implementations that support negative 64-bit
-   integers and 64-bit or smaller floating point numbers.
+   dCBOR is intended to be used in conjunction with an application,
+   which typically will use a subset of CBOR, which in turn influences
+   which subset of dCBOR that is used.  As a result, dCBOR places no
+   direct requirement on what subset of CBOR is implemented.  For
+   instance, there is no requirement that dCBOR implementations support
+   floating point numbers (or any other kind of non-basic integer type,
+   such as arbitrary precision integers or complex numbers) when they
+   are used with applications that do not use them.  However, this
+   document does place requirements on dCBOR implementations that
+   support negative 64-bit integers and 64-bit or smaller floating point
+   numbers.
 
-2.1.  Common Deterministic Encoding Conformance
+2.1.  Definite Length Items
+
+   CBOR [RFC8949] allows both "definite-length" and "indefinite-length"
+   items for byte strings, text strings, arrays, and maps (§3.2).
 
    dCBOR encoders:
 
-   1.  MUST only emit CBOR conforming "CBOR Common Deterministic
-       Encoding (CDE)" [CDE], including mandated preferred encoding of
-       integers and floating point numbers and the lexicographic
-       ordering of map keys.
+   1.  MUST only emit "definite-length" items for byte strings, text
+       strings, arrays, and maps.
 
    dCBOR decoders:
 
-   2.  MUST validate that encoded CBOR conforms to the requirements of
-       [CDE].
+   2.  MUST reject any encoded "indefinite-length" items for byte
+       strings, text strings, arrays, and maps.
 
-2.2.  Duplicate Map Keys
+2.2.  Preferred Serialization
+
+   CBOR [RFC8949] allows multiple possible encodings for the same data
+   item, and defines a "preferred serialization" in §4.1 to be used for
+   deterministic encoding.
+
+   dCBOR encoders:
+
+   1.  MUST only emit "preferred serialization".
+
+   dCBOR decoders:
+
+   2.  MUST validate that encoded CBOR conforms to "preferred
+       serialization", and reject any encoded CBOR that does not
+       conform.
+
+2.3.  Ordered Map Keys
+
+   The last bullet item of CBOR [RFC8949] §4.2.1 defines a "bytewise
+   lexicographic order" for map keys to be used for deterministic
+   encoding.
+
+   dCBOR encoders:
+
+   1.  MUST only emit CBOR maps with keys in "bytewise lexicographic
+       order".
+
+   dCBOR decoders:
+
+   2.  MUST validate that encoded CBOR maps have keys in "bytewise
+       lexicographic order", and reject any encoded maps that do not
+       conform.
+
+2.4.  Duplicate Map Keys
 
    CBOR [RFC8949] defines maps with duplicate keys as invalid, but
    leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4,
-   §5.6).  [CDE] provides no additional mandates on this issue.
+   §5.6).
 
    dCBOR encoders:
 
@@ -194,7 +229,7 @@ Table of Contents
 
    2.  MUST reject encoded maps with duplicate keys.
 
-2.3.  Numeric Reduction
+2.5.  Numeric Reduction
 
    The purpose of determinism is to ensure that semantically equivalent
    data items are encoded into identical byte streams.  Numeric
@@ -220,10 +255,10 @@ Table of Contents
        the basic integer 0 (with preferred encoding 0x00).
 
       |  Note that numeric reduction means that some maps that are valid
-      |  CDE/CBOR cannot be reduced to valid dCBOR maps, as numeric
+      |  CBOR cannot be reduced to valid dCBOR maps, as numeric
       |  reduction can result in multiple entries with the same keys
-      |  ("duplicate keys").  For example, the following is a valid
-      |  CBOR/CDE map:
+      |  ("duplicate keys").  For example, the following is a valid CBOR
+      |  map:
       |  
       |     {
       |        10: "ten",
@@ -231,7 +266,6 @@ Table of Contents
       |     }
       |  
       |         Figure 1: Valid CBOR data item with numeric map keys
-      |                           (also valid CDE)
       |  
       |  Applying numeric reduction to this map would yield the invalid
       |  map:
@@ -255,7 +289,7 @@ Table of Contents
    3.  MUST reject any encoded floating point values that are not
        encoded according to the above rules.
 
-2.4.  Simple Values
+2.6.  Simple Values
 
    Only the three "simple" (major type 7) values false (0xf4), true
    (0xf5), and null (0xf6) and the floating point values are valid in
@@ -271,12 +305,18 @@ Table of Contents
    2.  MUST reject any encoded major type 7 values other than false,
        true, null, and the floating point values.
 
-2.5.  Strings
+2.7.  Strings
+
+   CBOR [RFC8949] allows text strings to be any valid UTF-8 string
+   (§3.1).  However, Unicode character sequences can represent the same
+   text string in different ways, leading to variability in the encoding
+   of semantically equivalent data items.  Unicode Normalization Form C
+   (NFC) [UNICODE-NORM] is a commonly used normalization form that
+   eliminates such variability.
 
    dCBOR encoders:
 
-   1.  MUST only emit text strings that are in Unicode Normalization
-       Form C (NFC) [UNICODE-NORM].
+   1.  MUST only emit text strings that are in NFC.
 
    dCBOR decoders:
 
@@ -284,24 +324,20 @@ Table of Contents
 
 3.  CDDL support, Declarative Tag
 
-   Similar to the CDDL [RFC8610] support in CDE [CDE], this
-   specification adds two CDDL control operators that can be used to
-   specify that the data items should be encoded in CBOR Common
-   Deterministic Encoding (CDE), with the dCBOR application profile
-   applied as well.
+   CDDL [RFC8610] is a widely used language for specifying CBOR data
+   models.  This specification adds two CDDL control operators that can
+   be used to specify that the data items should be encoded in dCBOR.
 
-   The control operators .dcbor and .dcborseq are exactly like .cde and
-   .cdeseq except that they also require the encoded data item(s) to
-   conform to the dCBOR application profile.
+   The control operators .dcbor and .dcborseq are exactly like .cbor and
+   .cborseq as defined in [RFC8610] except that they also require the
+   encoded data item(s) to conform to dCBOR.
 
    Tag 201 (Section 6) is defined in this specification as a way to
-   declare its tag content to conform to the dCBOR application profile
-   at the data model level.  As a result, when this data item is encoded
-   using CDE rules, the encoded result will conform to dCBOR also at the
-   encoded data item level.  (In conjunction with this semantics, tag
-   201 may also be employed as a boundary marker leading from an overall
-   structure to specific application data items; see Section 3 of
-   [GordianEnvelope] for an example for this usage.)
+   declare its tag content to conform to dCBOR at the data model level
+   and the encoded data item level.  (In conjunction with these
+   semantics, tag 201 may also be employed as a boundary marker leading
+   from an overall structure to specific application data items; see
+   Section 3 of [GordianEnvelope] for an example for this usage.)
 
 4.  Implementation Status
 
@@ -622,14 +658,223 @@ Table of Contents
 
                                   Table 4
 
-8.  References
+8.  Appendix B: Design Principles
 
-8.1.  Normative References
+   dCBOR has a single overriding goal: to facilitate _determinism_.
 
-   [CDE]      Bormann, C., "CBOR Common Deterministic Encoding (CDE)",
-              Work in Progress, Internet-Draft, draft-ietf-cbor-cde-07,
-              21 January 2025, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-cbor-cde-07>.
+   This means to ensure or facilitate, as much as possible, that
+   semantically equivalent data items are encoded as identical byte
+   streams.
+
+   In general, this means reducing or eliminating _variability_ in the
+   encoding of data items.  Variability arises where more than one valid
+   encoding is possible for a given data item, and a protocol designer
+   must make a choice as to which encoding to use.  These choices can be
+   arbitrary, and different protocol designers may make different
+   arbitrary, and equally valid choices.
+
+   One of the most common examples of this arises with typed numeric
+   values, where a numeric field must be pre-assigned a type (e.g.,
+   signed or unsigned integer of 8, 16, 32, or 64 bits, floating point
+   of 16, 32, or 64 bits, etc.)  CBOR's basic numeric data model is
+   typed, and requires that numeric values be encoded according to their
+   type.  This is a cognitive burden on protocol designers, and a source
+   of variability, since there may be several ways to encode a given
+   numeric value depending on the type assigned to it.  Many developers
+   would prefer to encode numeric values without worrying about types,
+   and let the encoding format handle the details, including ensuring
+   deterministic encoding.
+
+   While dCBOR cannot automatically eliminate all variability in the
+   design of deterministic protocols, it can provide a set of narrowing
+   rules within its scope and level of abstraction that reduce the
+   number of choices that protocol designers need to make.
+
+   dCBOR makes no claim that these are the _only_ or _best_ possible
+   narrowing rules for deterministic encoding for every application.
+   But dCBOR does provide a set of well-defined, easy-to-understand, and
+   easy-to-implement rules that can be deployed as a package to
+   facilitate deterministic encoding for a wide variety of applications.
+   Making these choices at the dCBOR level reduces cognitive burden for
+   protocol designers, and decreases the risk of interoperability
+   problems between different implementations.
+
+   +=====================================+============================+
+   | Variability Source                  | dCBOR Rule                 |
+   +=====================================+============================+
+   | Indefinite or definite length items | Only definite Length Items |
+   +-------------------------------------+----------------------------+
+   | Multiple possible encodings for     | Only preferred             |
+   | same data item                      | serialization              |
+   +-------------------------------------+----------------------------+
+   | Different orders for map keys       | Only ordered map Keys      |
+   +-------------------------------------+----------------------------+
+   | Duplicate map keys                  | Duplicate Map Keys         |
+   |                                     | disallowed                 |
+   +-------------------------------------+----------------------------+
+   | Semantically equivalent numeric     | Only a single encoding for |
+   | values (e.g., 0, 0.0, -0.0)         | each distinct value        |
+   +-------------------------------------+----------------------------+
+   | Choice of null or undefined         | Only null                  |
+   +-------------------------------------+----------------------------+
+   | Simple values other than false,     | Only false, true, null     |
+   | true, null                          |                            |
+   +-------------------------------------+----------------------------+
+   | Nontrivial NaNs (sign, signaling,   | Single NaN                 |
+   | payloads)                           |                            |
+   +-------------------------------------+----------------------------+
+   | Equivalent strings with multiple    | Only NFC text strings      |
+   | Unicode representations             |                            |
+   +-------------------------------------+----------------------------+
+
+                                 Table 5
+
+   The sections below explain the rationale for some of these choices.
+
+8.1.  Why Numeric Reduction?
+
+   The numeric model of [RFC8949] provides three kinds of basic numeric
+   types: unsigned integers (Major Type 0), negative integers (Major
+   Type 1), and floating point numbers (Shares major Type 7 with Simple
+   Values).  Not all applications require floating point values, and
+   those that do not are unaffected by the presence of floating point
+   numbers in the CBOR model.  However, the RFC introduces the
+   possibility of variability in certain places.  For example, §3.4.2
+   defines Tag 1 as "Epoch-Based Date/Time":
+
+      Tag number 1 contains a numerical value counting the number of
+      seconds from 1970-01-01T00:00Z in UTC time to the represented
+      point in civil time.
+
+      The tag content MUST be an unsigned or negative integer (major
+      types 0 and 1) or a floating-point number (major type 7 with
+      additional information 25, 26, or 27).  Other contained types are
+      invalid.
+
+   An inhabitant of Tag 1, as long as it represents an integral number
+   of seconds since the epoch, could therefore be encoded as an integer
+   _or_ a floating point number. dCBOR's numeric reduction rule ensures
+   that such values are always encoded as integers, eliminating
+   variability in the encoding of such values.
+
+   But this raises a larger policy question for determinism: If two
+   numeric values are semantically equal, should they be encoded
+   identically? dCBOR answers "yes" to this question, and numeric
+   reduction is the mechanism by which this is achieved.  This choice
+   answers the determinism question in a way that is simple to
+   understand and implement, and that works well for the vast majority
+   of applications.  The serialization is still typed, but the burden of
+   choosing types is reduced for protocol designers, who can simply
+   specify numeric fields without worrying about the details of how
+   those numbers will be encoded.
+
+8.2.  Why Not undefined?
+
+   How to represent an absent value is a perennial question in data
+   modeling.  In general it is useful to have a value that represents a
+   placeholder for a position where a value _could_ be present but is
+   not.  This could be used in a map to indicate that a key is bound but
+   has no value, or in an array to indicate that a value at a particular
+   index is absent.  There are other sorts of absence as well, such as
+   the absence of a key in a map. dCBOR cannot address all of these
+   different notions of absence, but can and does address the lack of
+   semantic clarity around the choice between null and undefined by
+   choosing null as the sole representation of a placeholder for an
+   absent value. null is widely used in data modeling, and has a clear
+   and unambiguous meaning.  In contrast, undefined is less commonly
+   used, and its meaning can be ambiguous.  By choosing null, dCBOR
+   provides a single clear way to represent absent values, reducing
+   variability.
+
+8.3.  Why only a single NaN?
+
+   How to represent the result of a computation like 1.0 / 0.0 is
+   another perennial question in data modeling.  The [IEEE754] floating
+   point standard answers this question with the concept of "Not a
+   Number" (NaN): a special value that represents an unrepresentable or
+   undefined numerical result.  However, the standard also specifies
+   several bit fields within the NaN representation that can vary,
+   including the sign bit, whether the NaN is "quiet" or "signaling",
+   and a payload field.  These formations are useful in certain
+   computational contexts, but have no general meaning in data modeling.
+
+   The problem of NaN is complicated by the fact that IEEE 754 specifies
+   that all NaN values compare as "not equal" to all other numeric
+   values, including themselves.  This means that comparing any two NaN
+   values, including identical ones, will always yield "not equal".  The
+   deeper problem this raises is that if you want to know what data a
+   NaN might carry in its payload, you have to go to extraordinary
+   lengths to extract that information, since you cannot simply compare
+   two NaN values to determine whether they are the same.
+
+   This not only raises deterministic variability issues (the array [1,
+   NaN, 3] could be encoded in multiple ways depending on the NaN
+   representation used), but also security issues as an attacker could
+   use different NaN representations to exfiltrate data or hide
+   malicious payloads, knowing that any comparison of NaN values will
+   fail.
+
+   Given that NaN has utility in general data modeling, but its
+   specification complexities raise both determinism and security
+   issues, dCBOR chooses to simplify the situation by requiring that all
+   NaN values be encoded as the single quiet NaN value having the half-
+   width CBOR representation 0xf97e00.
+
+8.4.  Why not other simple values?
+
+   [RFC8949] Major Type 7 defines a space of 256 code points for "simple
+   values", and §3.3 defines four simple values and assigns them code
+   points in the Major Type 7 space: false (20), true (21), null (22),
+   and undefined (23).  We have already discussed the choice of null
+   over undefined.  However, the remaining code points in this space are
+   listed as either "unassigned" or "reserved" and delegates the
+   registry of simple values to the IANA CBOR Simple Tags Registry
+   [IANASIMPLEVALUES], which lists no assigned values other than those
+   four.
+
+   The implication of this is that the semantics of these other simple
+   values are officially undefined, and they cannot simply be used as
+   application-defined values without risking interoperability issues.
+   dCBOR therefore chooses to limit use of simple values to the three
+   well-defined values false, true, and null, which are widely used in
+   data modeling and have clear and unambiguous meanings.
+
+8.5.  Limiting Principles
+
+   A limiting principle of dCBOR is that it concerns itself with the
+   most common data items used in CBOR applications.  As a result, dCBOR
+   does not place requirements on the encoding or decoding of CBOR data
+   items that are less commonly used in practice, such as bignums,
+   complex numbers, or other tagged data items. dCBOR implementations
+   are not required to support these data items, but if they do, they
+   must support them within the rules of dCBOR.
+
+   Tags provide a useful "escape hatch" for applications that need to
+   use data items not covered by dCBOR.  For example, dCBOR applications
+   can freely use Tag 2 or Tag 3 to encode bignums, which contain byte
+   strings, and on which dCBOR places no restrictions beyond those that
+   apply to all byte strings (definite length only).  Similarly, the
+   rare applications that need to convey nontrivial NaN values can use
+   Tag 80, 81, or 82 as defined in the IANA CBOR Tags Registery
+   [IANACBORTAGS].  These tags use byte strings to encode arrays of
+   fixed-length IEEE 754 floating point values in big-endian byte order.
+
+8.6.  Why not define an API?
+
+   Because dCBOR mandates strictness in both encoding and decoding, and
+   because of mechanisms it introduces such as numeric reduction, the
+   question arises as to whether this document should specify an API, or
+   at least a set of best practices, for dCBOR codec APIs.  The authors
+   acknowledge that such guidance might be useful, but since the purpose
+   of dCBOR is to provide a deterministic encoding format, and because
+   APIs can vary widely between programming languages and environments,
+   the authors have chosen to not widen the scope of this document.  We
+   direct the reader to the several existing dCBOR implementations for
+   guidance on API design.
+
+9.  References
+
+9.1.  Normative References
 
    [IANACBORTAGS]
               IANA, "Concise Binary Object Representation (CBOR) Tags",
@@ -637,6 +882,14 @@ Table of Contents
 
    [IANACDDL] IANA, "Concise Data Definition Language (CDDL)",
               <https://www.iana.org/assignments/cddl>.
+
+   [IANASIMPLEVALUES]
+              IANA, "Concise Binary Object Representation (CBOR) Simple
+              Values",
+              <https://www.iana.org/assignments/cbor-simple-values>.
+
+   [IEEE754]  "IEEE Standard for Floating-Point Arithmetic", n.d.,
+              <https://ieeexplore.ieee.org/document/8766229>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -662,7 +915,7 @@ Table of Contents
               "Unicode Normalization Forms", n.d.,
               <https://unicode.org/reports/tr15/>.
 
-8.2.  Informative References
+9.2.  Informative References
 
    [BCRustDCBOR]
               McNally, W., "Deterministic CBOR (dCBOR) for Rust.", n.d.,
@@ -692,9 +945,9 @@ Table of Contents
    [GordianEnvelope]
               McNally, W. and C. Allen, "The Gordian Envelope Structured
               Data Format", Work in Progress, Internet-Draft, draft-
-              mcnally-envelope-08, 24 September 2024,
+              mcnally-envelope-10, 30 September 2025,
               <https://datatracker.ietf.org/doc/html/draft-mcnally-
-              envelope-08>.
+              envelope-10>.
 
    [RFC7942]  Sheffer, Y. and A. Farrel, "Improving Awareness of Running
               Code: The Implementation Status Section", BCP 205,
@@ -703,8 +956,8 @@ Table of Contents
 
 Acknowledgments
 
-   The authors are grateful for the contributions of Joe Hildebrand and
-   Anders Rundgren in the CBOR working group.
+   The authors are grateful for the contributions of Joe Hildebrand,
+   Rohan Mahy, and Anders Rundgren in the CBOR working group.
 
 Authors' Addresses
 

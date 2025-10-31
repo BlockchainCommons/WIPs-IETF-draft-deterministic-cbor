@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>dCBOR: A Deterministic CBOR Application Profile</title>
+<title>dCBOR: Deterministic CBOR</title>
 <meta content="Wolf McNally" name="author">
 <meta content="Christopher Allen" name="author">
 <meta content="Carsten Bormann" name="author">
 <meta content="Laurence Lundblade" name="author">
 <meta content='
-       The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2, but leaves some important choices up to the application developer. The CBOR Common Deterministic Encoding (CDE) Internet Draft builds on this by specifying a baseline for application profiles that wish to implement deterministic encoding with CBOR. The present document provides an application profile "dCBOR" that can be used to help achieve interoperable deterministic encoding based on CDE for a variety of applications wishing an even narrower and clearly defined set of choices. 
+       The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2, but leaves some important choices up to the application developer. The present document specifies dCBOR, a set of narrowing rules for CBOR that can be used to help achieve interoperable deterministic encoding for a variety of applications desiring a narrow and clearly defined set of choices. 
     ' name="description">
 <meta content="xml2rfc 3.17.1" name="generator">
 <meta content="Internet-Draft" name="keyword">
@@ -1048,11 +1048,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">dCBOR</td>
-<td class="right">February 2025</td>
+<td class="right">October 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">McNally, et al.</td>
-<td class="center">Expires 11 August 2025</td>
+<td class="center">Expires 4 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-mcnally-deterministic-cbor-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-02-07" class="published">7 February 2025</time>
+<time datetime="2025-10-31" class="published">31 October 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
-<dd class="intended-status">Experimental</dd>
+<dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2025-08-11">11 August 2025</time></dd>
+<dd class="expires"><time datetime="2026-05-04">4 May 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1092,10 +1092,10 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </dd>
 </dl>
 </div>
-<h1 id="title">dCBOR: A Deterministic CBOR Application Profile</h1>
+<h1 id="title">dCBOR: Deterministic CBOR</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2, but leaves some important choices up to the application developer. The CBOR Common Deterministic Encoding (CDE) Internet Draft builds on this by specifying a baseline for application profiles that wish to implement deterministic encoding with CBOR. The present document provides an application profile "dCBOR" that can be used to help achieve interoperable deterministic encoding based on CDE for a variety of applications wishing an even narrower and clearly defined set of choices.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. CBOR (RFC 8949) defines "Deterministically Encoded CBOR" in its Section 4.2, but leaves some important choices up to the application developer. The present document specifies dCBOR, a set of narrowing rules for CBOR that can be used to help achieve interoperable deterministic encoding for a variety of applications desiring a narrow and clearly defined set of choices.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
       <h2 id="name-about-this-document">
@@ -1126,7 +1126,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 August 2025.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 4 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1164,22 +1164,28 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
-            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-application-profile" class="internal xref">Application Profile</a></p>
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-narrowing-rules" class="internal xref">Narrowing Rules</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-common-deterministic-encodi" class="internal xref">Common Deterministic Encoding Conformance</a></p>
+                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-definite-length-items" class="internal xref">Definite Length Items</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
-                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-duplicate-map-keys" class="internal xref">Duplicate Map Keys</a></p>
+                <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="auto internal xref">2.2</a>.  <a href="#name-preferred-serialization" class="internal xref">Preferred Serialization</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.3">
-                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-numeric-reduction" class="internal xref">Numeric Reduction</a></p>
+                <p id="section-toc.1-1.2.2.3.1"><a href="#section-2.3" class="auto internal xref">2.3</a>.  <a href="#name-ordered-map-keys" class="internal xref">Ordered Map Keys</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.4">
-                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-simple-values" class="internal xref">Simple Values</a></p>
+                <p id="section-toc.1-1.2.2.4.1"><a href="#section-2.4" class="auto internal xref">2.4</a>.  <a href="#name-duplicate-map-keys" class="internal xref">Duplicate Map Keys</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.5">
-                <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="auto internal xref">2.5</a>.  <a href="#name-strings" class="internal xref">Strings</a></p>
+                <p id="section-toc.1-1.2.2.5.1"><a href="#section-2.5" class="auto internal xref">2.5</a>.  <a href="#name-numeric-reduction" class="internal xref">Numeric Reduction</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.6">
+                <p id="section-toc.1-1.2.2.6.1"><a href="#section-2.6" class="auto internal xref">2.6</a>.  <a href="#name-simple-values" class="internal xref">Simple Values</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.7">
+                <p id="section-toc.1-1.2.2.7.1"><a href="#section-2.7" class="auto internal xref">2.7</a>.  <a href="#name-strings" class="internal xref">Strings</a></p>
 </li>
             </ul>
 </li>
@@ -1221,21 +1227,44 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
-            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-references" class="internal xref">References</a></p>
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-appendix-b-design-principle" class="internal xref">Appendix B: Design Principles</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.1">
-                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+                <p id="section-toc.1-1.8.2.1.1"><a href="#section-8.1" class="auto internal xref">8.1</a>.  <a href="#name-why-numeric-reduction" class="internal xref">Why Numeric Reduction?</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.2">
-                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+                <p id="section-toc.1-1.8.2.2.1"><a href="#section-8.2" class="auto internal xref">8.2</a>.  <a href="#name-why-not-undefined" class="internal xref">Why Not <code>undefined</code>?</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.3">
+                <p id="section-toc.1-1.8.2.3.1"><a href="#section-8.3" class="auto internal xref">8.3</a>.  <a href="#name-why-only-a-single-nan" class="internal xref">Why only a single <code>NaN</code>?</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.4">
+                <p id="section-toc.1-1.8.2.4.1"><a href="#section-8.4" class="auto internal xref">8.4</a>.  <a href="#name-why-not-other-simple-values" class="internal xref">Why not other simple values?</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.5">
+                <p id="section-toc.1-1.8.2.5.1"><a href="#section-8.5" class="auto internal xref">8.5</a>.  <a href="#name-limiting-principles" class="internal xref">Limiting Principles</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8.2.6">
+                <p id="section-toc.1-1.8.2.6.1"><a href="#section-8.6" class="auto internal xref">8.6</a>.  <a href="#name-why-not-define-an-api" class="internal xref">Why not define an API?</a></p>
 </li>
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
-            <p id="section-toc.1-1.9.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
-            <p id="section-toc.1-1.10.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
+            <p id="section-toc.1-1.10.1"><a href="#appendix-A" class="auto internal xref"></a><a href="#name-acknowledgments" class="internal xref">Acknowledgments</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#appendix-B" class="auto internal xref"></a><a href="#name-authors-addresses" class="internal xref">Authors' Addresses</a></p>
 </li>
         </ul>
 </nav>
@@ -1247,8 +1276,8 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
       </h2>
 <p id="section-1-1">CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> has many advantages over other data serialization formats. One of its strengths is specifications and guidelines for serializing data deterministically, such that multiple agents serializing the same data automatically achieve consensus on the exact byte-level form of that serialized data. This is particularly useful when data must be compared for semantic equivalence by comparing the hash of its contents.<a href="#section-1-1" class="pilcrow">¶</a></p>
-<p id="section-1-2">Nonetheless, determinism is an opt-in feature of CBOR, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. Furthermore, the specification leaves a number of important decisions around determinism up to the application developer. The CBOR Common Deterministic Encoding (CDE) Internet Draft <span>[<a href="#CDE" class="cite xref">CDE</a>]</span> builds on the basic CBOR specification by providing a baseline for application profiles that wish to implement deterministic encoding with CBOR.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">This document narrows CDE further into a set of requirements for the application profile "dCBOR". These requirements include but go beyond CDE, including requiring that dCBOR decoders validate that encoded CDE conforms to the requirements of this document.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-2">Nonetheless, determinism is an opt-in feature of CBOR, and most existing CBOR codecs put the primary burden of correct deterministic serialization and validation of deterministic encoding during deserialization on the engineer. Furthermore, the specification leaves a number of important decisions around determinism up to the application developer.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">This document narrows CBOR to a set of requirements called "dCBOR". These requirements include choices left open in CBOR, but also go beyond, including requiring that dCBOR decoders validate that encoded CBOR conforms to the requirements of this document.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <div id="conventions-and-definitions">
 <section id="section-1.1">
         <h3 id="name-conventions-and-definitions">
@@ -1262,72 +1291,113 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
 </div>
 </section>
 </div>
-<div id="application-profile">
+<div id="narrowing-rules">
 <section id="section-2">
-      <h2 id="name-application-profile">
-<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-application-profile" class="section-name selfRef">Application Profile</a>
+      <h2 id="name-narrowing-rules">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-narrowing-rules" class="section-name selfRef">Narrowing Rules</a>
       </h2>
-<p id="section-2-1">The dCBOR Application Profile specifies the use of Deterministic Encoding as defined in <span>[<a href="#CDE" class="cite xref">CDE</a>]</span> and adds several exclusions and reductions specified in this section.<a href="#section-2-1" class="pilcrow">¶</a></p>
-<p id="section-2-2">Just as CDE does not "fork" CBOR, the rules specified here do not "fork" CDE: A dCBOR implementation produces well-formed, deterministically encoded CDE according to <span>[<a href="#CDE" class="cite xref">CDE</a>]</span>, and existing CBOR or CDE decoders will therefore be able to decode it. Similarly, CBOR or CDE encoders will be able to produce valid dCBOR if handed dCBOR conforming data model level information from an application.<a href="#section-2-2" class="pilcrow">¶</a></p>
-<p id="section-2-3">Note that the separation between standard CBOR or CDE processing and the processing required by the dCBOR application profile is a conceptual one: Both dCBOR processing and standard CDE/CBOR processing may be combined into a unified dCBOR/CDE/CBOR codec. The requirements in this document apply to encoding or decoding of dCBOR data, regardless of whether the codec is a unified dCBOR/CDE/CBOR codec operating in dCBOR-compliant modes, or a single-purpose dCBOR codec. Both of these are generically referred to as "dCBOR codecs" in this document.<a href="#section-2-3" class="pilcrow">¶</a></p>
-<p id="section-2-4">This application profile is intended to be used in conjunction with an application, which typically will use a subset of CDE/CBOR, which in turn influences which subset of the application profile is used. As a result, this application profile places no direct requirement on what subset of CDE/CBOR is implemented. For instance, there is no requirement that dCBOR implementations support floating point numbers (or any other kind of non-basic integer type, such as arbitrary precision integers or complex numbers) when they are used with applications that do not use them. However, this document does place requirements on dCBOR implementations that support negative 64-bit integers and 64-bit or smaller floating point numbers.<a href="#section-2-4" class="pilcrow">¶</a></p>
-<div id="common-deterministic-encoding-conformance">
+<p id="section-2-1">This section specifies the exclusions and reductions that dCBOR applies to CBOR.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<p id="section-2-2">The rules specified here do not "fork" CBOR: A dCBOR implementation produces well-formed, deterministically encoded CBOR according to <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span>, and existing CBOR decoders will therefore be able to decode it. Similarly, CBOR encoders will be able to produce valid dCBOR if handed dCBOR-conforming data model level information from an application.<a href="#section-2-2" class="pilcrow">¶</a></p>
+<p id="section-2-3">Note that the separation between standard CBOR processing and the processing required by the dCBOR rules is a conceptual one: Both dCBOR processing and standard CBOR processing may be combined into a unified dCBOR/CBOR codec. The requirements in this document apply to encoding or decoding of dCBOR data, regardless of whether the codec is a unified dCBOR/CBOR codec operating in dCBOR-compliant modes, or a single-purpose dCBOR codec. Both of these are generically referred to as "dCBOR codecs" in this document.<a href="#section-2-3" class="pilcrow">¶</a></p>
+<p id="section-2-4">dCBOR is intended to be used in conjunction with an application, which typically will use a subset of CBOR, which in turn influences which subset of dCBOR that is used. As a result, dCBOR places no direct requirement on what subset of CBOR is implemented. For instance, there is no requirement that dCBOR implementations support floating point numbers (or any other kind of non-basic integer type, such as arbitrary precision integers or complex numbers) when they are used with applications that do not use them. However, this document does place requirements on dCBOR implementations that support negative 64-bit integers and 64-bit or smaller floating point numbers.<a href="#section-2-4" class="pilcrow">¶</a></p>
+<div id="definite-length-items">
 <section id="section-2.1">
-        <h3 id="name-common-deterministic-encodi">
-<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-common-deterministic-encodi" class="section-name selfRef">Common Deterministic Encoding Conformance</a>
+        <h3 id="name-definite-length-items">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-definite-length-items" class="section-name selfRef">Definite Length Items</a>
         </h3>
-<p id="section-2.1-1">dCBOR encoders:<a href="#section-2.1-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.1-2">
-<li id="section-2.1-2.1">
-            <span class="bcp14">MUST</span> only emit CBOR conforming "CBOR Common Deterministic Encoding (CDE)" <span>[<a href="#CDE" class="cite xref">CDE</a>]</span>, including mandated preferred encoding of integers and floating point numbers and the lexicographic ordering of map keys.<a href="#section-2.1-2.1" class="pilcrow">¶</a>
+<p id="section-2.1-1">CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> allows both "definite-length" and "indefinite-length" items for byte strings, text strings, arrays, and maps (§3.2).<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<p id="section-2.1-2">dCBOR encoders:<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.1-3">
+<li id="section-2.1-3.1">
+            <span class="bcp14">MUST</span> only emit "definite-length" items for byte strings, text strings, arrays, and maps.<a href="#section-2.1-3.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.1-3">dCBOR decoders:<a href="#section-2.1-3" class="pilcrow">¶</a></p>
-<ol start="2" type="1" class="normal type-1" id="section-2.1-4">
-<li id="section-2.1-4.1">
-            <span class="bcp14">MUST</span> validate that encoded CBOR conforms to the requirements of <span>[<a href="#CDE" class="cite xref">CDE</a>]</span>.<a href="#section-2.1-4.1" class="pilcrow">¶</a>
+<p id="section-2.1-4">dCBOR decoders:<a href="#section-2.1-4" class="pilcrow">¶</a></p>
+<ol start="2" type="1" class="normal type-1" id="section-2.1-5">
+<li id="section-2.1-5.1">
+            <span class="bcp14">MUST</span> reject any encoded "indefinite-length" items for byte strings, text strings, arrays, and maps.<a href="#section-2.1-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
 </section>
 </div>
-<div id="duplicate-map-keys">
+<div id="preferred-serialization">
 <section id="section-2.2">
-        <h3 id="name-duplicate-map-keys">
-<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-duplicate-map-keys" class="section-name selfRef">Duplicate Map Keys</a>
+        <h3 id="name-preferred-serialization">
+<a href="#section-2.2" class="section-number selfRef">2.2. </a><a href="#name-preferred-serialization" class="section-name selfRef">Preferred Serialization</a>
         </h3>
-<p id="section-2.2-1">CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6). <span>[<a href="#CDE" class="cite xref">CDE</a>]</span> provides no additional mandates on this issue.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
+<p id="section-2.2-1">CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> allows multiple possible encodings for the same data item, and defines a "preferred serialization" in §4.1 to be used for deterministic encoding.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
 <p id="section-2.2-2">dCBOR encoders:<a href="#section-2.2-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-2.2-3">
 <li id="section-2.2-3.1">
-            <span class="bcp14">MUST NOT</span> emit CBOR maps that contain duplicate keys.<a href="#section-2.2-3.1" class="pilcrow">¶</a>
+            <span class="bcp14">MUST</span> only emit "preferred serialization".<a href="#section-2.2-3.1" class="pilcrow">¶</a>
 </li>
         </ol>
 <p id="section-2.2-4">dCBOR decoders:<a href="#section-2.2-4" class="pilcrow">¶</a></p>
 <ol start="2" type="1" class="normal type-1" id="section-2.2-5">
 <li id="section-2.2-5.1">
-            <span class="bcp14">MUST</span> reject encoded maps with duplicate keys.<a href="#section-2.2-5.1" class="pilcrow">¶</a>
+            <span class="bcp14">MUST</span> validate that encoded CBOR conforms to "preferred serialization", and reject any encoded CBOR that does not conform.<a href="#section-2.2-5.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+</section>
+</div>
+<div id="ordered-map-keys">
+<section id="section-2.3">
+        <h3 id="name-ordered-map-keys">
+<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-ordered-map-keys" class="section-name selfRef">Ordered Map Keys</a>
+        </h3>
+<p id="section-2.3-1">The last bullet item of CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> §4.2.1 defines a "bytewise lexicographic order" for map keys to be used for deterministic encoding.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
+<p id="section-2.3-2">dCBOR encoders:<a href="#section-2.3-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.3-3">
+<li id="section-2.3-3.1">
+            <span class="bcp14">MUST</span> only emit CBOR maps with keys in "bytewise lexicographic order".<a href="#section-2.3-3.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-2.3-4">dCBOR decoders:<a href="#section-2.3-4" class="pilcrow">¶</a></p>
+<ol start="2" type="1" class="normal type-1" id="section-2.3-5">
+<li id="section-2.3-5.1">
+            <span class="bcp14">MUST</span> validate that encoded CBOR maps have keys in "bytewise lexicographic order", and reject any encoded maps that do not conform.<a href="#section-2.3-5.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+</section>
+</div>
+<div id="duplicate-map-keys">
+<section id="section-2.4">
+        <h3 id="name-duplicate-map-keys">
+<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-duplicate-map-keys" class="section-name selfRef">Duplicate Map Keys</a>
+        </h3>
+<p id="section-2.4-1">CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> defines maps with duplicate keys as invalid, but leaves how to handle such cases to the implementor (§2.2, §3.1, §5.4, §5.6).<a href="#section-2.4-1" class="pilcrow">¶</a></p>
+<p id="section-2.4-2">dCBOR encoders:<a href="#section-2.4-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.4-3">
+<li id="section-2.4-3.1">
+            <span class="bcp14">MUST NOT</span> emit CBOR maps that contain duplicate keys.<a href="#section-2.4-3.1" class="pilcrow">¶</a>
+</li>
+        </ol>
+<p id="section-2.4-4">dCBOR decoders:<a href="#section-2.4-4" class="pilcrow">¶</a></p>
+<ol start="2" type="1" class="normal type-1" id="section-2.4-5">
+<li id="section-2.4-5.1">
+            <span class="bcp14">MUST</span> reject encoded maps with duplicate keys.<a href="#section-2.4-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
 </section>
 </div>
 <div id="numeric-reduction">
-<section id="section-2.3">
+<section id="section-2.5">
         <h3 id="name-numeric-reduction">
-<a href="#section-2.3" class="section-number selfRef">2.3. </a><a href="#name-numeric-reduction" class="section-name selfRef">Numeric Reduction</a>
+<a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-numeric-reduction" class="section-name selfRef">Numeric Reduction</a>
         </h3>
-<p id="section-2.3-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. Numeric reduction ensures that semantically equal numeric values (e.g. <code>2</code> and <code>2.0</code>) are encoded into identical byte streams (e.g. <code>0x02</code>) by encoding "Integral floating point values" (floating point values with a zero fractional part) as integers when possible.<a href="#section-2.3-1" class="pilcrow">¶</a></p>
-<p id="section-2.3-2">dCBOR implementations that support floating point numbers:<a href="#section-2.3-2" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.3-3">
-<li id="section-2.3-3.1">
-            <p id="section-2.3-3.1.1"><span class="bcp14">MUST</span> check whether floating point values to be encoded have the numerically equal value in <code>DCBOR_INT</code> = [-2<sup>63</sup>, 2<sup>64</sup>-1]. If that is the case, it <span class="bcp14">MUST</span> be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of <code>DCBOR_INT</code>, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)<a href="#section-2.3-3.1.1" class="pilcrow">¶</a></p>
-<p id="section-2.3-3.1.2">
-This also means that the three representations of a zero number in CBOR (<code>0</code>, <code>0.0</code>, <code>-0.0</code> in diagnostic notation) are all reduced to the basic integer <code>0</code> (with preferred encoding <code>0x00</code>).<a href="#section-2.3-3.1.2" class="pilcrow">¶</a></p>
+<p id="section-2.5-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. Numeric reduction ensures that semantically equal numeric values (e.g. <code>2</code> and <code>2.0</code>) are encoded into identical byte streams (e.g. <code>0x02</code>) by encoding "Integral floating point values" (floating point values with a zero fractional part) as integers when possible.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.5-2">dCBOR implementations that support floating point numbers:<a href="#section-2.5-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.5-3">
+<li id="section-2.5-3.1">
+            <p id="section-2.5-3.1.1"><span class="bcp14">MUST</span> check whether floating point values to be encoded have the numerically equal value in <code>DCBOR_INT</code> = [-2<sup>63</sup>, 2<sup>64</sup>-1]. If that is the case, it <span class="bcp14">MUST</span> be converted to that numerically equal integer value before encoding it. (Preferred encoding will then ensure the shortest length encoding is used.) If a floating point value has a non-zero fractional part, or an exponent that takes it out of <code>DCBOR_INT</code>, the original floating point value is used for encoding. (Specifically, conversion to a CBOR bignum is never considered.)<a href="#section-2.5-3.1.1" class="pilcrow">¶</a></p>
+<p id="section-2.5-3.1.2">
+This also means that the three representations of a zero number in CBOR (<code>0</code>, <code>0.0</code>, <code>-0.0</code> in diagnostic notation) are all reduced to the basic integer <code>0</code> (with preferred encoding <code>0x00</code>).<a href="#section-2.5-3.1.2" class="pilcrow">¶</a></p>
 </li>
         </ol>
-<aside id="section-2.3-4">
-          <p id="section-2.3-4.1">Note that numeric reduction means that some maps that are valid CDE/CBOR cannot be reduced to valid dCBOR maps, as numeric reduction can result in multiple entries with the same keys ("duplicate keys"). For example, the following is a valid CBOR/CDE map:<a href="#section-2.3-4.1" class="pilcrow">¶</a></p>
+<aside id="section-2.5-4">
+          <p id="section-2.5-4.1">Note that numeric reduction means that some maps that are valid CBOR cannot be reduced to valid dCBOR maps, as numeric reduction can result in multiple entries with the same keys ("duplicate keys"). For example, the following is a valid CBOR map:<a href="#section-2.5-4.1" class="pilcrow">¶</a></p>
 <span id="name-valid-cbor-data-item-with-n"></span><figure id="figure-1">
-            <div class="lang-cbor-diag sourcecode" id="section-2.3-4.2.1">
+            <div class="lang-cbor-diag sourcecode" id="section-2.5-4.2.1">
 <pre>
 {
    10: "ten",
@@ -1336,11 +1406,11 @@ This also means that the three representations of a zero number in CBOR (<code>0
 </pre>
 </div>
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
-<a href="#name-valid-cbor-data-item-with-n" class="selfRef">Valid CBOR data item with numeric map keys (also valid CDE)</a>
+<a href="#name-valid-cbor-data-item-with-n" class="selfRef">Valid CBOR data item with numeric map keys</a>
             </figcaption></figure>
-<p id="section-2.3-4.3">Applying numeric reduction to this map would yield the invalid map:<a href="#section-2.3-4.3" class="pilcrow">¶</a></p>
+<p id="section-2.5-4.3">Applying numeric reduction to this map would yield the invalid map:<a href="#section-2.5-4.3" class="pilcrow">¶</a></p>
 <span id="name-numeric-reduction-turns-val"></span><figure id="figure-2">
-            <div class="lang-cbor-diag sourcecode" id="section-2.3-4.4.1">
+            <div class="lang-cbor-diag sourcecode" id="section-2.5-4.4.1">
 <pre>
 {  / invalid: multiple entries with the same key /
    10: "ten",
@@ -1351,56 +1421,57 @@ This also means that the three representations of a zero number in CBOR (<code>0
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
 <a href="#name-numeric-reduction-turns-val" class="selfRef">Numeric reduction turns valid CBOR invalid</a>
             </figcaption></figure>
-<p id="section-2.3-4.5">In general, dCBOR applications need to avoid maps that have entries with keys that are semantically equivalent in dCBOR's numeric model.<a href="#section-2.3-4.5" class="pilcrow">¶</a></p>
+<p id="section-2.5-4.5">In general, dCBOR applications need to avoid maps that have entries with keys that are semantically equivalent in dCBOR's numeric model.<a href="#section-2.5-4.5" class="pilcrow">¶</a></p>
 </aside>
-<ol start="2" type="1" class="normal type-1" id="section-2.3-5">
-<li id="section-2.3-5.1">
-            <span class="bcp14">MUST</span> reduce all encoded NaN values to the quiet NaN value having the half-width CBOR representation <code>0xf97e00</code>.<a href="#section-2.3-5.1" class="pilcrow">¶</a>
+<ol start="2" type="1" class="normal type-1" id="section-2.5-5">
+<li id="section-2.5-5.1">
+            <span class="bcp14">MUST</span> reduce all encoded NaN values to the quiet NaN value having the half-width CBOR representation <code>0xf97e00</code>.<a href="#section-2.5-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.3-6">dCBOR decoders that support floating point numbers:<a href="#section-2.3-6" class="pilcrow">¶</a></p>
-<ol start="3" type="1" class="normal type-1" id="section-2.3-7">
-<li id="section-2.3-7.1">
-            <span class="bcp14">MUST</span> reject any encoded floating point values that are not encoded according to the above rules.<a href="#section-2.3-7.1" class="pilcrow">¶</a>
+<p id="section-2.5-6">dCBOR decoders that support floating point numbers:<a href="#section-2.5-6" class="pilcrow">¶</a></p>
+<ol start="3" type="1" class="normal type-1" id="section-2.5-7">
+<li id="section-2.5-7.1">
+            <span class="bcp14">MUST</span> reject any encoded floating point values that are not encoded according to the above rules.<a href="#section-2.5-7.1" class="pilcrow">¶</a>
 </li>
         </ol>
 </section>
 </div>
 <div id="simple-values">
-<section id="section-2.4">
+<section id="section-2.6">
         <h3 id="name-simple-values">
-<a href="#section-2.4" class="section-number selfRef">2.4. </a><a href="#name-simple-values" class="section-name selfRef">Simple Values</a>
+<a href="#section-2.6" class="section-number selfRef">2.6. </a><a href="#name-simple-values" class="section-name selfRef">Simple Values</a>
         </h3>
-<p id="section-2.4-1">Only the three "simple" (major type 7) values <code>false</code> (0xf4), <code>true</code> (0xf5), and <code>null</code> (0xf6) and the floating point values are valid in dCBOR.<a href="#section-2.4-1" class="pilcrow">¶</a></p>
-<p id="section-2.4-2">dCBOR encoders:<a href="#section-2.4-2" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.4-3">
-<li id="section-2.4-3.1">
-            <span class="bcp14">MUST NOT</span> encode major type 7 values other than <code>false</code>, <code>true</code>, <code>null</code>, and the floating point values.<a href="#section-2.4-3.1" class="pilcrow">¶</a>
+<p id="section-2.6-1">Only the three "simple" (major type 7) values <code>false</code> (0xf4), <code>true</code> (0xf5), and <code>null</code> (0xf6) and the floating point values are valid in dCBOR.<a href="#section-2.6-1" class="pilcrow">¶</a></p>
+<p id="section-2.6-2">dCBOR encoders:<a href="#section-2.6-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.6-3">
+<li id="section-2.6-3.1">
+            <span class="bcp14">MUST NOT</span> encode major type 7 values other than <code>false</code>, <code>true</code>, <code>null</code>, and the floating point values.<a href="#section-2.6-3.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.4-4">dCBOR decoders:<a href="#section-2.4-4" class="pilcrow">¶</a></p>
-<ol start="2" type="1" class="normal type-1" id="section-2.4-5">
-<li id="section-2.4-5.1">
-            <span class="bcp14">MUST</span> reject any encoded major type 7 values other than <code>false</code>, <code>true</code>, <code>null</code>, and the floating point values.<a href="#section-2.4-5.1" class="pilcrow">¶</a>
+<p id="section-2.6-4">dCBOR decoders:<a href="#section-2.6-4" class="pilcrow">¶</a></p>
+<ol start="2" type="1" class="normal type-1" id="section-2.6-5">
+<li id="section-2.6-5.1">
+            <span class="bcp14">MUST</span> reject any encoded major type 7 values other than <code>false</code>, <code>true</code>, <code>null</code>, and the floating point values.<a href="#section-2.6-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
 </section>
 </div>
 <div id="strings">
-<section id="section-2.5">
+<section id="section-2.7">
         <h3 id="name-strings">
-<a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-strings" class="section-name selfRef">Strings</a>
+<a href="#section-2.7" class="section-number selfRef">2.7. </a><a href="#name-strings" class="section-name selfRef">Strings</a>
         </h3>
-<p id="section-2.5-1">dCBOR encoders:<a href="#section-2.5-1" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.5-2">
-<li id="section-2.5-2.1">
-            <span class="bcp14">MUST</span> only emit text strings that are in Unicode Normalization Form C (NFC) <span>[<a href="#UNICODE-NORM" class="cite xref">UNICODE-NORM</a>]</span>.<a href="#section-2.5-2.1" class="pilcrow">¶</a>
+<p id="section-2.7-1">CBOR <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> allows text strings to be any valid UTF-8 string (§3.1). However, Unicode character sequences can represent the same text string in different ways, leading to variability in the encoding of semantically equivalent data items. Unicode Normalization Form C (NFC) <span>[<a href="#UNICODE-NORM" class="cite xref">UNICODE-NORM</a>]</span> is a commonly used normalization form that eliminates such variability.<a href="#section-2.7-1" class="pilcrow">¶</a></p>
+<p id="section-2.7-2">dCBOR encoders:<a href="#section-2.7-2" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.7-3">
+<li id="section-2.7-3.1">
+            <span class="bcp14">MUST</span> only emit text strings that are in NFC.<a href="#section-2.7-3.1" class="pilcrow">¶</a>
 </li>
         </ol>
-<p id="section-2.5-3">dCBOR decoders:<a href="#section-2.5-3" class="pilcrow">¶</a></p>
-<ol start="1" type="1" class="normal type-1" id="section-2.5-4">
-<li id="section-2.5-4.1">
-            <span class="bcp14">MUST</span> reject any encoded text strings that are not in NFC.<a href="#section-2.5-4.1" class="pilcrow">¶</a>
+<p id="section-2.7-4">dCBOR decoders:<a href="#section-2.7-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-2.7-5">
+<li id="section-2.7-5.1">
+            <span class="bcp14">MUST</span> reject any encoded text strings that are not in NFC.<a href="#section-2.7-5.1" class="pilcrow">¶</a>
 </li>
         </ol>
 </section>
@@ -1412,16 +1483,9 @@ This also means that the three representations of a zero number in CBOR (<code>0
       <h2 id="name-cddl-support-declarative-ta">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-cddl-support-declarative-ta" class="section-name selfRef">CDDL support, Declarative Tag</a>
       </h2>
-<p id="section-3-1">Similar to the CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> support in CDE <span>[<a href="#CDE" class="cite xref">CDE</a>]</span>, this specification adds two CDDL control operators that can be used to specify that the data items should be encoded in CBOR Common Deterministic Encoding (CDE), with the dCBOR application profile applied as well.<a href="#section-3-1" class="pilcrow">¶</a></p>
-<p id="section-3-2">The control operators <code>.dcbor</code> and <code>.dcborseq</code> are exactly like <code>.cde</code> and <code>.cdeseq</code> except that they also require the encoded data item(s) to conform to the dCBOR application profile.<a href="#section-3-2" class="pilcrow">¶</a></p>
-<p id="section-3-3">Tag 201 (<a href="#tag201" class="auto internal xref">Section 6</a>) is defined in this specification as a way to declare its tag
-content to conform to the dCBOR application profile at the data model level.
-As a result, when this data item is encoded using CDE rules, the encoded
-result will conform to dCBOR also at the encoded data item level.
-(In conjunction with this semantics, tag 201 may also be employed as a
-boundary marker leading from an overall structure to specific
-application data items; see <span><a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-08#section-3" class="relref">Section 3</a> of [<a href="#GordianEnvelope" class="cite xref">GordianEnvelope</a>]</span> for an
-example for this usage.)<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-1">CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> is a widely used language for specifying CBOR data models. This specification adds two CDDL control operators that can be used to specify that the data items should be encoded in dCBOR.<a href="#section-3-1" class="pilcrow">¶</a></p>
+<p id="section-3-2">The control operators <code>.dcbor</code> and <code>.dcborseq</code> are exactly like <code>.cbor</code> and <code>.cborseq</code> as defined in <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> except that they also require the encoded data item(s) to conform to dCBOR.<a href="#section-3-2" class="pilcrow">¶</a></p>
+<p id="section-3-3">Tag 201 (<a href="#tag201" class="auto internal xref">Section 6</a>) is defined in this specification as a way to declare its tag content to conform to dCBOR at the data model level and the encoded data item level. (In conjunction with these semantics, tag 201 may also be employed as a boundary marker leading from an overall structure to specific application data items; see <span><a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-10#section-3" class="relref">Section 3</a> of [<a href="#GordianEnvelope" class="cite xref">GordianEnvelope</a>]</span> for an example for this usage.)<a href="#section-3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="implementation-status">
@@ -2021,20 +2085,143 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
 </div>
 </section>
 </div>
+<div id="appendix-b-design-principles">
 <section id="section-8">
+      <h2 id="name-appendix-b-design-principle">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-appendix-b-design-principle" class="section-name selfRef">Appendix B: Design Principles</a>
+      </h2>
+<p id="section-8-1">dCBOR has a single overriding goal: to facilitate <em>determinism</em>.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">This means to ensure or facilitate, as much as possible, that semantically equivalent data items are encoded as identical byte streams.<a href="#section-8-2" class="pilcrow">¶</a></p>
+<p id="section-8-3">In general, this means reducing or eliminating <em>variability</em> in the encoding of data items. Variability arises where more than one valid encoding is possible for a given data item, and a protocol designer must make a choice as to which encoding to use. These choices can be arbitrary, and different protocol designers may make different arbitrary, and equally valid choices.<a href="#section-8-3" class="pilcrow">¶</a></p>
+<p id="section-8-4">One of the most common examples of this arises with typed numeric values, where a numeric field must be pre-assigned a type (e.g., signed or unsigned integer of 8, 16, 32, or 64 bits, floating point of 16, 32, or 64 bits, etc.) CBOR's basic numeric data model is typed, and requires that numeric values be encoded according to their type. This is a cognitive burden on protocol designers, and a source of variability, since there may be several ways to encode a given numeric value depending on the type assigned to it. Many developers would prefer to encode numeric values without worrying about types, and let the encoding format handle the details, including ensuring deterministic encoding.<a href="#section-8-4" class="pilcrow">¶</a></p>
+<p id="section-8-5">While dCBOR cannot automatically eliminate all variability in the design of deterministic protocols, it can provide a set of narrowing rules within its scope and level of abstraction that reduce the number of choices that protocol designers need to make.<a href="#section-8-5" class="pilcrow">¶</a></p>
+<p id="section-8-6">dCBOR makes no claim that these are the <em>only</em> or <em>best</em> possible narrowing rules for deterministic encoding for every application. But dCBOR does provide a set of well-defined, easy-to-understand, and easy-to-implement rules that can be deployed as a package to facilitate deterministic encoding for a wide variety of applications. Making these choices at the dCBOR level reduces cognitive burden for protocol designers, and decreases the risk of interoperability problems between different implementations.<a href="#section-8-6" class="pilcrow">¶</a></p>
+<table class="center" id="table-5">
+        <caption><a href="#table-5" class="selfRef">Table 5</a></caption>
+<thead>
+          <tr>
+            <th class="text-left" rowspan="1" colspan="1">Variability Source</th>
+            <th class="text-left" rowspan="1" colspan="1">dCBOR Rule</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Indefinite or definite length items</td>
+            <td class="text-left" rowspan="1" colspan="1">Only definite Length Items</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Multiple possible encodings for same data item</td>
+            <td class="text-left" rowspan="1" colspan="1">Only preferred serialization</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Different orders for map keys</td>
+            <td class="text-left" rowspan="1" colspan="1">Only ordered map Keys</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Duplicate map keys</td>
+            <td class="text-left" rowspan="1" colspan="1">Duplicate Map Keys disallowed</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Semantically equivalent numeric values (e.g., 0, 0.0, -0.0)</td>
+            <td class="text-left" rowspan="1" colspan="1">Only a single encoding for each distinct value</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Choice of <code>null</code> or <code>undefined</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Only <code>null</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Simple values other than <code>false</code>, <code>true</code>, <code>null</code>
+</td>
+            <td class="text-left" rowspan="1" colspan="1">Only <code>false</code>, <code>true</code>, <code>null</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Nontrivial <code>NaN</code>s (sign, signaling, payloads)</td>
+            <td class="text-left" rowspan="1" colspan="1">Single <code>NaN</code>
+</td>
+          </tr>
+          <tr>
+            <td class="text-left" rowspan="1" colspan="1">Equivalent strings with multiple Unicode representations</td>
+            <td class="text-left" rowspan="1" colspan="1">Only NFC text strings</td>
+          </tr>
+        </tbody>
+      </table>
+<p id="section-8-8">The sections below explain the rationale for some of these choices.<a href="#section-8-8" class="pilcrow">¶</a></p>
+<div id="why-numeric-reduction">
+<section id="section-8.1">
+        <h3 id="name-why-numeric-reduction">
+<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-why-numeric-reduction" class="section-name selfRef">Why Numeric Reduction?</a>
+        </h3>
+<p id="section-8.1-1">The numeric model of <span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> provides three kinds of basic numeric types: unsigned integers (Major Type 0), negative integers (Major Type 1), and floating point numbers (Shares major Type 7 with Simple Values). Not all applications require floating point values, and those that do not are unaffected by the presence of floating point numbers in the CBOR model. However, the RFC introduces the possibility of variability in certain places. For example, §3.4.2 defines Tag 1 as "Epoch-Based Date/Time":<a href="#section-8.1-1" class="pilcrow">¶</a></p>
+<ul class="normal ulEmpty">
+<li class="normal ulEmpty" id="section-8.1-2.1">
+            <p id="section-8.1-2.1.1">Tag number 1 contains a numerical value counting the number of seconds from 1970-01-01T00:00Z in UTC time to the represented point in civil time.<a href="#section-8.1-2.1.1" class="pilcrow">¶</a></p>
+<p id="section-8.1-2.1.2">The tag content <span class="bcp14">MUST</span> be an unsigned or negative integer (major types 0 and 1) or a floating-point number (major type 7 with additional information 25, 26, or 27). Other contained types are invalid.<a href="#section-8.1-2.1.2" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-8.1-3">An inhabitant of Tag 1, as long as it represents an integral number of seconds since the epoch, could therefore be encoded as an integer <em>or</em> a floating point number. dCBOR's numeric reduction rule ensures that such values are always encoded as integers, eliminating variability in the encoding of such values.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.1-4">But this raises a larger policy question for determinism: If two numeric values are semantically equal, should they be encoded identically? dCBOR answers "yes" to this question, and numeric reduction is the mechanism by which this is achieved. This choice answers the determinism question in a way that is simple to understand and implement, and that works well for the vast majority of applications. The serialization is still typed, but the burden of choosing types is reduced for protocol designers, who can simply specify numeric fields without worrying about the details of how those numbers will be encoded.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-not-undefined">
+<section id="section-8.2">
+        <h3 id="name-why-not-undefined">
+<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-why-not-undefined" class="section-name selfRef">Why Not <code>undefined</code>?</a>
+        </h3>
+<p id="section-8.2-1">How to represent an absent value is a perennial question in data modeling. In general it is useful to have a value that represents a placeholder for a position where a value <em>could</em> be present but is not. This could be used in a map to indicate that a key is bound but has no value, or in an array to indicate that a value at a particular index is absent. There are other sorts of absence as well, such as the absence of a key in a map. dCBOR cannot address all of these different notions of absence, but can and does address the lack of semantic clarity around the choice between <code>null</code> and <code>undefined</code> by choosing <code>null</code> as the sole representation of a placeholder for an absent value. <code>null</code> is widely used in data modeling, and has a clear and unambiguous meaning. In contrast, <code>undefined</code> is less commonly used, and its meaning can be ambiguous. By choosing <code>null</code>, dCBOR provides a single clear way to represent absent values, reducing variability.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-only-a-single-nan">
+<section id="section-8.3">
+        <h3 id="name-why-only-a-single-nan">
+<a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-why-only-a-single-nan" class="section-name selfRef">Why only a single <code>NaN</code>?</a>
+        </h3>
+<p id="section-8.3-1">How to represent the result of a computation like <code>1.0 / 0.0</code> is another perennial question in data modeling. The <span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> floating point standard answers this question with the concept of "Not a Number" (<code>NaN</code>): a special value that represents an unrepresentable or undefined numerical result. However, the standard also specifies several bit fields within the <code>NaN</code> representation that can vary, including the sign bit, whether the <code>NaN</code> is "quiet" or "signaling", and a payload field. These formations are useful in certain computational contexts, but have no general meaning in data modeling.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-2">The problem of <code>NaN</code> is complicated by the fact that IEEE 754 specifies that all <code>NaN</code> values compare as "not equal" to all other numeric values, including themselves. This means that comparing any two <code>NaN</code> values, including identical ones, will always yield "not equal". The deeper problem this raises is that if you want to know what data a <code>NaN</code> might carry in its payload, you have to go to extraordinary lengths to extract that information, since you cannot simply compare two <code>NaN</code> values to determine whether they are the same.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
+<p id="section-8.3-3">This not only raises deterministic variability issues (the array <code>[1, NaN, 3]</code> could be encoded in multiple ways depending on the <code>NaN</code> representation used), but also security issues as an attacker could use different <code>NaN</code> representations to exfiltrate data or hide malicious payloads, knowing that any comparison of <code>NaN</code> values will fail.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
+<p id="section-8.3-4">Given that <code>NaN</code> has utility in general data modeling, but its specification complexities raise both determinism and security issues, dCBOR chooses to simplify the situation by requiring that all <code>NaN</code> values be encoded as the single quiet <code>NaN</code> value having the half-width CBOR representation <code>0xf97e00</code>.<a href="#section-8.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-not-other-simple-values">
+<section id="section-8.4">
+        <h3 id="name-why-not-other-simple-values">
+<a href="#section-8.4" class="section-number selfRef">8.4. </a><a href="#name-why-not-other-simple-values" class="section-name selfRef">Why not other simple values?</a>
+        </h3>
+<p id="section-8.4-1"><span>[<a href="#RFC8949" class="cite xref">RFC8949</a>]</span> Major Type 7 defines a space of 256 code points for "simple values", and §3.3 defines four simple values and assigns them code points in the Major Type 7 space: <code>false</code> (20), <code>true</code> (21), <code>null</code> (22), and <code>undefined</code> (23). We have already discussed the choice of <code>null</code> over <code>undefined</code>. However, the remaining code points in this space are listed as either "unassigned" or "reserved" and delegates the registry of simple values to the IANA CBOR Simple Tags Registry <span>[<a href="#IANASIMPLEVALUES" class="cite xref">IANASIMPLEVALUES</a>]</span>, which lists no assigned values other than those four.<a href="#section-8.4-1" class="pilcrow">¶</a></p>
+<p id="section-8.4-2">The implication of this is that the semantics of these other simple values are officially undefined, and they cannot simply be used as application-defined values without risking interoperability issues. dCBOR therefore chooses to limit use of simple values to the three well-defined values <code>false</code>, <code>true</code>, and <code>null</code>, which are widely used in data modeling and have clear and unambiguous meanings.<a href="#section-8.4-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="limiting-principles">
+<section id="section-8.5">
+        <h3 id="name-limiting-principles">
+<a href="#section-8.5" class="section-number selfRef">8.5. </a><a href="#name-limiting-principles" class="section-name selfRef">Limiting Principles</a>
+        </h3>
+<p id="section-8.5-1">A limiting principle of dCBOR is that it concerns itself with the most common data items used in CBOR applications. As a result, dCBOR does not place requirements on the encoding or decoding of CBOR data items that are less commonly used in practice, such as bignums, complex numbers, or other tagged data items. dCBOR implementations are not required to support these data items, but if they do, they must support them within the rules of dCBOR.<a href="#section-8.5-1" class="pilcrow">¶</a></p>
+<p id="section-8.5-2">Tags provide a useful "escape hatch" for applications that need to use data items not covered by dCBOR. For example, dCBOR applications can freely use Tag 2 or Tag 3 to encode bignums, which contain byte strings, and on which dCBOR places no restrictions beyond those that apply to all byte strings (definite length only). Similarly, the rare applications that need to convey nontrivial <code>NaN</code> values can use Tag 80, 81, or 82 as defined in the IANA CBOR Tags Registery <span>[<a href="#IANACBORTAGS" class="cite xref">IANACBORTAGS</a>]</span>. These tags use byte strings to encode arrays of fixed-length IEEE 754 floating point values in big-endian byte order.<a href="#section-8.5-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="why-not-define-an-api">
+<section id="section-8.6">
+        <h3 id="name-why-not-define-an-api">
+<a href="#section-8.6" class="section-number selfRef">8.6. </a><a href="#name-why-not-define-an-api" class="section-name selfRef">Why not define an API?</a>
+        </h3>
+<p id="section-8.6-1">Because dCBOR mandates strictness in both encoding and decoding, and because of mechanisms it introduces such as numeric reduction, the question arises as to whether this document should specify an API, or at least a set of best practices, for dCBOR codec APIs. The authors acknowledge that such guidance might be useful, but since the purpose of dCBOR is to provide a deterministic encoding format, and because APIs can vary widely between programming languages and environments, the authors have chosen to not widen the scope of this document. We direct the reader to the several existing dCBOR implementations for guidance on API design.<a href="#section-8.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<section id="section-9">
       <h2 id="name-references">
-<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-references" class="section-name selfRef">References</a>
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-references" class="section-name selfRef">References</a>
       </h2>
 <div id="sec-normative-references">
-<section id="section-8.1">
+<section id="section-9.1">
         <h3 id="name-normative-references">
-<a href="#section-8.1" class="section-number selfRef">8.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
         </h3>
 <dl class="references">
-<dt id="CDE">[CDE]</dt>
-        <dd>
-<span class="refAuthor">Bormann, C.</span>, <span class="refTitle">"CBOR Common Deterministic Encoding (CDE)"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-cbor-cde-07</span>, <time datetime="2025-01-21" class="refDate">21 January 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-07">https://datatracker.ietf.org/doc/html/draft-ietf-cbor-cde-07</a>&gt;</span>. </dd>
-<dd class="break"></dd>
 <dt id="IANACBORTAGS">[IANACBORTAGS]</dt>
         <dd>
 <span class="refAuthor">IANA</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR) Tags"</span>, <span>&lt;<a href="https://www.iana.org/assignments/cbor-tags">https://www.iana.org/assignments/cbor-tags</a>&gt;</span>. </dd>
@@ -2042,6 +2229,14 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
 <dt id="IANACDDL">[IANACDDL]</dt>
         <dd>
 <span class="refAuthor">IANA</span>, <span class="refTitle">"Concise Data Definition Language (CDDL)"</span>, <span>&lt;<a href="https://www.iana.org/assignments/cddl">https://www.iana.org/assignments/cddl</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="IANASIMPLEVALUES">[IANASIMPLEVALUES]</dt>
+        <dd>
+<span class="refAuthor">IANA</span>, <span class="refTitle">"Concise Binary Object Representation (CBOR) Simple Values"</span>, <span>&lt;<a href="https://www.iana.org/assignments/cbor-simple-values">https://www.iana.org/assignments/cbor-simple-values</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="IEEE754">[IEEE754]</dt>
+        <dd>
+<span class="refTitle">"IEEE Standard for Floating-Point Arithmetic"</span>, <span>n.d.</span>, <span>&lt;<a href="https://ieeexplore.ieee.org/document/8766229">https://ieeexplore.ieee.org/document/8766229</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC2119">[RFC2119]</dt>
         <dd>
@@ -2067,9 +2262,9 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
 </section>
 </div>
 <div id="sec-informative-references">
-<section id="section-8.2">
+<section id="section-9.2">
         <h3 id="name-informative-references">
-<a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
         </h3>
 <dl class="references">
 <dt id="BCRustDCBOR">[BCRustDCBOR]</dt>
@@ -2098,7 +2293,7 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
 <dd class="break"></dd>
 <dt id="GordianEnvelope">[GordianEnvelope]</dt>
         <dd>
-<span class="refAuthor">McNally, W.</span> and <span class="refAuthor">C. Allen</span>, <span class="refTitle">"The Gordian Envelope Structured Data Format"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mcnally-envelope-08</span>, <time datetime="2024-09-24" class="refDate">24 September 2024</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-08">https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-08</a>&gt;</span>. </dd>
+<span class="refAuthor">McNally, W.</span> and <span class="refAuthor">C. Allen</span>, <span class="refTitle">"The Gordian Envelope Structured Data Format"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-mcnally-envelope-10</span>, <time datetime="2025-09-30" class="refDate">30 September 2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-10">https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-10</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC7942">[RFC7942]</dt>
       <dd>
@@ -2113,7 +2308,7 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
       <h2 id="name-acknowledgments">
 <a href="#name-acknowledgments" class="section-name selfRef">Acknowledgments</a>
       </h2>
-<p id="appendix-A-1">The authors are grateful for the contributions of Joe Hildebrand and Anders Rundgren in the CBOR working group.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
+<p id="appendix-A-1">The authors are grateful for the contributions of Joe Hildebrand, Rohan Mahy, and Anders Rundgren in the CBOR working group.<a href="#appendix-A-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="authors-addresses">
