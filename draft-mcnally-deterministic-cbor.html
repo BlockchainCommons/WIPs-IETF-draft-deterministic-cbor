@@ -1052,7 +1052,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">McNally, et al.</td>
-<td class="center">Expires 5 May 2026</td>
+<td class="center">Expires 6 May 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1065,12 +1065,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-mcnally-deterministic-cbor-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-11-01" class="published">1 November 2025</time>
+<time datetime="2025-11-02" class="published">2 November 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-05-05">5 May 2026</time></dd>
+<dd class="expires"><time datetime="2026-05-06">6 May 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1126,7 +1126,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 May 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1385,7 +1385,7 @@ appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">�
         <h3 id="name-numeric-reduction">
 <a href="#section-2.5" class="section-number selfRef">2.5. </a><a href="#name-numeric-reduction" class="section-name selfRef">Numeric Reduction</a>
         </h3>
-<p id="section-2.5-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. Numeric reduction ensures that semantically equal numeric values (e.g. <code>2</code> and <code>2.0</code>) are encoded into identical byte streams (e.g. <code>0x02</code>) by encoding "Integral floating point values" (floating point values with a zero fractional part) as integers when possible.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
+<p id="section-2.5-1">The purpose of determinism is to ensure that semantically equivalent data items are encoded into identical byte streams. Numeric Reduction ensures that semantically equal numeric values (e.g. <code>2</code> and <code>2.0</code>) are encoded into identical byte streams (e.g. <code>0x02</code>) by encoding "Integral floating point values" (floating point values with a zero fractional part) as integers when possible.<a href="#section-2.5-1" class="pilcrow">¶</a></p>
 <p id="section-2.5-2">dCBOR implementations that support floating point numbers:<a href="#section-2.5-2" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-2.5-3">
 <li id="section-2.5-3.1">
@@ -1395,7 +1395,7 @@ This also means that the three representations of a zero number in CBOR (<code>0
 </li>
         </ol>
 <aside id="section-2.5-4">
-          <p id="section-2.5-4.1">Note that numeric reduction means that some maps that are valid CBOR cannot be reduced to valid dCBOR maps, as numeric reduction can result in multiple entries with the same keys ("duplicate keys"). For example, the following is a valid CBOR map:<a href="#section-2.5-4.1" class="pilcrow">¶</a></p>
+          <p id="section-2.5-4.1">Note that Numeric Reduction means that some maps that are valid CBOR cannot be reduced to valid dCBOR maps, as Numeric Reduction can result in multiple entries with the same keys ("duplicate keys"). For example, the following is a valid CBOR map:<a href="#section-2.5-4.1" class="pilcrow">¶</a></p>
 <span id="name-valid-cbor-data-item-with-n"></span><figure id="figure-1">
             <div class="lang-cbor-diag sourcecode" id="section-2.5-4.2.1">
 <pre>
@@ -1408,7 +1408,7 @@ This also means that the three representations of a zero number in CBOR (<code>0
 <figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
 <a href="#name-valid-cbor-data-item-with-n" class="selfRef">Valid CBOR data item with numeric map keys</a>
             </figcaption></figure>
-<p id="section-2.5-4.3">Applying numeric reduction to this map would yield the invalid map:<a href="#section-2.5-4.3" class="pilcrow">¶</a></p>
+<p id="section-2.5-4.3">Applying Numeric Reduction to this map would yield the invalid map:<a href="#section-2.5-4.3" class="pilcrow">¶</a></p>
 <span id="name-numeric-reduction-turns-val"></span><figure id="figure-2">
             <div class="lang-cbor-diag sourcecode" id="section-2.5-4.4.1">
 <pre>
@@ -1419,7 +1419,7 @@ This also means that the three representations of a zero number in CBOR (<code>0
 </pre>
 </div>
 <figcaption><a href="#figure-2" class="selfRef">Figure 2</a>:
-<a href="#name-numeric-reduction-turns-val" class="selfRef">Numeric reduction turns valid CBOR invalid</a>
+<a href="#name-numeric-reduction-turns-val" class="selfRef">Numeric Reduction turns valid CBOR invalid</a>
             </figcaption></figure>
 <p id="section-2.5-4.5">In general, dCBOR applications need to avoid maps that have entries with keys that are semantically equivalent in dCBOR's numeric model.<a href="#section-2.5-4.5" class="pilcrow">¶</a></p>
 </aside>
@@ -1485,7 +1485,8 @@ This also means that the three representations of a zero number in CBOR (<code>0
       </h2>
 <p id="section-3-1">CDDL <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> is a widely used language for specifying CBOR data models. This specification adds two CDDL control operators that can be used to specify that the data items should be encoded in dCBOR.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">The control operators <code>.dcbor</code> and <code>.dcborseq</code> are exactly like <code>.cbor</code> and <code>.cborseq</code> as defined in <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> except that they also require the encoded data item(s) to conform to dCBOR.<a href="#section-3-2" class="pilcrow">¶</a></p>
-<p id="section-3-3">Tag 201 (<a href="#tag201" class="auto internal xref">Section 6</a>) is defined in this specification as a way to declare its tag content to conform to dCBOR at the data model level and the encoded data item level. (In conjunction with these semantics, tag 201 may also be employed as a boundary marker leading from an overall structure to specific application data items; see <span><a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-10#section-3" class="relref">Section 3</a> of [<a href="#GordianEnvelope" class="cite xref">GordianEnvelope</a>]</span> for an example for this usage.)<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-3">The CDDL Standard Prelude as defined in <span>[<a href="#RFC8610" class="cite xref">RFC8610</a>]</span> Appendix D defines <code>number = int / float</code>. This type encompass the full space of CBOR numeric values representable by CBOR major types 0, 1, and 7. Therefore dCBOR applications can use <code>number</code> to specify fields with numeric values, and dCBOR's Numeric Reduction ensures that these values are encoded deterministically.<a href="#section-3-3" class="pilcrow">¶</a></p>
+<p id="section-3-4">Tag 201 (<a href="#tag201" class="auto internal xref">Section 6</a>) is defined in this specification as a way to declare its tag content to conform to dCBOR at the data model level and the encoded data item level. (In conjunction with these semantics, tag 201 may also be employed as a boundary marker leading from an overall structure to specific application data items; see <span><a href="https://datatracker.ietf.org/doc/html/draft-mcnally-envelope-10#section-3" class="relref">Section 3</a> of [<a href="#GordianEnvelope" class="cite xref">GordianEnvelope</a>]</span> for an example for this usage.)<a href="#section-3-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="implementation-status">
@@ -2162,8 +2163,8 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
 <p id="section-8.1-2.1.2">The tag content <span class="bcp14">MUST</span> be an unsigned or negative integer (major types 0 and 1) or a floating-point number (major type 7 with additional information 25, 26, or 27). Other contained types are invalid.<a href="#section-8.1-2.1.2" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-8.1-3">An inhabitant of Tag 1, as long as it represents an integral number of seconds since the epoch, could therefore be encoded as an integer <em>or</em> a floating point number. dCBOR's numeric reduction rule ensures that such values are always encoded as integers, eliminating variability in the encoding of such values.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
-<p id="section-8.1-4">But this raises a larger policy question for determinism: If two numeric values are semantically equal, should they be encoded identically? dCBOR answers "yes" to this question, and numeric reduction is the mechanism by which this is achieved. This choice answers the determinism question in a way that is simple to understand and implement, and that works well for the vast majority of applications. The serialization is still typed, but the burden of choosing types is reduced for protocol designers, who can simply specify numeric fields without worrying about the details of how those numbers will be encoded.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
+<p id="section-8.1-3">An inhabitant of Tag 1, as long as it represents an integral number of seconds since the epoch, could therefore be encoded as an integer <em>or</em> the equivalent floating point number. dCBOR's Numeric Reduction rule ensures that such values are always encoded as integers, eliminating variability in the encoding of such values.<a href="#section-8.1-3" class="pilcrow">¶</a></p>
+<p id="section-8.1-4">But this raises a larger policy question for determinism: If two numeric values are semantically equal, should they be encoded identically? dCBOR answers "yes" to this question, and Numeric Reduction is the mechanism by which this is achieved. This choice answers the determinism question in a way that is simple to understand and implement, and that works well for the vast majority of applications. The serialization is still typed, but the burden of choosing types is reduced for protocol designers, who can simply specify numeric fields without worrying about the details of how those numbers will be encoded.<a href="#section-8.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="why-not-undefined">
@@ -2171,7 +2172,7 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
         <h3 id="name-why-not-undefined">
 <a href="#section-8.2" class="section-number selfRef">8.2. </a><a href="#name-why-not-undefined" class="section-name selfRef">Why Not <code>undefined</code>?</a>
         </h3>
-<p id="section-8.2-1">How to represent an absent value is a perennial question in data modeling. In general it is useful to have a value that represents a placeholder for a position where a value <em>could</em> be present but is not. This could be used in a map to indicate that a key is bound but has no value, or in an array to indicate that a value at a particular index is absent. There are other sorts of absence as well, such as the absence of a key in a map. dCBOR cannot address all of these different notions of absence, but can and does address the lack of semantic clarity around the choice between <code>null</code> and <code>undefined</code> by choosing <code>null</code> as the sole representation of a placeholder for an absent value. <code>null</code> is widely used in data modeling, and has a clear and unambiguous meaning. In contrast, <code>undefined</code> is less commonly used, and its meaning can be ambiguous. By choosing <code>null</code>, dCBOR provides a single clear way to represent absent values, reducing variability.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
+<p id="section-8.2-1">How to represent an absent value is a perennial question in data modeling. In general it is useful to have a value that represents a placeholder for a position where a value <em>could</em> be present but is not. This could be used in a map to indicate that a key is bound but has no value, or in an array to indicate that a value at a particular index is absent. There are other sorts of absence as well, such as the absence of a key in a map, or a function that returns no value (<code>void</code>). dCBOR cannot by narrowing CBOR address all of these different notions of absence, but can and does address the lack of semantic clarity around the choice between <code>null</code> and <code>undefined</code> by choosing <code>null</code> as the sole representation of a placeholder for an absent value. <code>null</code> is widely used in data modeling, and has a clear and unambiguous meaning. In contrast, <code>undefined</code> is less commonly used, and its meaning can be ambiguous. By choosing <code>null</code>, dCBOR provides a single clear way to represent absent values, reducing variability.<a href="#section-8.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="why-only-a-single-nan">
@@ -2179,7 +2180,7 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
         <h3 id="name-why-only-a-single-nan">
 <a href="#section-8.3" class="section-number selfRef">8.3. </a><a href="#name-why-only-a-single-nan" class="section-name selfRef">Why only a single <code>NaN</code>?</a>
         </h3>
-<p id="section-8.3-1">How to represent the result of a computation like <code>1.0 / 0.0</code> is another perennial question in data modeling. The <span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> floating point standard answers this question with the concept of "Not a Number" (<code>NaN</code>): a special value that represents an unrepresentable or undefined numerical result. However, the standard also specifies several bit fields within the <code>NaN</code> representation that can vary, including the sign bit, whether the <code>NaN</code> is "quiet" or "signaling", and a payload field. These formations are useful in certain computational contexts, but have no general meaning in data modeling.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
+<p id="section-8.3-1">How to represent the result of a computation like <code>1.0 / 0.0</code> is another perennial question in data modeling. The <span>[<a href="#IEEE754" class="cite xref">IEEE754</a>]</span> floating point standard answers this question with the concept of "Not a Number" (<code>NaN</code>): a special value that represents an unrepresentable or undefined numerical result. However, the standard also specifies several bit fields within the <code>NaN</code> representation that can vary, including the sign bit, whether the <code>NaN</code> is "quiet" or "signaling", and a payload field. These formations are useful in certain computational contexts, but have no generally-accepted meaning in data modeling.<a href="#section-8.3-1" class="pilcrow">¶</a></p>
 <p id="section-8.3-2">The problem of <code>NaN</code> is complicated by the fact that IEEE 754 specifies that all <code>NaN</code> values compare as "not equal" to all other numeric values, including themselves. This means that comparing any two <code>NaN</code> values, including identical ones, will always yield "not equal". The deeper problem this raises is that if you want to know what data a <code>NaN</code> might carry in its payload, you have to go to extraordinary lengths to extract that information, since you cannot simply compare two <code>NaN</code> values to determine whether they are the same.<a href="#section-8.3-2" class="pilcrow">¶</a></p>
 <p id="section-8.3-3">This not only raises deterministic variability issues (the array <code>[1, NaN, 3]</code> could be encoded in multiple ways depending on the <code>NaN</code> representation used), but also security issues as an attacker could use different <code>NaN</code> representations to exfiltrate data or hide malicious payloads, knowing that any comparison of <code>NaN</code> values will fail.<a href="#section-8.3-3" class="pilcrow">¶</a></p>
 <p id="section-8.3-4">Given that <code>NaN</code> has utility in general data modeling, but its specification complexities raise both determinism and security issues, dCBOR chooses to simplify the situation by requiring that all <code>NaN</code> values be encoded as the single quiet <code>NaN</code> value having the half-width CBOR representation <code>0xf97e00</code>.<a href="#section-8.3-4" class="pilcrow">¶</a></p>
@@ -2208,7 +2209,7 @@ to use this information as they see fit".<a href="#section-4-4" class="pilcrow">
         <h3 id="name-why-not-define-an-api">
 <a href="#section-8.6" class="section-number selfRef">8.6. </a><a href="#name-why-not-define-an-api" class="section-name selfRef">Why not define an API?</a>
         </h3>
-<p id="section-8.6-1">Because dCBOR mandates strictness in both encoding and decoding, and because of mechanisms it introduces such as numeric reduction, the question arises as to whether this document should specify an API, or at least a set of best practices, for dCBOR codec APIs. The authors acknowledge that such guidance might be useful, but since the purpose of dCBOR is to provide a deterministic encoding format, and because APIs can vary widely between programming languages and environments, the authors have chosen to not widen the scope of this document. We direct the reader to the several existing dCBOR implementations for guidance on API design.<a href="#section-8.6-1" class="pilcrow">¶</a></p>
+<p id="section-8.6-1">Because dCBOR mandates strictness in both encoding and decoding, and because of mechanisms it introduces such as Numeric Reduction, the question arises as to whether this document should specify an API, or at least a set of best practices, for dCBOR codec APIs. The authors acknowledge that such guidance might be useful, but since the purpose of dCBOR is to provide a deterministic encoding format, and because APIs can vary widely between programming languages and environments, the authors have chosen to not widen the scope of this document. We direct the reader to the several existing dCBOR implementations for guidance on API design.<a href="#section-8.6-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
