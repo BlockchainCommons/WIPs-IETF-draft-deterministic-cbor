@@ -332,12 +332,15 @@ Table of Contents
    .cborseq as defined in [RFC8610] except that they also require the
    encoded data item(s) to conform to dCBOR.
 
-   The CDDL Standard Prelude as defined in [RFC8610] Appendix D defines
-   number = int / float.  This type encompass the full space of CBOR
-   numeric values representable by CBOR major types 0, 1, and 7.
-   Therefore dCBOR applications can use number to specify fields with
-   numeric values, and dCBOR's Numeric Reduction ensures that these
-   values are encoded deterministically.
+   The CDDL Standard Prelude as defined in [RFC8610] Appendix D defines:
+
+   number = int / float
+
+   This type encompasses the full space of CBOR numeric values
+   representable by CBOR major types 0, 1, and 7.  Therefore dCBOR
+   applications can use number to specify fields with numeric values,
+   and dCBOR's Numeric Reduction ensures that these values are encoded
+   deterministically.
 
    Tag 201 (Section 6) is defined in this specification as a way to
    declare its tag content to conform to dCBOR at the data model level
