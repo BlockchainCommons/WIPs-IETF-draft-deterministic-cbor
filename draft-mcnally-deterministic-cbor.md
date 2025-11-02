@@ -379,6 +379,8 @@ These are valid CBOR encodings that MUST be rejected as invalid by a dCBOR-compl
 
 # Appendix B: Design Principles
 
+This section is non-normative.
+
 dCBOR has a single overriding goal: to facilitate *determinism*.
 
 This means to ensure or facilitate, as much as possible, that semantically equivalent data items are encoded as identical byte streams.
@@ -407,7 +409,7 @@ The sections below explain the rationale for some of these choices.
 
 ## Why Numeric Reduction?
 
-The numeric model of {{-CBOR}} provides three kinds of basic numeric types: unsigned integers (Major Type 0), negative integers (Major Type 1), and floating point numbers (Shares major Type 7 with Simple Values). Not all applications require floating point values, and those that do not are unaffected by the presence of floating point numbers in the CBOR model. However, the RFC introduces the possibility of variability in certain places. For example, §3.4.2 defines Tag 1 as "Epoch-Based Date/Time":
+The numeric model of {{-CBOR}} provides three kinds of basic numeric types: unsigned integers (Major Type 0), negative integers (Major Type 1), and floating point numbers (shares major Type 7 with Simple Values). Not all applications require floating point values, and those that do not are unaffected by the presence of floating point numbers in the CBOR model. However, the RFC introduces the possibility of variability in certain places. For example, §3.4.2 defines Tag 1 as "Epoch-Based Date/Time":
 
 > Tag number 1 contains a numerical value counting the number of seconds from 1970-01-01T00:00Z in UTC time to the represented point in civil time.
 >
