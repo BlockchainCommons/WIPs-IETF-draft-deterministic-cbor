@@ -5,11 +5,11 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Standards Track                      Blockchain Commons
-Expires: 4 May 2026                                           C. Bormann
+Expires: 5 May 2026                                           C. Bormann
                                                   Universität Bremen TZI
                                                             L. Lundblade
                                                      Security Theory LLC
-                                                         31 October 2025
+                                                         1 November 2025
 
 
                        dCBOR: Deterministic CBOR
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 May 2026.
+   This Internet-Draft will expire on 5 May 2026.
 
 Copyright Notice
 
@@ -660,6 +660,8 @@ Table of Contents
 
 8.  Appendix B: Design Principles
 
+   This section is non-normative.
+
    dCBOR has a single overriding goal: to facilitate _determinism_.
 
    This means to ensure or facilitate, as much as possible, that
@@ -735,7 +737,7 @@ Table of Contents
 
    The numeric model of [RFC8949] provides three kinds of basic numeric
    types: unsigned integers (Major Type 0), negative integers (Major
-   Type 1), and floating point numbers (Shares major Type 7 with Simple
+   Type 1), and floating point numbers (shares major Type 7 with Simple
    Values).  Not all applications require floating point values, and
    those that do not are unaffected by the presence of floating point
    numbers in the CBOR model.  However, the RFC introduces the
