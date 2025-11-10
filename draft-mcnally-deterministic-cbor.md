@@ -236,7 +236,13 @@ CDDL {{-CDDL}} is a widely used language for specifying CBOR data models. This s
 
 The control operators `.dcbor` and `.dcborseq` are exactly like `.cbor` and `.cborseq` as defined in {{-CDDL}} except that they also require the encoded data item(s) to conform to dCBOR.
 
-The CDDL Standard Prelude as defined in {{-CDDL}} Appendix D defines `number = int / float`. This type encompass the full space of CBOR numeric values representable by CBOR major types 0, 1, and 7. Therefore dCBOR applications can use `number` to specify fields with numeric values, and dCBOR's Numeric Reduction ensures that these values are encoded deterministically.
+The CDDL Standard Prelude as defined in {{-CDDL}} Appendix D defines:
+
+```
+number = int / float
+```
+
+This type encompasses the full space of CBOR numeric values representable by CBOR major types 0, 1, and 7. Therefore dCBOR applications can use `number` to specify fields with numeric values, and dCBOR's Numeric Reduction ensures that these values are encoded deterministically.
 
 Tag 201 ({{tag201}}) is defined in this specification as a way to declare its tag content to conform to dCBOR at the data model level and the encoded data item level. (In conjunction with these semantics, tag 201 may also be employed as a boundary marker leading from an overall structure to specific application data items; see {{Section 3 of GordianEnvelope}} for an example for this usage.)
 
