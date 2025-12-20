@@ -5,11 +5,11 @@
 Network Working Group                                         W. McNally
 Internet-Draft                                                  C. Allen
 Intended status: Standards Track                      Blockchain Commons
-Expires: 6 May 2026                                           C. Bormann
+Expires: 23 June 2026                                         C. Bormann
                                                   Universität Bremen TZI
                                                             L. Lundblade
                                                      Security Theory LLC
-                                                         2 November 2025
+                                                        20 December 2025
 
 
                        dCBOR: Deterministic CBOR
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 6 May 2026.
+   This Internet-Draft will expire on 23 June 2026.
 
 Copyright Notice
 
@@ -136,8 +136,9 @@ Table of Contents
 
 2.  Narrowing Rules
 
-   This section specifies the exclusions and reductions that dCBOR
-   applies to CBOR.
+   This section is normative and specifies the exclusions and reductions
+   that dCBOR applies to CBOR, thereby narrowing the set of data items
+   allowed that are drawn from CBOR’s basic generic data model.
 
    The rules specified here do not "fork" CBOR: A dCBOR implementation
    produces well-formed, deterministically encoded CBOR according to
@@ -155,6 +156,11 @@ Table of Contents
    a single-purpose dCBOR codec.  Both of these are generically referred
    to as "dCBOR codecs" in this document.
 
+   A CBOR data item is considered to conform to dCBOR only if every CBOR
+   data item nested within it, recursively (including array elements,
+   map keys and values, and the contents of tagged data items), also
+   conforms to the narrowing rules in this section.
+
    dCBOR is intended to be used in conjunction with an application,
    which typically will use a subset of CBOR, which in turn influences
    which subset of dCBOR that is used.  As a result, dCBOR places no
@@ -164,8 +170,7 @@ Table of Contents
    such as arbitrary precision integers or complex numbers) when they
    are used with applications that do not use them.  However, this
    document does place requirements on dCBOR implementations that
-   support negative 64-bit integers and 64-bit or smaller floating point
-   numbers.
+   support 64-bit integers and 64-bit or smaller floating point numbers.
 
 2.1.  Definite Length Items
 
@@ -288,6 +293,18 @@ Table of Contents
 
    3.  MUST reject any encoded floating point values that are not
        encoded according to the above rules.
+
+   For the purposes of this document, the dCBOR numeric model comprises
+   only untagged integers and untagged floating point values in the CBOR
+   basic generic data model (major types 0, 1, and 7 as defined in
+   [RFC8949] and by the type number in [RFC8610]).  Numeric Reduction
+   and the duplicate-key considerations in this section apply only to
+   such untagged numeric values, wherever they occur in a dCBOR data
+   item.  Tagged data items themselves are not part of the dCBOR numeric
+   model: two tagged data items are equal in dCBOR only if both their
+   tag numbers and their enclosed CBOR data items are equal, and no
+   tagged data item is ever considered numerically equal to an untagged
+   data item.
 
 2.6.  Simple Values
 
