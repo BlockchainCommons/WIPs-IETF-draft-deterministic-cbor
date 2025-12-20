@@ -103,13 +103,15 @@ This document narrows CBOR to a set of requirements called "dCBOR". These requir
 
 # Narrowing Rules
 
-This section specifies the exclusions and reductions that dCBOR applies to CBOR.
+This section is normative and specifies the exclusions and reductions that dCBOR applies to CBOR, thereby narrowing the set of data items allowed that are drawn from CBOR’s basic generic data model.
 
 The rules specified here do not "fork" CBOR: A dCBOR implementation produces well-formed, deterministically encoded CBOR according to {{-CBOR}}, and existing CBOR decoders will therefore be able to decode it. Similarly, CBOR encoders will be able to produce valid dCBOR if handed dCBOR-conforming data model level information from an application.
 
 Note that the separation between standard CBOR processing and the processing required by the dCBOR rules is a conceptual one: Both dCBOR processing and standard CBOR processing may be combined into a unified dCBOR/CBOR codec. The requirements in this document apply to encoding or decoding of dCBOR data, regardless of whether the codec is a unified dCBOR/CBOR codec operating in dCBOR-compliant modes, or a single-purpose dCBOR codec. Both of these are generically referred to as "dCBOR codecs" in this document.
 
-dCBOR is intended to be used in conjunction with an application, which typically will use a subset of CBOR, which in turn influences which subset of dCBOR that is used. As a result, dCBOR places no direct requirement on what subset of CBOR is implemented. For instance, there is no requirement that dCBOR implementations support floating point numbers (or any other kind of non-basic integer type, such as arbitrary precision integers or complex numbers) when they are used with applications that do not use them. However, this document does place requirements on dCBOR implementations that support negative 64-bit integers and 64-bit or smaller floating point numbers.
+A CBOR data item is considered to conform to dCBOR only if every CBOR data item nested within it, recursively (including array elements, map keys and values, and the contents of tagged data items), also conforms to the narrowing rules in this section.
+
+dCBOR is intended to be used in conjunction with an application, which typically will use a subset of CBOR, which in turn influences which subset of dCBOR that is used. As a result, dCBOR places no direct requirement on what subset of CBOR is implemented. For instance, there is no requirement that dCBOR implementations support floating point numbers (or any other kind of non-basic integer type, such as arbitrary precision integers or complex numbers) when they are used with applications that do not use them. However, this document does place requirements on dCBOR implementations that support 64-bit integers and 64-bit or smaller floating point numbers.
 
 ## Definite Length Items
 
@@ -204,6 +206,8 @@ dCBOR decoders that support floating point numbers:
 
 3. MUST reject any encoded floating point values that are not encoded according to the above rules.
 {:start="3"}
+
+For the purposes of this document, the dCBOR numeric model comprises only untagged integers and untagged floating point values in the CBOR basic generic data model (major types 0, 1, and 7 as defined in {{-CBOR}} and by the type `number` in {{-CDDL}}). Numeric Reduction and the duplicate-key considerations in this section apply only to such untagged numeric values, wherever they occur in a dCBOR data item. Tagged data items themselves are not part of the dCBOR numeric model: two tagged data items are equal in dCBOR only if both their tag numbers and their enclosed CBOR data items are equal, and no tagged data item is ever considered numerically equal to an untagged data item.
 
 ## Simple Values
 
